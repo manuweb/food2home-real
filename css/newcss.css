@@ -1,0 +1,10 @@
+@media (min-width: 630px) and (min-height: 630px) {
+.popup:not(.popup-tablet-fullscreen) {
+   
+
+    width: 356px;
+    max-height: 800px;
+    padding: 61px 21px 22px 22px;
+    left: 85%;
+}
+}

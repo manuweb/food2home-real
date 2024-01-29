@@ -1,0 +1,4 @@
+token: eqbCt_BCkU3Zw3SXwwjEg-:APA91bGXHOxWdUrTIP2R1ETkTf6OD9p2G5fLol4kzJQuEcXZCO54OS-X1yFw27ifi6ZSDEFadEWlMk_kxgqUEQXdtXyz2RbPCYfm2K7JpQSFrCODtvn54CUBGd27XddA7lBNTNXLh72N
+jason: {"valid":true}
+payload: {"notification":{"title":"Pruebas 5","body":"Mensaje de pruebas 2","icon":"http:\/\/localhost\/apps\/f7v8\/www\/img\/icon.png"},"data":{"key":"1"}}
+servidor: http://localhost/

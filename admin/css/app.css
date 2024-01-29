@@ -1,0 +1,109 @@
+/* Custom color theme */
+
+.page {
+    /*background-color: #fff;*/
+}
+.dialog-button {
+ color:#f35605!important;
+}
+
+.dialog-button-strong {
+    color:#00495e!important;
+}
+.button-cancelar {
+ background-color:#f35605;
+}
+.text-editor-content {
+    border: solid 1px gray;
+    padding: 5px!important;
+}
+.size-16{font-size: 16px;}
+.size-18{font-size: 18px;}
+.size-20{font-size: 20px;}
+.size-14{font-size: 14px;}
+.size-12{font-size: 12px;}
+.size-28{font-size: 28px;}
+.size-48{font-size: 48px;}
+.list input {
+     
+    border: solid #efefef 1px;
+    border-radius: 5px;
+}
+
+.logo-boton-icon{
+  background-image: url("../img/boton-logo.png");
+}
+
+.list input:focus {
+  background-color: #efefef;
+}
+#safari_window {
+    border-radius: 30px;
+    /*position: absolute;  */
+    /*width: 358px;*/
+    /*top: 60px;  */
+    /*left: 22px;  */
+    /*background-color: #fff;*/
+    height: 600px !important;
+  
+    
+}
+#lista-menu.list .item-link .item-inner:before{
+    display: none;
+}
+.menu-icon{
+  background-image: url("../img/menu.png");
+}
+
+.trans-icon{
+  background-image: url("../img/trans.png");
+}
+
+.cupon-icon{
+  background-image: url("../img/cupon.png");
+}
+.hr-icon{
+  background-image: url("../img/hr-icon.png");
+}
+
+.tienda-icon{
+  background-image: url("../img/menu_on.png");
+}
+.clientes-icon{
+  background-image: url("../img/clientes_on.png");
+}
+
+.pedidos-icon{
+  background-image: url("../img/pedidos_on.png");
+}
+.reparto-icon{
+  background-image: url("../img/reparto.png");
+}
+.zona-reparto-icon{
+  background-image: url("../img/zona-reparto.png");
+}
+.hora-cocina-icon{
+  background-image: url("../img/cocina.png");
+}
+.hora-reparto-icon{
+  background-image: url("../img/hora-reparto.png");
+}
+.fidelidad-icon{
+  background-image: url("../img/tarjeta-fidelidad.png");
+}
+.tax-icon{
+  background-image: url("../img/tax-icon.png");
+}
+
+.alergeno-icon{
+  background-image: url("../img/alergeno-icon.png");
+}
+.store-icon{
+  background-image: url("../img/store.png");
+}
+.pdf-icon{
+  background-image: url("../img/pdf.png");
+}
+.excel-icon{
+  background-image: url("../img/excel.png");
+}

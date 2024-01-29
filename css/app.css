@@ -1,0 +1,213 @@
+/* iOS Cordova Tweak */
+.device-cordova.device-ios {
+  height: 100vh;
+}
+
+/* Your app custom styles here */
+:root {
+    --fondo-mas-datos:rgb(211 211 211 / 20%);
+    --fondo-mas-datos-icono:lightgrey;
+    --lista-mas:rgb(211 211 211 / 20%);
+}
+
+/* definicion color secundario */
+
+.secudario {
+    color:red;
+}
+.secundario-BG {
+    color:white;
+    background-color: red;
+}
+
+/* icono Whatsapp */
+.whatsapp-icon{
+  width: 20px;
+  height: 20px;
+  background-image: url("../img/whatsapp.png");
+}
+
+
+/* Tamaños letras e iconos */
+.size-12{font-size: 12px;}
+.size-14{font-size: 14px;}
+.size-16{font-size: 16px;}
+.size-18{font-size: 18px;}
+.size-20{font-size: 20px;}
+.size-22{font-size: 22px;}
+.size-24{font-size: 24px;}
+.size-26{font-size: 26px;}
+.size-28{font-size: 28px;}
+
+/* Clase blink para parpadeo */
+.blink {
+  animation: blink-animation 1s steps(5, start) infinite;
+  -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+
+.popover-arrow {
+    display: none;
+}
+
+/* Custom menu icon */
+.custom-menu-icon {
+    background-color: #979797;
+    -webkit-mask: url(../img/icons/custom-menu-icon.svg) no-repeat center;
+    mask: url(../img/icons/custom-menu-icon.svg) no-repeat center;
+}
+
+
+/* Clase listas */
+.list ul:after, .list ul:before {
+    background-color: transparent;
+}
+.lista-menus:before {
+    right: -10px!important;
+    color: var(--f7-theme-color)!important;
+    width: 30px!important;
+    height: 23px!important;
+    border-radius: 15px!important;
+    border: 1px solid lightgrey!important;
+    padding-top: 5px!important;
+    line-height: 18px !important;
+    box-shadow: 2px 2px 5px lightgrey!important;
+    background-color: white;
+    margin-right: -20px;
+    margin-top: -10px!important;
+}
+.lista-mas:before {
+    right: -10px!important;
+    /* color: #9d751b!important; */
+    width: 25px!important;
+    height: 20px!important;
+    border-radius: 15px!important;
+    /* background-color: white; */
+    background-color: rgb(211 211 211 / 20%);
+    margin-right: -22px;
+    margin-top: -10px!important;
+    padding-top: 6px;
+}
+.links-list a:after, .list .item-inner:after, .simple-list li:after {
+    background-color: transparent;
+}
+
+
+/* Color inputs ios */
+.ios .item-input-invalid .item-inner:after {
+     background-color: transparent!important;
+}
+.ios .item-input .item-inner:after {
+     background-color: transparent!important;
+}
+.md .input-invalid:not(.input-outline):after, .md .item-input-invalid:not(.item-input-outline) .item-input-wrap:after {
+    background-color: transparent!important;
+}
+
+.item-input div.item-inner{
+    background-color: lightgray;
+    border-radius: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+}
+
+/* tarjetas */
+.card-header{
+    background-color: var(--f7-theme-color);
+    color:white;
+}
+
+.card-header. icon-radio {
+    border: 1 solid white;
+    
+}
+
+.ios .card-header .radio input[type=radio]:checked~.icon-radio {
+    border-color: (white,white);
+}
+.card .radio input[type=radio]:checked~.icon-radio:after, .card label.item-radio input[type=radio]:checked~* .icon-radio:after, .card label.item-radio input[type=radio]:checked~.icon-radio:after {
+    opacity: 1;
+    border: 1px solid white;
+    border-radius: var(--f7-radio-border-radius);
+}
+
+.card .icon-radio {
+    border: 1px solid white;
+}
+.card .radio input[type=radio].icon-radio, .card label.item-radio input[type=radio] .icon-radio:after, .card label.item-radio input[type=radio] .icon-radio:after {
+    opacity: 1;
+    border: 1px solid white;
+    border-radius: var(--f7-radio-border-radius);
+}
+
+/* clase oculto */
+.oculto {
+    visibility: hidden;
+}
+
+
+/* texto scroll horizontal */
+.marquee {
+    height: 45px;
+    margin-top: -30px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+
+}          
+.marquee DIV {
+    position: absolute;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    margin: 0;
+    /*line-height: 50px;*/
+    text-align: center;
+    -moz-transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+    -moz-animation: scroll-left 10s linear infinite;
+    -webkit-animation: scroll-left 10s linear infinite;
+    animation: scroll-left 8s linear infinite;
+}
+@-moz-keyframes scroll-left {
+    0% {
+        -moz-transform: translateX(100%);
+    }
+    100% {
+        -moz-transform: translateX(-100%);
+    }
+}
+@-webkit-keyframes scroll-left {
+    0% {
+        -webkit-transform: translateX(100%);
+    }
+    100% {
+        -webkit-transform: translateX(-100%);
+    }
+}
+@keyframes scroll-left {
+    0% {
+        -moz-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+    }
+    100% {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+
+}
+
+
+

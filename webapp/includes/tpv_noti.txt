@@ -1,0 +1,6 @@
+Pedido: 361
+Numero: 9VPQR4HK
+importe: 20.00
+ERROR
+Nº: 20239VPQR4HK
+tarjeta: 

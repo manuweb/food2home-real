@@ -1,0 +1,59 @@
+<p align="center">
+    <strong>
+        Esta App/web NO utiliza cookies propias ni de terceros para su
+        funcionamiento o servicio.
+    </strong>
+</p>
+<p align="center">
+    Esta pagina es meramente informativa, y por ello sin ningún requerimiento
+    legal asociado al uso de este tipo de técnicas.
+</p>
+<p>
+    <strong>1. ¿Qué son las cookies?</strong>
+</p>
+<p>
+    Las cookies son pequeños archivos de texto que se descarga en su equipo o
+    dispositivo al acceder a determinadas páginas web y se almacenan en el
+    disco duro o memoria de su equipo o dispositivo. Se utilizan de manera
+    general para permitir el funcionamiento de la página web o app para
+    trabajar con mayor eficacia, así como para ofrecer información de uso
+    general.
+</p>
+<p>
+    Las cookies permiten a una página web o app, entre otras cosas, almacenar y
+    recuperar información sobre los hábitos de navegación de un usuario o de su
+    equipo o dispositivo y, dependiendo de la información que contengan y de la
+    forma en que utilice su equipo o dispositivo, pueden utilizarse para
+    reconocer al usuario. El navegador del usuario memoriza cookies en el disco
+    duro o memoria solamente durante la sesión actual ocupando un espacio de
+    memoria mínimo y no perjudicando al ordenador o dispositivo. Las cookies no
+    contienen ninguna clase de información personal específica, y la mayoría de
+    las mismas se borran del disco duro o memoria al finalizar la sesión de
+    navegador (las denominadas cookies de sesión).
+</p>
+<p>
+    La mayoría de los navegadores aceptan como estándar a las cookies y, con
+    independencia de las mismas, permiten o impiden en los ajustes de seguridad
+    las cookies temporales o memorizadas.
+</p>
+<p>
+    <strong>2. ¿Qué tipos de cookies utiliza esta página web?</strong>
+</p>
+<p>
+    Esta app/web <strong>NO utiliza cookies propias ni de terceros</strong>
+    para su funcionamiento o servicio.
+</p>
+<p>
+    Esta pagina es meramente informativa al respecto, y por ello sin ningún
+    requerimiento legal asociado al uso de este tipo de técnicas.
+</p>
+<p>
+    <strong>3. Gestión de cookies a través de su navegador.</strong>
+</p>
+
+<p>
+    A modo informativo, le informamos que usted puede permitir, bloquear o
+    eliminar las cookies instaladas en su equipo o dispositico mediante la
+    configuración de las opciones del navegador instalado en su ordenador o
+    dispositivo.
+</p>

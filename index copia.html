@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Last-Modified" content="0">
+  <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+      * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+
+    <meta name="theme-color" content="#fff">
+    <meta name="background-color" content="#000000">
+    
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Food2Home</title>
+    <link rel="shortcut icon" sizes="16x16" href="assets/icon-16x16.png">
+    <link rel="shortcut icon" sizes="196x196" href="assets/icon-196x196.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/icon-152x152.png">
+
+    <link rel="stylesheet" href="framework7/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/icons.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="manifest" href="assets/manifest.json">
+  <script src="js/jquery.min.js"></script>  
+
+    
+</head>
+<body>
+    <div id="splash" style="display:none;">
+        <img id="img-splash" src='assets/icon-196x196.png' style="width: 50%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">    
+    </div>
+    
+    <div id="app" style="display:none;">
+        <!-- Views/Tabs container -->
+        <div class="views tabs safe-areas">
+        
+            <!-- Tabbar for switching views-tabs -->
+            <div class="toolbar toolbar-bottom tabbar-icons tabbar-labels no-outline" id="tool-bar">
+                <div style="bottom: -20px;width: 80px;height: 80px;text-align: center;position: absolute; border-radius: 50px;left:50%;margin-left: -50px;border: 10px solid transparent;z-index: 2;" id="tool-bar-menu-icon">
+          <a href="javascript:navegar('#view-catalog');" class="tab-link tab-link-menus" id="tab-catalog" style="padding-top: 14px;">
+              
+              <i class="icon material-icons" id="i-menu">restaurant</i>
+            <span class="tabbar-label" id="boton_menu">Menús</span>
+          
+          </a>
+          </div>
+                <div class="toolbar-inner">
+                    <a href="javascript:navegar('#view-home');" class="tab-link tab-link-active" id="tab-home">
+                        <i class="icon f7-icons" id="i-inicio">house_fill</i>
+                        <span class="tabbar-label" id="span-inicio">Inicio</span>
+                    </a>
+                    <a href="javascript:navegar('#view-usuario');" class="tab-link" id="tab-usuario">
+                        <i class="icon f7-icons"><span class="badge badage-noti-usu" style="display:none;"></span>person_crop_circle</i>
+                        <span class="tabbar-label">Perfil</span>
+                      </a>
+
+                    <a href="javascript:navegar('#view-catalog');" class="tab-link tab-link-menus" id="tab-catalog">
+             
+          </a>
+                    <a href="javascript:navegar('#view-setting');" class="tab-link" id="tab-setting">
+                        <i class="icon f7-icons"><span class="badge badage-noti-nousu" style="display:none;"></span>gear_alt</i>
+                        <span class="tabbar-label">Ajustes</span>
+                    </a> 
+            
+                    <a href="javascript:navegar('#view-carrito');" class="tab-link tab-link-menus" id="tab-carrito">
+                        <i class="icon material-icons i-carrito" d="i-carrito"><span class="badge badage-cart"  style="display:none;"></span>shopping_cart</i>
+                        <span class="tabbar-label">Carrito</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Your main view/tab, should have "view-main" class. It also has "tab-active" class -->
+            <div id="view-home" class="view view-main view-init tab tab-active">
+
+                <!-- Top Navbar -->
+                <div class="navbar no-outline">
+                    <div class="navbar-bg"></div>
+                    <div class="navbar-inner">
+                        <div class="left"></div>
+                        <div class="title">
+                            <img src="img/logo.png" height="40" width="auto"></div>
+                        <div class="right"></div>
+                    </div>
+                </div> 
+                
+                <div class="page" data-name="home">
+                    <div class="page-content">
+                        <div class="block" id='pagina-inicio'>
+                            <p>Cargando inicio </p>
+                            <p><span class="progressbar-infinite"></span></p>
+                        </div>
+                    </div>      
+                </div>
+          
+            </div>
+            <!-- FIN view-main -->
+
+            <!-- USUARIO View -->
+            <div id="view-usuario" class="view view-init tab" data-name="usuario" >  
+                <div class="page" data-name="usuario">    
+            
+                    <!-- Top Navbar -->
+                    <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left" style="height: 44px;width: 44px;">
+                                    <a href="#" id="link-volver-more" style="width: 44px;">
+                                      <i class="icon icon-back" id="icon-back-more" style="display:none;"></i>
+                                    </a>               
+                              </div>
+                          <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                              <div class="right">
+
+                              </div>
+
+                        </div>
+                    </div>
+            
+                    <div class="page-content" id="login-inicio" style="display:none;">  
+
+                        <div class="login-screen-content" id="my-login-screen" style="background: var(--f7-login-screen-content-bg-color) transparent;">
+                            <div class="login-screen-title">Acceso</div>
+                            <div class="list login-screen-content">
+                                <ul>
+                                    <li class="item-content item-input">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Usuario</div>
+                                            <div class="item-input-wrap">
+                                                <input type="text" name="username" placeholder="Email" style="margin-bottom: 6px;"/>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="item-content item-input" >
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Contraseña</div>
+                                            <div class="item-input-wrap">
+                                                <input type="password" name="password" id="campo-clave1" placeholder="Contraseña" style="margin-bottom: 6px;"/>
+                                               <i class="f7-icons size-22 campo-clave1" onclick="muestraOcultaClave('campo-clave1');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
+
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="list">
+                                <ul>
+                                    <li>
+                                        <button class="button button-fill login-button button-round" style="width:50%;margin: auto;">Acceder</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="block-footer text-color-red" id="error-login" style="display:none;">Error en usuario y contraseña</div>
+                            <div class="block-footer"><a href="javascript:RecuperarClave();">¿Olvidó su contraseña?</a><br/>Clic en <b>Acceder</b> para iniciar sesión.<br></div>
+                            <div class="block-footer"><a href="#" id="crear-usuario">No tengo cuenta, crearme una.</a></div>
+                        </div>
+                    </div>   
+
+
+                    <div class="page-content" id="usu-inicio" style="display:none;"> 
+
+                        <div id="user-page" class="block block-strong" style="background-color: transparent;">     
+                            <p class="block-title" id="titulo-usuario" style="font-size:1.2em;">¡Hola <b><span id="nombre-usu"></span></b>!<span style="float: right;"><i class="f7-icons text-color-primary" id="cerrar-sesion">power</i></span></p>     
+                            <br>    
+                            <div id="page-more">
+                            </div>
+                            <div id="page-usu-datos" style="display:none;">
+                                <div class="block-title" style="margin: 0;"> Mi perfil<span style="float: right;font-size:12px;" class="text-color-primary" id="editar-perfil"><i class="f7-icons text-color-primary size-20">pencil</i> editar perfil</span></div>
+                                <br>    
+
+                                <form class="list" id="my-form-usu" style="margin-top:5px;">
+                                <input type="hidden" name="id" />
+                                <ul style="background-color: transparent;">
+                                <li id="id-tratamiento" style="display:none;">
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Tratamiento</div>
+                                <div class="item-input-wrap">
+                                <p>Sr.<label class="radio"><input type="radio" name="tratamiento" value="1" checked/><i class="icon-radio icon-tratamiento"></i></label> Sra.<label class="radio"><input type="radio" name="tratamiento" value="2" /><i class="icon-radio icon-tratamiento"></i></label></p>  
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li>
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Nombre</div>
+                                <div class="item-input-wrap">
+                                <input type="text" name="nombre" placeholder="Nombre" disabled required validate/>
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li>
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Apellidos</div>
+                                <div class="item-input-wrap">
+                                <input type="text" name="apellidos" placeholder="Apellidos" disabled required validate/>
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li>
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Fecha nacimiento</div>
+                                <div class="item-input-wrap">
+                                <input type="text" name="nacimiento1" disabled placeholder="Fecha nacimiento"  id="calendar-nacimiento-user" required />
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li>
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Teléfono</div>
+                                <div class="item-input-wrap">
+                                <input type="text" name="telefono" placeholder="Teléfono" disabled required validate/>
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li>
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Email</div>
+                                <div class="item-input-wrap">
+                                <input type="email" name="email" placeholder="Email" disabled required validate/>
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                                <li id="mi-monedero" style="display:none;">
+                               
+                                    
+                                <div class="item-content item-input">
+                                   
+                                    <div class="item-inner">
+                                      <div class="item-title-row">
+                                        <div class="item-title"><div class="item-header">Mi Monedero</div><span id="importe-mi-monedero"></span></div>
+
+                                      </div>
+                                         <div class="item-after">
+                                             <i class="f7-icons" style="width: 32px;height: auto;margin-top: -32px;">giftcard</i>
+                                      
+                                    </div>
+                                    </div>
+                                  </div>     
+                                </li>
+                                <li id="id-clave1" style="display:none;">
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Contraseña</div>
+                                <div class="item-input-wrap">
+                                <input type="password" name="pass" placeholder="Contraseña" id="campo-clave3"  validate/>
+                                <i class="f7-icons size-22 campo-clave3" onclick="muestraOcultaClave('campo-clave3');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
+                                </div>  
+                                </div>     
+                                </div>
+                                </li>
+                                <li id="id-clave2" style="display:none;">
+                                <div class="item-content item-input">
+                                <div class="item-inner">
+                                <div class="item-title item-label">Contraseña</div>
+                                <div class="item-input-wrap">
+                                <input type="password" name="pass2" placeholder="Contraseña" id="campo-clave4" validate/>
+                                <i class="f7-icons size-22 campo-clave4" onclick="muestraOcultaClave('campo-clave4');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
+                                </div>  
+                                </div>     
+                                </div>
+                                </li>
+                                <li id="id-ofertas" style="display:none;">
+                                <label class="item-checkbox item-content">
+                                <input type="checkbox" name="publi-checkbox" value="1" />
+                                <i class="icon icon-checkbox"></i>
+                                <div class="item-inner">
+                                <div class="item-title" style="font-size:.8em;">Acepto recibir ofertas y publicidad.</div>
+                                </div>
+                                </label>
+                                </li>
+                                <li id="id-politicas" style="display:none;">
+                                <label class="item-checkbox item-content">
+                                <input type="checkbox" name="privacidad-checkbox" value="1" />
+                                <i class="icon icon-checkbox"></i>
+                                <div class="item-inner">
+                                <div class="item-title" style="font-size:.8em;">Acepto la <a href="#" class="link" onclick="leePolitica();">Política de privacidad</a>.</div>
+                                </div>
+                                </label>
+                                </li>
+                                </ul>
+                                </form>
+                                <div class="grid grid-cols-2 grid-gap">
+                                    <div class=""><button style="width:80%;margin:auto;display:none" class="button button-fill button-round text-align-center button secundario-BG" id="cancela-datos-usuario" href="#">Cancelar</button>   </div>     
+                                    <div class=""><button style="width:80%;margin:auto;display:none" class="button button-fill button-round text-align-center" id="guarda-datos-usuario" href="#">Guardar</button>   </div>   
+
+                                </div>    
+                            </div>
+
+                        </div>
+
+                    </div>               
+
+                    <div class="page-content" id="usu-nuevo" style="display:none;">        
+                        <div class="block-title block-title-medium">Registro usuario</div>
+                        <div id="user-page" class="block block-strong" style="background-color: transparent;"> 
+                            <p>¿Ya tienes una cuenta? -> <a href="#" class="link" id="login-usu-existe">Inicie sesión.</a></p>
+                            <form class="list" id="my-form" style="margin-top:5px;">
+                                <ul style="background-color: transparent;">
+                                    <li>
+                                        <div class="item-content item-input">
+                                        <div class="item-inner">
+                                        <div class="item-title item-label">Tratamiento</div>
+                                        <div class="item-input-wrap">
+                                        <p>Sr.<label class="radio"><input type="radio" name="tratamiento" value="1" checked/><i class="icon-radio icon-tratamiento"></i></label> Sra.<label class="radio"><input type="radio" name="tratamiento" value="2" /><i class="icon-radio icon-tratamiento"></i></label></p>  
+                                        </div>
+                                    </div>
+                                    </div>
+                                    </li>
+                                    
+                                 
+
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Nombre</div>
+                                            <div class="item-input-wrap">
+                                                <input type="text" name="nombre" placeholder="Nombre" required validate/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Apellidos</div>
+                                            <div class="item-input-wrap">
+                                                <input type="text" name="apellidos" placeholder="Apellidos" required validate/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Fecha nacimiento</div>
+                                            <div class="item-input-wrap">
+                                                <input type="text" name="nacimiento2" placeholder="Fecha nacimiento" id="calendar-nacimiento-new"  required validate/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Teléfono</div>
+                                            <div class="item-input-wrap">
+                                            <input type="text" name="telefono" placeholder="Teléfono" required validate/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Email</div>
+                                            <div class="item-input-wrap">
+                                                <input type="email" name="email" placeholder="Email" required validate/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content item-input">
+                                    <div class="item-inner item-registro-usuario" style="background-color: lightgray;border-radius: 30px;margin-right: 10px;margin-bottom: 10px;padding-left: 15px;">
+                                        <div class="item-inner">
+                                            <div class="item-title item-label">Contraseña</div>
+                                            <div class="item-input-wrap" style="margin-bottom: -30px;">
+                                                <input type="password" name="pass" placeholder="Contraseña" id="campo-clave2"required validate/>
+                                                <div style="float:right;position: relative;top:-34px;right:10px;;"><i class="f7-icons size-22 campo-clave2" onclick="muestraOcultaClave('campo-clave2');">eye_slash</i></div>
+                                            </div>  
+                                        </div>     
+                                    </div>
+                                </li>
+                                <li>
+                                    <label class="item-checkbox item-content">
+                                        <input type="checkbox" name="publi-checkbox" value="1" />
+                                        <i class="icon icon-checkbox"></i>
+                                        <div class="item-inner">
+                                            <div class="item-title" style="font-size:.8em;">Acepto recibir ofertas y publicidad.</div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="item-checkbox item-content">
+                                        <input type="checkbox" name="privacidad-checkbox" value="1" />
+                                        <i class="icon icon-checkbox"></i>
+                                        <div class="item-inner">
+                                            <div class="item-title" style="font-size:.8em;">Acepto la <a href="#" class="link" id="lee-politica">Política de privacidad</a>.</div>
+                                        </div>
+                                    </label>
+                                </li>
+                                </ul>
+                            </form>
+                            <div class="grid grid-cols-2 grid-gap">
+                                <div class=""><button style="width:80%;margin:auto;" class="button button-fill button-round text-align-center button secundario-BG" id="cancela-datos-usuario-nuevo" href="#">Cancelar</button>   </div>     
+                                <div class=""><button style="width:80%;margin:auto;" class="button button-fill button-round text-align-center" id="crear-nuevo-usuario" href="#">Crear usuario</button>   </div> 
+                            </div>
+                        </div>
+                    </div>      
+
+
+                </div>     
+               
+            </div>   
+            <!-- fin Usuario View -->
+
+            <!-- Catalog View -->
+            <div id="view-catalog" class="view view-init tab" data-name="catalog" data-url="/catalog/">
+                  <div class="page" data-name="catalog">
+
+                        <!-- Top Navbar -->
+                          <div class="navbar">
+                            <div class="navbar-bg"></div>
+                            <div class="navbar-inner">
+                                <div class="left" style="height: 44px;width: 44px;">
+                                    <a href="#" id="link-volver" style="width: 44px;">
+                                      <i class="icon icon-back" id="icon-back" style="display:none;"></i>
+                                    </a>               
+                                </div>
+                                <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                                <div class="right"></div>
+                            </div>
+                              <div class="subnavbar no-hairline" id="buscador-productos">
+                                  <form class="searchbar">
+                                    <div class="searchbar-inner" >
+                                      <div class="searchbar-input-wrap" style="border-radius:15px;">
+                                        <input type="search" placeholder="Buscar producto" style="background-color: rgb(0, 0, 0, .02);color:#C22671"/>
+                                        <i class="searchbar-icon"></i>
+                                        <span class="input-clear-button"></span>
+                                      </div>
+                                      <span class="searchbar-disable-button if-not-aurora">Cancelar</span>
+                                    </div>
+                                  </form>
+                              </div>                       
+
+
+
+                        </div>
+
+                      <div class="page-content" >
+                          <div id="search">
+                              <div class="searchbar-backdrop"></div>
+                              <div class="list searchbar-found" id="lista-productos" style="display:none;">
+
+                              </div>
+                              <div class="block searchbar-not-found" id="no-encontrado">
+                                <div class="block-inner">Producto no encontrado.</div>
+                              </div>
+                          </div>
+
+                        <div class="block" id="catalog-page" >
+                            <p>Cargando productos </p>
+                            <p><span class="progressbar-infinite"></span></p>
+                        </div>       
+                        <div id="buy-page" class="block block-strong" style="display:none;margin-top: -30px;"> 
+                            <p><b>Checkout</b></p><hr>
+                            <div class="row" style="align-items: center;">
+                                <div class="col-100 medium-66" style="border-style: solid;border-width: 1px;padding: 5px;">
+                                <div class="list accordion-list">
+                                    <ul>
+                                        <li class="accordion-item item1">
+                                            <a class="item-content item-link" href="#">
+                                                <div class="item-inner"><div class="item-title"><span id="tit-item1">1 Datos personales</span></div></div>
+                                            </a>
+                                            <div class="accordion-item-content">
+                                                <div class="block" id="1-dat-person">
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="accordion-item item2">
+                                            <a class="item-content item-link" href="#">
+                                                <div class="item-inner"><div class="item-title"><span id="tit-item2">2 Método envío</span></div></div>
+                                            </a>
+                                            <div class="accordion-item-content">
+                                                <div class="block" id="2-met-envio">
+                                                </div>
+                                            </div>
+                                        </li>       
+                                        <li class="accordion-item item3">
+                                            <a class="item-content item-link" href="#">
+                                                <div class="item-inner"><div class="item-title"><span id="tit-item3">3 Dirección envío</span></div></div>
+                                            </a>
+                                            <div class="accordion-item-content">
+                                                <div class="block" id="3-dir-envio">
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="accordion-item item4">
+                                            <a class="item-content item-link" href="#">
+                                                <div class="item-inner"><div class="item-title"><span id="tit-item4">4 Datos pago</span></div></div>
+                                            </a>
+                                            <div class="accordion-item-content">
+                                                <div class="block" id="4-dat-pago">
+
+                                                </div>
+
+                                            </div>
+                                        </li>      
+                                    </ul>
+                                </div>
+                                <div class="row" id="finalizar-compra" style="display:none;"><button onclick="terminarcompra();" class="col-60 button button-fill" style="margin:auto;">Finalizar</button></div>
+
+                                </div>              
+                                <div class="col-100 medium-33" style="border-style: solid;border-width: 1px;padding: 5px;"><div id="buy-cart"></div></div>
+                            </div>
+                        </div>
+
+                      </div>       
+
+                  </div> 
+            </div>
+            <!-- FIN Catalog View -->
+
+            <!-- Setting View -->
+            <div id="view-setting" class="view view-init tab" data-name="setting" data-url="/setting/">
+                <div class="page" data-name="setting">
+                    <!-- Top Navbar -->
+                    <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left"></div>
+                            <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                            <div class="right"></div>
+                        </div>
+                    </div>
+                    <div class="page-content" >
+                        <div class="block" id="setting-page">
+                            <div class="block-title font-size-14">Ajustes</div>
+
+                            <div class="list">
+                                <ul>
+                                  <li>
+                                    <a href="javascript:muestranosotros();" class=" item-link item-content text-color-primary">
+                                      <div class="item-media"><i class="icon f7-icons">info_circle</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title">Sobre nosotros</div>
+                                      </div>
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href="#" class=" item-link item-content text-color-primary" onclick="leetexto('Aviso Legal','avisolegal.txt');">
+                                      <div class="item-media"><i class="icon material-icons">policy</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title">Aviso Legal</div>
+                                      </div>
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href="#" class=" item-link item-content text-color-primary" onclick="leetexto('Política de Privacidad','privacidad.txt');">
+                                      <div class="item-media"><i class="icon material-icons">security</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title">Política de privacidad</div>
+                                      </div>
+                                    </a>
+                                  </li> 
+                                  <li>
+                                    <a href="#" class=" item-link item-content text-color-primary" onclick="leetexto('Política de cookies','cookies.txt');">
+                                      <div class="item-media"><i class="icon material-icons">cookie</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title">Política de cookies</div>
+                                      </div>
+                                    </a>
+                                  </li>
+                                <li>
+                                    <a href="#" class="item-link item-content text-color-primary" onclick="contactar();">
+                                      <div class="item-media"><i class="icon f7-icons">envelope</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title">Contactar</div>
+                                      </div>
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <div class="item-content text-color-primary">
+                                      <div class="item-media" onclick="mirapushnouser();"><i class="icon f7-icons"><span class="badge badage-noti-nousu" style="display:none;"></span>bell</i></div>
+                                      <div class="item-inner">
+                                        <div class="item-title" onclick="mirapushnouser();">Notificaciones</div>
+                                        <div class="item-after">
+                                          <label class="toggle toggle-init">
+                                            <input type="checkbox" id="push-status"/>
+                                            <span class="toggle-icon"></span>
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                            </div>      
+
+                            <div style="font-size: 12px;">Versión app: <span id='version-app' style="color: var(--f7-theme-color);"></span></div>
+                        </div>
+
+                      </div>
+                </div>
+            </div>
+            <!-- FIN setting View -->     
+ 
+            <!-- Carrito View -->
+            <div id="view-carrito" class="view view-init tab" data-name="carrito">
+                <div class="page" data-name="fake">
+                    <!-- Top Navbar -->
+                    <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left"></div>
+                            <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                            <div class="right"></div>
+                        </div>
+                    </div>
+                    <div class="page-content" class>
+                        <div class="block" id="carrito-page" >
+                            <div class="block-title block-title-medium"> Tu pedido</div>
+                        </div>
+                    </div> 
+                </div>
+            </div>          
+            <!-- Carrito View -->    
+    
+            <!-- nosotros View -->
+            <div id="view-nosotros" class="view view-init tab" data-name="nosotros" >
+                <div class="page">
+                    <!-- Top Navbar -->
+                    <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left">
+                                <a href="javascript:navegar('#view-setting');" >
+                                    <i class="icon icon-back" id="icon-back"></i>
+                                </a>               
+                            </div>
+                            <div class="title">
+                                <img src="img/logo.png" height="40" width="auto"></div>
+                            <div class="right"></div>
+                        </div>
+                    </div>
+                    <div class="page-content" >
+                        <div class="block" id="nosotros-page">
+                            <p>Sobre nosotros </p>
+                            <p><span class="progressbar-infinite"></span></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>          
+            <!-- nosotros View -->  
+
+                   
+            <!-- producto View -->
+              <div id="view-producto" class="view view-init tab" data-name="producto" >
+
+                    <div class="page" data-name="producto">
+                      <!-- Top Navbar -->
+                        <div class="navbar">
+                            <div class="navbar-bg"></div>
+                            <div class="navbar-inner">
+                                 <div class="left" style="height: 44px;width: 44px;">
+                                        <a href="#" id="link-volver-producto" style="width: 44px;">
+                                          <i class="icon icon-back"></i>
+                                        </a>               
+                                </div>
+                                <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                                <div class="right">
+
+                                  </div>
+
+                            </div>
+                        </div>  
+
+
+                        <div class="page-content" id="pagina-producto">
+
+
+                        </div>
+
+
+                      </div>
+                    </div>          
+            <!-- producto View -->  
+     
+               <!-- CheckOut View -->
+              <div id="view-checkout" class="view view-init tab" data-name="checkout">
+                <div class="page" data-name="checkout">
+                    <!-- Top Navbar -->
+                      <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left" style="height: 44px;width: 44px;">
+                                    <a href="#" id="link-volver-checkout" style="width: 44px;">
+                                      <i class="icon icon-back" id="icon-back-checkout" style="display:none;"></i>
+                                    </a>               
+                              </div>
+                          <div class="title"><img src="img/logo.png" height="40" width="auto"></div>
+                              <div class="right">
+
+                              </div>
+
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="block-title block-title-medium"> Checkout</div>
+                        <div class="block" id="checkout-page" >
+                        </div>
+
+                    </div> 
+                </div>
+              </div>          
+              <!-- CheckOut View -->
+
+              <!-- TPV View -->
+              <div id="view-tpv" class="view view-init tab" data-name="tpv" >
+                <div class="page" data-name="tpv">
+                    <!-- Top Navbar -->
+                      <div class="navbar">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+
+
+                            <div class="left" >
+
+                            </div>
+                            <div class="title"><img src="img/logo.png" height="30" width="auto"></div>
+
+                            <div class="right">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="page-content" id='content-tpv'>
+                        <div id="tpv-page" class="block block-strong" style="margin-top: 0;margin-bottom: 0;"> <div id='reloj-tpv' class="block-title" style="font-size: 20px;text-align: center;">Tiene <span id="countdown-tpv">0</span> para finalizar el pedido</div>  
+                            <iframe src="" width="100%" height="100%" style="border:0" id="iframe_tpv" name="iframe_tpv" style="position: absolute;top:0;left: 0;"> </iframe>
+                        </div>
+
+                    </div>
+                </div>
+              </div>          
+              <!-- Fin TPV View -->         
+          
+            <!-- fake View -->
+              <div id="view-fake" class="view view-init tab" data-name="fake">
+                <div class="page" data-name="fake">
+                    <div class="page-content" >
+                        <div id="map" style="height: 300px;"></div>    
+                    </div> 
+                </div>
+              </div>          
+            <!-- fake View --> 
+            
+            
+        </div>
+        <!-- FIN Views/Tabs container -->
+        
+        <div id="cookie-first" style="background-color: rgba(0,0,0,0.8);color:#fff;position:absolute;left:0;right: 0;bottom:0;z-index:9999;display:none;height: 60px;padding: 10px;"></div>       
+      
+        <div class="popup" id="cookie-saber"></div>
+      
+        <div class="popover popover-cart" style="background-color: white;color:var(--f7-color-primary);bottom: 50px;right: 15px;width: 175px;font-size: 16px;text-align: center;">
+            <div class="popover-inner">
+                <p class="blink">Producto añadido</p>
+            </div>
+      </div>
+
+    </div>
+    <!-- FIN app -->
+
+    
+
+
+
+    <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
+
+
+
+    <!-- Framework7 library -->
+    <script src="framework7/framework7-bundle.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-messaging.js"></script>
+    <script>
+
+        if('serviceWorker' in navigator){
+            window.addEventListener('load',()=>{
+                navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            });
+        }
+
+    </script>
+    <script>
+        var scriptsjs = [
+            "js/cnfg.min.js?" + Math.random(),
+            "js/app.min.js?" + Math.random(),
+            "js/masdatos.min.js?" + Math.random(),
+            "js/usuario.min.js?" + Math.random(),
+            "js/contacto.min.js?" + Math.random(),
+            "js/push.min.js?" + Math.random(),
+            "js/tienda.min.js?" + Math.random(),
+            "js/carrito.min.js?" + Math.random(),
+            "js/comprar-menus.min.js?" + Math.random(),
+            "js/comprar.min.js?" + Math.random()
+        ];
+        for (j=0;j<scriptsjs.length;j++){
+            document.write('<script src="'+scriptsjs[j]+'"><\/script>');
+        }
+        
+    </script>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&callback=initMap&libraries=geometry&v=weekly" async></script>
+    
+    <!--   
+    <script src="js/tarjetas.min.js"></script>
+    -->
+</body>
+</html>
