@@ -16,7 +16,7 @@ $checking=false;
 
 
 
-$sql="UPDATE estilo SET modooscuro='".$array['oscuro']."', primario='".$array['primario']."', secundario='".$array['secundario']."', boton_inicio_texto='".$array['texto_boton_inicio']."', boton_menu_texto='".$array['texto_boton_menu']."', boton_carrito_texto='".$array['texto_boton_carrito']."', estilo_boton_inicio='".$array['tipo_boton_inicio']."', estilo_boton_menu='".$array['tipo_boton_menu']."', tam_boton_menu='".$array['tam_boton_menu']."', estilo_boton_carrito='".$array['tipo_boton_carrito']."', breadcrumbs='".$array['breadcrumbs']."' WHERE id=1";
+$sql="UPDATE estilo SET modooscuro='".$array['oscuro']."', primario='".$array['primario']."', secundario='".$array['secundario']."', boton_inicio_texto='".$array['texto_boton_inicio']."', boton_menu_texto='".$array['texto_boton_menu']."', boton_carrito_texto='".$array['texto_boton_carrito']."', estilo_boton_inicio='".$array['tipo_boton_inicio']."', estilo_boton_menu='".$array['tipo_boton_menu']."', tam_boton_menu='".$array['tam_boton_menu']."', estilo_boton_carrito='".$array['tipo_boton_carrito']."', breadcrumbs='".$array['breadcrumbs']."', estilo_app='".$array['estilo_app']."' WHERE id=1";
 
 
 $database = DataBase::getInstance();

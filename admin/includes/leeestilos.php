@@ -14,7 +14,7 @@ $checking=false;
 
 
 
-$sql="SELECT modooscuro, primario,secundario, boton_inicio_texto, boton_menu_texto, boton_carrito_texto, estilo_boton_inicio, estilo_boton_menu, tam_boton_menu, estilo_boton_carrito, breadcrumbs FROM estilo WHERE id=1";
+$sql="SELECT modooscuro, primario,secundario, boton_inicio_texto, boton_menu_texto, boton_carrito_texto, estilo_boton_inicio, estilo_boton_menu, tam_boton_menu, estilo_boton_carrito, breadcrumbs, estilo_app FROM estilo WHERE id=1";
 
 
 $database = DataBase::getInstance();
@@ -35,11 +35,12 @@ if ($result) {
     $tam_boton_menu = $row->tam_boton_menu;
     $estilo_boton_carrito = $row->estilo_boton_carrito;
     $breadcrumbs = $row->breadcrumbs;
+    $estilo_app = $row->estilo_app;
     $checking=true;
 }
 $database->freeResults();
 
-$json=array("valid"=>$checking,"modooscuro"=>$oscuro,"primario"=>$primario,"secundario"=>$secundario,"boton_inicio"=>$boton_inicio,"boton_menu"=>$boton_menu,"boton_carrito"=>$boton_carrito,"estilo_boton_inicio"=>$estilo_boton_inicio,"estilo_boton_menu"=>$estilo_boton_menu,"tam_boton_menu"=>$tam_boton_menu,"estilo_boton_carrito"=>$estilo_boton_carrito,"breadcrumbs"=>$breadcrumbs);
+$json=array("valid"=>$checking,"modooscuro"=>$oscuro,"primario"=>$primario,"secundario"=>$secundario,"boton_inicio"=>$boton_inicio,"boton_menu"=>$boton_menu,"boton_carrito"=>$boton_carrito,"estilo_boton_inicio"=>$estilo_boton_inicio,"estilo_boton_menu"=>$estilo_boton_menu,"tam_boton_menu"=>$tam_boton_menu,"estilo_boton_carrito"=>$estilo_boton_carrito,"breadcrumbs"=>$breadcrumbs,"estilo_app"=>$estilo_app);
 
 echo json_encode($json);    
 
