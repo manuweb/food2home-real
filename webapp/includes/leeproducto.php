@@ -54,6 +54,7 @@ $array['isapp']='false';
 
 $checking=false;
 $texto="";
+/*
 $texto.=
 '<div class="navbar" style="position:fixed;">
     <div class="navbar-inner">
@@ -70,6 +71,7 @@ $texto.=
           </div>
     </div>
 </div>';
+*/
 /*
 $texto.='<div style="background: rgba(255,255,255,1);
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 55%, rgba(247,247,247,1) 76%, rgba(237,237,237,1) 100%);
@@ -302,8 +304,25 @@ if (count($grupo)>0) {
         //die();
     }
     
-    $texto.='<div class="block" id="bloque-producto" style="margin-bottom:10px;padding-top:10px;" >
-    <img src="'.$imagen.'" width="100%" height="auto" id="img-prod"><br>
+    
+    $texto='<div id="img-producto"><img src="'.$imagen.'" width="100%" height="auto" id="img-prod"></div>';
+    /*
+    $texto.=
+'<div class="navbar" style="position:fixed;background-color: rgba(255, 255, 255, 0.3);">
+    <div class="navbar-inner">
+      <div class="left"  onclick="javascript:app.tab.show(\'#view-catalog\');muestraproductos(\''.$array['idgrupo'].'\',\''.$array['nombregrupo'].'\',\''.$array['idcategoria'].'\',\''.$array['nombrecategoria'].'\');">
+              <i class="icon icon-back color-white"></i>
+                          
+        </div>
+        <div class="title"><img src="img/logo-white.png" height="40" width="auto"></div>
+          <div class="right">
+                              
+          </div>
+    </div>
+</div>';
+*/
+    $texto.='<div class="block" id="bloque-producto" style="margin-bottom:10px;margin-top:-20px;" >
+    <br>
                     
     <p><span style="font-size:20px;">'.$nombre.' </span><span style="float:right;font-size:20px;font-weight: bold;">'.$decimales[0].'<span style="font-size:16px">,'.$decimales[1].'</span> €</span></p>
     <p style="font-size:16px;font-weight: bold;color:var(--primario);">Descripción</p>
@@ -345,7 +364,7 @@ if (count($grupo)>0) {
         //$texto.='<form id="from-producto-menu">'; 
         $texto.=llenaOpcionesMenu($array['id'],$nombre,$colorprimario);
         //$texto.='</from><br></div></div>';
-        $texto.='<br></div></div></from>';
+        $texto.='<br></div></from></div>';
     }
     else {
         if($modifi=='0'){
@@ -411,8 +430,8 @@ $texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;fo
 
         $steep_no_visible='display:none;';
     }
-    $txt_cantidad='<div class="block" style="margin-top:5px;margin-bottom:5px;'.$steep_no_visible.'" id="stepper-producto">
-                <div class="" style="display: flex;">
+    $txt_cantidad='<div class="block" style="margin-top:5px;margin-bottom:-8px;'.$steep_no_visible.'" id="stepper-producto">
+                <div class="" style="display: flex;margin-top: 10px;">
                     <div class="" style="font-size:16px;font-weight: bold;width: 60%;">Número de unidades
                     </div>
                     <div class="" style="width: 40%;text-align: right;">
@@ -436,10 +455,10 @@ $texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;fo
         $class_forsoso='disabled ';
     }
     $txt_add='
-          <div class="button button-outline button-round '.$class_forsoso.'" id="add-to-cart"  data-id="'.$array['id'].'"data-nombre="'.$nombre.'" data-precio="'.$precio.'" data-sin="'.$precio.'" data-iva="'.$impuesto.'" data-img="'.$imagen.'" onclick="addCarritodesdeproducto(this);" style="width: 95%; margin: auto;display: block;height: 40px;line-height: 35px;"><span style="float:left;">Añadir al pedido</span> <span id="precio-producto" style="font-size:22px;font-weight: bold;float:right;">'.$precio.' €</span><span ></span></div>
+          <div class="button button-outline button-round '.$class_forsoso.'" id="add-to-cart"  data-id="'.$array['id'].'"data-nombre="'.$nombre.'" data-precio="'.$precio.'" data-sin="'.$precio.'" data-iva="'.$impuesto.'" data-img="'.$imagen.'" onclick="addCarritodesdeproducto(this);" style="width: 95%; margin: auto;display: block;height: 40px;line-height: 35px;margin-top: 12px;"><span style="float:left;">Añadir al pedido</span> <span id="precio-producto" style="font-size:22px;font-weight: bold;float:right;">'.$precio.' €</span><span ></span></div>
         ';
-    $texto.='<br><br><div class="block-outline" style="position: fixed;bottom: 0;z-index: 5;
-    padding-bottom: 25px;background-color:rgba(255, 255, 255, 0.8);; width:100%;">'.$txt_cantidad.$txt_add.'</div>';
+    $texto.='<div class="block-outline" style="position: fixed;bottom: 0;z-index: 5;
+    padding-bottom: 15px;background-color:rgba(255, 255, 255, 1); width:100%;">'.$txt_cantidad.$txt_add.'</div>';
 
 }	
 
