@@ -40,6 +40,22 @@ else {
 }
 $checking=false;
 
+$sql="SELECT estilo_app FROM estilo WHERE id=1";
+
+
+$database = DataBase::getInstance();
+$database->setQuery($sql);
+$result = $database->execute();
+
+// Verificar si se obtuvieron resultados
+if ($result) {    
+    $row = $database->loadObject(); 
+    $estilo_app = $row->estilo_app;
+    $checking=true;
+}
+$database->freeResults();
+
+
 $tex_prev='<div style="background:'.$array['colorprimario'].' ;width:126px;height:34px;border-radius: 0 34px 0 0;margin-left: -16px;" ></div>';
 
 $tex_last='<div style="background:'.$array['colorprimario'].' ;width:126px;height:34px;border-radius: 0 0 34px 0;margin-left: -16px;margin-top: -1px;" ></div>';
@@ -48,6 +64,7 @@ $tex_last='<div style="background:'.$array['colorprimario'].' ;width:126px;heigh
 $tex_ant='<div class="list media-list no-hairlines-between" style="margin-top:0;margin-bottom:0;margin-left: -16px;">'.'<ul style="margin-top: -5px;">';
 $tex_pos=' </ul>'.'</div>';
 $tex_div='<div style="background: '.$array['colorprimario'].';width:126px;height:30px;margin-left: -16px;margin-top: -1px;" ></div>';
+
 
 
 $sql="select g.id, g.nombre, g.imagen, g.imagen_app, c.total FROM categorias g LEFT JOIN (SELECT categoria, COUNT(*) as 'total' FROM productos  WHERE ".$isApp."=1 AND tienda=".$array['tienda']." GROUP BY categoria) c on g.id = c.categoria WHERE g.grupo='".$array['grupo']."' AND g.".$isApp."=1 AND g.tienda=".$array['tienda']." ORDER BY g.orden;";
@@ -64,15 +81,17 @@ $result = $database->execute();
 if ($result->num_rows>0) {
     $checking=true;
     $texto='';
-    $texto.='<div class="grid grid-cols-2 medium-grid-cols-3 grid-gap">';
+    if ($estilo_app==1) {
+        $texto.='<div class="grid grid-cols-2 medium-grid-cols-3 grid-gap">';
+    }
     $x=0;
     $tot=$result->num_rows;
     while ($grupos = $result->fetch_object()) {
         $id[$x]=$grupos->id;
         $nombre[$x]=$grupos->nombre;
-        
-        //$texto.=$tex_ant.'<li style="background: linear-gradient(to right, '.$array['colorprimario'].' 126px, transparent 0);" >'.'<a href="javascript:muestraproductos(\''.$array['grupo'].'\',\''.$array['nombregrupo'].'\',\''.$grupos->id.'\',\''.$grupos->nombre.'\');" class="item-link item-content" style="margin-left: -16px;">';
-
+        if ($estilo_app==0) {
+            $texto.=$tex_ant.'<li style="background: linear-gradient(to right, '.$array['colorprimario'].' 126px, transparent 0);" >'.'<a href="javascript:muestraproductos(\''.$array['grupo'].'\',\''.$array['nombregrupo'].'\',\''.$grupos->id.'\',\''.$grupos->nombre.'\');" class="item-link item-content" style="margin-left: -16px;">';
+        }
         if ($grupos->imagen!=''){
             $imagen[$x]=IMGREVO.$grupos->imagen;
         }
@@ -83,36 +102,51 @@ if ($result->num_rows>0) {
         $imagen_app[$x]=$grupos->imagen_app;
         
         if ($grupos->imagen_app==""){
-            if ($grupos->imagen!=""){
-                $img_a_usar=IMGREVO.$grupos->imagen;
-                //$texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGREVO.$grupos->imagen.'" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
-            }
-            else {
-                $img_a_usar=IMGREVO.'no-imagen.jpg';
-                //$texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGREVO.'no-imagen.jpg" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
-            }
+             if ($estilo_app==0) {
+                if ($grupos->imagen!=""){
+                    $img_a_usar=IMGREVO.$grupos->imagen;
+
+                    $texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGREVO.$grupos->imagen.'" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
+                }
+                else {
+                    $img_a_usar=IMGREVO.'no-imagen.jpg';
+                    $texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGREVO.'no-imagen.jpg" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
+                }
+             }
             
         }
         else {
             $img_a_usar=IMGAPP.$grupos->imagen_app;
-            //$texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGAPP.$grupos->imagen_app.'" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
+            if ($estilo_app==0) {
+                $texto.='<div class="item-media" style="z-index:+1;"><img src="'.IMGAPP.$grupos->imagen_app.'" width="88" height="88" style="border-radius:44px;margin-left: 16px;" /></div>';
+            }
         }
         
         $total[$x]=$grupos->total;
-        
-        //$texto.='<div class="item-inner" style="background-color: white;border-radius: 44px 15px 15px 44px;margin-left: -34px;margin-right: 20px;padding-left: 70px;padding-top: 25px;box-shadow: 0 0 6px 1px lightgrey;margin-top: 8px;margin-bottom: 8px;">'.' <div class="item-title-row lista-menus">'.'<div class="item-title" style="font-size:22px;top:0;">'.ucfirst(strtolower($grupos->nombre)).'</div>'.'</div>'.'<div class="item-subtitle" style="color:lightgray;top:-5px;">('.$grupos->total.' productos)</div>'.'</div>'.'</a>'.' </li>'.$tex_pos;
-        if ($x<($tot-1)){
-            //$texto.=$tex_div;
+        if ($estilo_app==0) {
+            $texto.='<div class="item-inner" style="background-color: white;border-radius: 44px 15px 15px 44px;margin-left: -34px;margin-right: 20px;padding-left: 70px;padding-top: 25px;box-shadow: 0 0 6px 1px lightgrey;margin-top: 8px;margin-bottom: 8px;">'.' <div class="item-title-row lista-menus">'.'<div class="item-title" style="font-size:22px;top:0;">'.ucfirst(strtolower($grupos->nombre)).'</div>'.'</div>'.'<div class="item-subtitle" style="color:lightgray;top:-5px;">('.$grupos->total.' productos)</div>'.'</div>'.'</a>'.' </li>'.$tex_pos;
         }
-        
-        $texto.='<div class="text-align-center">';
-        $texto.='<div style="position: relative;display: inline-block;margin-bottom: 10px;" onclick="javascript:muestraproductos(\''.$array['grupo'].'\',\''.$array['nombregrupo'].'\',\''.$grupos->id.'\',\''.$grupos->nombre.'\');"><img src="'.$img_a_usar.'" width="100%" height="auto" class="imagen imagen-producto-lista"><div class="item-title" style="font-size:22px;text-align:center;">'.ucfirst(strtolower($grupos->nombre)).'</div>'.'<div class="item-subtitle" style="color:lightgray;top:-5px;text-align:center;">('.$grupos->total.' productos)</div>'.'</div>';                  
-        
-        $texto.='</div>';
+        if ($x<($tot-1)){
+            if ($estilo_app==0) {
+                $texto.=$tex_div;
+            }
+        }
+        if ($estilo_app==1) {
+            $texto.='<div class="text-align-center">';
+            $texto.='<div style="position: relative;display: inline-block;margin-bottom: 10px;" onclick="javascript:muestraproductos(\''.$array['grupo'].'\',\''.$array['nombregrupo'].'\',\''.$grupos->id.'\',\''.$grupos->nombre.'\');"><img src="'.$img_a_usar.'" width="100%" height="auto" class="imagen imagen-producto-lista"><div class="item-title" style="font-size:22px;text-align:center;">'.ucfirst(strtolower($grupos->nombre)).'</div>'.'<div class="item-subtitle" style="color:lightgray;top:-5px;text-align:center;">('.$grupos->total.' productos)</div>'.'</div>';                  
+
+            $texto.='</div>';
+        }
         $x++;
     }
-   $texto.='</div>';
-    //$texto=$tex_prev.$texto.$tex_last;
+    if ($estilo_app==0) {
+        $texto=$tex_prev.$texto.$tex_last;
+    }
+    else {
+        $texto.='</div>';
+    }
+   
+    
 }
 
 $database->freeResults(); 
