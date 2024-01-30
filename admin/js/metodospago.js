@@ -195,7 +195,7 @@ function editametodo(id,nombre, activo,idrevo,esRedsys){
                 '</div>'+
                 '</form>'+
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
-                    '<div class=""><a class="button button-fill popup-close"" href="#">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill" data-id="'+id+'" onclick="guardametodo(this);" href="#">Guardar</a</div>'+
                 '</div>'+
          

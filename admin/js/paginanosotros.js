@@ -3,7 +3,7 @@ paginanosotros(); // borrar
 var textEditor;
 function paginanosotros() {
 $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Página Nosotros<span id="button-guardar-nosotros" class="button button-fill float-right" style="display:none;">Guardar</span>');
-    
+   
 
     //var txt='<ul id="noso">';
     var server=servidor+'admin/includes/leenosotros.php';  
@@ -24,7 +24,7 @@ $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" cla
                 var chk_web="";
                 var chk_app="";
                 var tip="";
-                var txt='<div class="grid grid-cols-6"><div style="width: 40%;"><b>Nombre</b></div><div style="width: 10%;"><b>Web</b></div><div style="width: 10%;"><b>App</b></div><div style="width: 15%;"><b>Tipo</b></div><div style="width: 10%;"><b>Editar</b></div><div style="width: 10%;"><b>Borrar</b></div></div>';
+                var txt='<div class="grid grid-cols-5"><div style="width: 40%;"><b>Nombre</b></div><div style="width: 10%;"><b>Web/App</b></div><div style="width: 15%;"><b>Tipo</b></div><div style="width: 10%;"><b>Editar</b></div><div style="width: 10%;"><b>Borrar</b></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable-enabled" id="lista-nosotros">'+
                     '<ul id="noso">';
                 for (x=0;x<id.length;x++){
@@ -56,7 +56,7 @@ $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" cla
                                 '<div class="grid grid-cols-6 grid-gap item-title" style="width:100%;">'+
                                     '<div class="col-40">'+nombre[x]+'</div>'+
                                     '<div class="col-10"><label class="checkbox"><input type="checkbox" name="activo_web_'+id[x]+'" data-id="'+id[x]+'" '+chk_web+' onclick="cambiaInicioActivoWeb(this);"/><i class="icon-checkbox"></i></label></div>'+
-                                    '<div class="col-10"><label class="checkbox"><input type="checkbox" name="activo_app_'+id[x]+'" data-id="'+id[x]+'" '+chk_app+' onclick="cambiaInicioActivoApp(this);"/><i class="icon-checkbox"></i></label></div>'+
+                                    //'<div class="col-10"><label class="checkbox"><input type="checkbox" name="activo_app_'+id[x]+'" data-id="'+id[x]+'" '+chk_app+' onclick="cambiaInicioActivoApp(this);"/><i class="icon-checkbox"></i></label></div>'+
                                     '<div class="col-15">'+tip+'</div>'+
                                     '<div class="col-10" onclick="editanosotros(\''+id[x]+'\',\''+nombre[x]+'\',\''+tipo[x]+'\');"><i class="f7-icons" >pencil</i></div>'+
                                     '<div class="col-10" onclick="borranosotros(\''+id[x]+'\',\''+nombre[x]+'\',\''+tipo[x]+'\');"><i class="f7-icons" >trash</i></div>'+
@@ -141,7 +141,7 @@ function cambiaNosotrosActivoWeb(e) {
             //app.dialog.close();
             var obj=Object(data);
             if (obj.valid==true){  
-                document.getElementById('safari_window').contentWindow.location.reload();   
+                //document.getElementById('safari_window').contentWindow.location.reload();   
             }
             else{
                 app.dialog.alert('No se pudo cambiar');

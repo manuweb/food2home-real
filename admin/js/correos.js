@@ -116,7 +116,7 @@ function correoAjustes() {
             '</ul>'+
             '</form>'+
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
-                    '<div class=""><a class="button button-fill popup-close"" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill save-data" href="#" onclick="guardadatoscorreo();">Guardar</a</div>'+
                 '</div>';
 
@@ -214,7 +214,7 @@ function correoBienvenida() {
                     '</div>'+
                       
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
-                    '<div class=""><a class="button button-fill popup-close"" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill save-data" href="#" onclick="guardatextocorreo(\'bienvenida\',\'correoBienvenida\');">Guardar</a</div>'+
                 '</div>';
 
@@ -332,7 +332,7 @@ function correoBirday() {
                         '<div class="text-editor-content" contenteditable style="border: solid 1px lightgrey;padding-left: 10px;padding-right: 10px;">'+textomail+'</div>'+
                     '</div>'+
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
-                    '<div class=""><a class="button button-fill popup-close"" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill save-data" href="#" onclick="guardatextocorreo(\'cumple\',\'correoBirday\');">Guardar</a</div>'+
                 '</div>';
                       
@@ -631,7 +631,7 @@ function editaCampaign(id=0,nombre='Nueva'){
                 '</div>'+         
             '</form>';
     txt+='<div class="grid grid-cols-3 grid-gap">'+
-            '<div class=""><a class="button button-fill" href="#" onclick="correoCampaign();">Cancelar</a></div>'+
+            '<div class=""><a class="button button-fill button-cancelar" href="#" onclick="correoCampaign();">Cancelar</a></div>'+
             '<div class=""><a class="button button-fill" href="#" onclick="probarcampaign();">Probar</a></div>'+
             '<div class=""><a class="button button-fill" href="#" onclick="guardacampaign();">Guardar</a></div>'+
         '</div>';

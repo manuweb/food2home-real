@@ -90,6 +90,11 @@ function leeestilos(){
                         $(this).prop('checked',true);
                     }
                 });
+                $('input[name=tipo-diseno]').each(function() {
+                    if ($(this).val()==obj.estilo_app){
+                        $(this).prop('checked',true);
+                    }
+                });
                 
                 if (obj.tam_boton_menu==1){
                     $('#i-menu').css('font-size','28px');
@@ -289,6 +294,8 @@ $('.guardar-estilos').on( "click", function() {
     var tipo_boton_inicio=$('input[name=tipo-boton-inicio]:checked').val();
     var tipo_boton_menu=$('input[name=tipo-boton-menu]:checked').val();
     var tipo_boton_carrito=$('input[name=tipo-boton-carrito]:checked').val();
+    
+    var estilo_app=$('input[name=tipo-diseno]:checked').val();
     var tam_boton_menu=$('input[name=tam-boton-menu]:checked').val();
     var primario=$("#color-picker-primario").val();
     var secundario=$("#color-picker-secundario").val();
@@ -306,7 +313,7 @@ $('.guardar-estilos').on( "click", function() {
         type: "POST",
         url: server,
         dataType:"json",
-        data:{oscuro:oscuro,primario:primario,secundario:secundario,texto_boton_inicio:texto_boton_inicio,texto_boton_menu:texto_boton_menu,texto_boton_carrito:texto_boton_carrito,tipo_boton_inicio:tipo_boton_inicio,tipo_boton_menu:tipo_boton_menu,tipo_boton_carrito:tipo_boton_carrito,tam_boton_menu:tam_boton_menu,breadcrumbs:breadcrumbs},
+        data:{oscuro:oscuro,primario:primario,secundario:secundario,texto_boton_inicio:texto_boton_inicio,texto_boton_menu:texto_boton_menu,texto_boton_carrito:texto_boton_carrito,tipo_boton_inicio:tipo_boton_inicio,tipo_boton_menu:tipo_boton_menu,tipo_boton_carrito:tipo_boton_carrito,tam_boton_menu:tam_boton_menu,breadcrumbs:breadcrumbs, estilo_app:estilo_app},
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){

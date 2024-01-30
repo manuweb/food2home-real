@@ -517,7 +517,7 @@ function editazona(id) {
                             
                 '</form>'+
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
-                    '<div class=""><a class="button button-fill popup-close"" href="#">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill save-data" href="#">Guardar</a</div>'+
                 '</div>'+
          
