@@ -1815,8 +1815,8 @@ include "../webapp/MySQL/DataBase.class.php";
                         
   
                         <div id="clientes-page" class="block">
-                            <div class="grid small-grid-cols-2 xsmall-grid-cols-1">
-                                <div class="list block block-strong inset" style="margin-top: 0;margin-bottom: 0;">
+                            <div class="grid small-grid-cols-3 xsmall-grid-cols-1">
+                                <div class="list block block-strong inset" style="margin-top: 15px;margin-bottom: 0;">
                                 <ul>
                                   <li>
                                     <div class="item-content item-input">
@@ -1829,7 +1829,10 @@ include "../webapp/MySQL/DataBase.class.php";
                                   </li>
                                 </ul>
                               </div>
-                                <div class="" style="margin-top: 15px;margin-bottom: 0;"><button class="button button-fill button-round" id="filtro-clientes-button" style="margin: auto;width: 50%;">Filtrar</button></div> 
+                               <div class="block block-strong inset" style="margin-top: 15px;margin-bottom: 0;">
+                                <b>Orden</b>:&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-cliente-orden" value="0" checked="checked"><i class="icon-radio"></i></label> &nbsp;<i class="f7-icons" style="vertical-align: middle;">person_crop_circle</i>&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-cliente-orden" value="1" ><i class="icon-radio"></i></label> &nbsp;<i class="material-icons" style="vertical-align: middle;">money</i>
+                            </div>
+                                <div class="" style="margin-top: 30px;margin-bottom: 0;"><button class="button button-fill button-round" id="filtro-clientes-button" style="margin: auto;width: 50%;">Filtrar</button></div> 
                             </div>
                             <div class="card data-table">
                           <table>
