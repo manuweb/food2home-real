@@ -102,7 +102,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                 </div>
                             </div>
                         </li>
-                       <li id='in_push'>
+                       <li>
                         <a href="javascript:navegar('#view-push');" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">bell</i></div>
                           <div class="item-inner">
@@ -110,7 +110,7 @@ include "../webapp/MySQL/DataBase.class.php";
                           </div>
                         </a>
                       </li>
-                      <li id='in_mail'>
+                      <li>
                         <a href="javascript:navegar('#view-emails');" class="item-link item-content">
                             <div class="item-media"><i class="icon f7-icons ">envelope</i></div>
                           <div class="item-inner">
@@ -134,7 +134,7 @@ include "../webapp/MySQL/DataBase.class.php";
                           </div>
                         </a>
                       </li>  
-                      <li id='in_prom'>
+                      <li>
                         <a href="javascript:navegar('#view-promos');promociones();" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">tickets</i></div>
                           <div class="item-inner">
@@ -1602,6 +1602,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                     <p><label class="radio" style="vertical-align: top;"><input type="radio" name="tipo-diseno" checked value="1"><i class="icon-radio"></i></label> <img src="img/estilo2.png" style="border:solid 1px;"></p>
                                 </div>
                             </div>
+                        </div>
                         
                     </div>                    
                 </div>          
@@ -1691,7 +1692,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
-                                    <li id='in_mail_bienve'>
+                                    <li>
                                       <a href="javascript:correoBienvenida();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons">person_crop_rectangle</i></div>
                                           <div class="item-inner">
@@ -1699,7 +1700,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
-                                    <li id='in_mail_birday'>
+                                    <li>
                                       <a href="javascript:correoBirday();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons">person_crop_circle_badge_checkmark</i></div>
                                           <div class="item-inner">
@@ -1707,7 +1708,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
-                                    <li id='in_mail_campain'>
+                                    <li>
                                       <a href="javascript:correoCampaign();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons">speaker_1</i></div>
                                           <div class="item-inner">
@@ -1839,6 +1840,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                 <th class="label-cell">Teléfono</th>
                                 <th class="label-cell">Email</th>
                                 <th class="numeric-cell">Monedero</th>
+                                <th class="numeric-cell">Compras</th>
                                 
                                 
                               </tr>
