@@ -133,7 +133,6 @@ var tipousu=window.localStorage.getItem("tipousu");               console.log('t
 
 $(".tab" ).on('tab:show', function() {
     cambiaNombreTienda();
-    
 });
 
 $('#my-login-screen .login-button').on('click', function () {
@@ -211,7 +210,6 @@ var in_push=0;
 var in_mail=0;
 var in_prom=0;
 var in_multi=0;
-
 leeEstaoWeb();
 
 function leeEstaoWeb() {
@@ -229,6 +227,7 @@ function leeEstaoWeb() {
                 in_push=obj.push;
                 dosTarifas=obj.tarifa;
                 in_multi=obj.multi;
+                
                 var nombre_comercial=obj.nombre_comercial;
                 app.name=nombre_comercial;
                 app.dialog.title=nombre_comercial+' BackOffice';
@@ -236,7 +235,10 @@ function leeEstaoWeb() {
                 //nombreTiendas
                 $('.navbar-inner .title-principal').html('<span style="position: relative;top:-12px;">'+nombre_comercial+'</span><img src="img/icono.png" width="auto" height="36px">');
 
-                
+                for(x=0;x<obj.alias.length;x++){
+                    nombreTiendas[obj.id[x]]=obj.alias[x];
+                }
+                cambiaNombreTienda();
                 integracion=obj.integracion;
                 console.log('integracion:'+integracion);
                 
@@ -259,7 +261,7 @@ function leeEstaoWeb() {
                     $('#grid-app-en-mantenimiento').addClass('medium-grid-cols-1');
                     
                 }
-                
+                /*
                 if (in_mail==0){
                     $('#in_mail_campain').hide();
                 }
@@ -275,6 +277,7 @@ function leeEstaoWeb() {
                     }
                     cambiaNombreTienda();
                 }
+                */
             }
             else{
                 console.log('ERROR Estado Web');
@@ -312,42 +315,39 @@ function cambiaEstadoWeb(estado){
 }
 
 function cambiaNombreTienda (){
-    if (in_multi==1){
-        var ant='<ul id="multi-tienda"><li><a href="#" class="item-link smart-select smart-select-init selector-tienda" data-open-in="popup">';
-        var select='<select class="seleccionTienda">';
-        var pos='<div class="item-content"><div class="item-inner"><div class="item-title text-color-primary">Tienda:</div><div class="item-after nombretienda" style="color:#f35605"></div></div></div></a></li></ul>';
-        var seleccionado='';
-        var nombretienda=''
-        for (x=0;x<nombreTiendas.length;x++){
-            seleccionado='';
-            if (parseInt(tienda)==x){
-                seleccionado='selected';
-
-                nombretienda=nombreTiendas[x];
-            }
-
-            select+='<option value="'+x+'" '+seleccionado+' >'+nombreTiendas[x]+'</option>';
+    var ant='<ul><li><a href="#" class="item-link smart-select smart-select-init selector-tienda" data-open-in="popup">';
+    var select='<select class="seleccionTienda">';
+    var pos='<div class="item-content"><div class="item-inner"><div class="item-title text-color-primary">Tienda:</div><div class="item-after nombretienda" style="color:#f35605"></div></div></div></a></li></ul>';
+    var seleccionado='';
+    var nombretienda=''
+    for (x=0;x<nombreTiendas.length;x++){
+        seleccionado='';
+        if (parseInt(tienda)==x){
+            seleccionado='selected';
+            
+            nombretienda=nombreTiendas[x];
         }
-
-        select+='</select>';
-
-        //$('.navbar-inner .select-tienda').css('color', 'white');
-        $('.navbar-inner .select-tienda').html(ant+select+pos);
-        $('.nombretienda').html(nombretienda);
-
-        $('.seleccionTienda').on('change', function() {
-            tienda= this.value ;
-            var elemVisible="";
-            $('.view-init').each(function(){
-               if( $(this).hasClass('tab-active') ){
-                elemVisible=this.id;
-               }
-            });
-            window.localStorage.setItem("tienda",tienda);
-            navegar('#'+elemVisible);
-        });
-    
+        
+        select+='<option value="'+x+'" '+seleccionado+' >'+nombreTiendas[x]+'</option>';
     }
+
+    select+='</select>';
+   
+    //$('.navbar-inner .select-tienda').css('color', 'white');
+    $('.navbar-inner .select-tienda').html(ant+select+pos);
+    $('.nombretienda').html(nombretienda);
+    
+    $('.seleccionTienda').on('change', function() {
+        tienda= this.value ;
+        var elemVisible="";
+        $('.view-init').each(function(){
+           if( $(this).hasClass('tab-active') ){
+            elemVisible=this.id;
+           }
+        });
+        window.localStorage.setItem("tienda",tienda);
+        navegar('#'+elemVisible);
+    });
 }
 
 if (autentificado!='1'){
