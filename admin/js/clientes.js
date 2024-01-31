@@ -1,14 +1,19 @@
 $('#filtro-clientes-button').on('click', function(){
     var filtro=$('#filtro-cliente').val();
-    clientes(1,filtro);
+    var orden=$('input[name=filtro-cliente-orden]:checked').val();
+    
+    clientes(1,filtro, orden);
 });
 
-function clientes(pagina=1,filtro='') {
+
+
+function clientes(pagina=1,filtro='', orden=0) {
+    
     var txt='';
     var server=servidor+'admin/includes/leeclientes.php';             $.ajax({
         type: "POST",
         url: server,
-        data: {pagina:pagina,filtro:filtro},
+        data: {pagina:pagina,filtro:filtro, orden:orden},
         dataType:"json",
         success: function(data){
             var obj=Object(data);
@@ -22,7 +27,9 @@ function clientes(pagina=1,filtro='') {
                 var telefono=obj.telefono;
                 var publicidad=obj.publicidad;
                 var monedero=obj.monedero;
+                var compras=obj.compras;
                 var sumamonedero=obj.sumamonedero;
+                var sumamPedidos=obj.sumamPedidos;
                 var txt='';
                 
                 var numReg=obj.registros;
@@ -37,7 +44,15 @@ function clientes(pagina=1,filtro='') {
                 }
                 var color='';
                 var img_cliente='<i Class="f7-icons">person_crop_circle_badge_checkmark</i>';
-            
+                txt+=
+                      '<tr>'+
+                        '<th class="label-cell"></th>'+
+                        '<th class="label-cell"></th>'+
+                        '<th class="label-cell"></th>'+
+                        '<th class="label-cell">Sumas</th>'+
+                        '<th class="numeric-cell">'+(parseFloat(sumamonedero).toFixed(2))+'</th>'+
+                    '<th class="numeric-cell">'+(parseFloat(sumamPedidos).toFixed(2))+'</th>'+
+                      '</tr>';
                 
                 for (x=0;x<tipo.length;x++){
                     color='';
@@ -57,17 +72,11 @@ function clientes(pagina=1,filtro='') {
                         '<th class="label-cell">'+telefono[x]+'</th>'+
                         '<th class="label-cell">'+email[x]+'</th>'+
                         '<th class="numeric-cell">'+(parseFloat(monedero[x]).toFixed(2))+'</th>'+
+                        '<th class="numeric-cell">'+(parseFloat(compras[x]).toFixed(2))+'</th>'+
                       '</tr>';
                     
                 }
-                txt+=
-                      '<tr>'+
-                        '<th class="label-cell"></th>'+
-                        '<th class="label-cell"></th>'+
-                        '<th class="label-cell"></th>'+
-                        '<th class="label-cell">Monedero</th>'+
-                        '<th class="numeric-cell">'+(parseFloat(sumamonedero).toFixed(2))+'</th>'+
-                      '</tr>';
+                
                 var txt_pie="";
                 txt_pie+=
                     '<div class="data-table-footer" >'+
@@ -104,7 +113,7 @@ function clientes(pagina=1,filtro='') {
                 $('#tabla-clientes-pie').html(txt_pie);
             }
             else{
-                //app.dialog.alert('No se pudo leer las push');
+                app.dialog.alert('No se pudo leer los clientes');
             }   
         },
         error: function(e){
