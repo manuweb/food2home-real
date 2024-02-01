@@ -1960,30 +1960,41 @@ include "../webapp/MySQL/DataBase.class.php";
     </script>
 
     <!-- App scripts -->
-    <script src="js/cnfg.js"></script>
-    <script src="js/integra.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/modificadores.js"></script>
-    <script src="js/impuestos.js"></script>
-    <script src="js/empresa.js"></script>
-    <script src="js/alergenos.js"></script>
-    <script src="js/sync.js"></script>
-    <script src="js/productos.js"></script>
-    <script src="js/repartos.js"></script>
-    <script src="js/productosdestacados.js"></script>
-    <script src="js/paginainicio.js"></script>
-    <script src="js/paginanosotros.js"></script>
-    <script src="js/metodospago.js"></script>
-    <script src="js/promociones.js"></script>
-    <script src="js/push.js"></script>
-    <script src="js/fidelizacion.js"></script>
-    <script src="js/pedidos.js"></script>
-    <script src="js/informes.js"></script>
-    <script src="js/correos.js"></script>
-    <script src="js/config.js"></script>
-    
-    <script src="js/clientes.js"></script>
-    <script src="js/canvasjs.min.js"></script>
+    <script>
+        var scriptsjs = [
+            "js/cnfg.js?" + Math.random(),
+            "js/integra.js?" + Math.random(),
+            "js/app.js?" + Math.random(),
+            "js/modificadores.js?" + Math.random(),
+            "js/impuestos.js?" + Math.random(),
+            "js/empresa.js?" + Math.random(),
+            "js/alergenos.js?" + Math.random(),
+            "js/sync.js?" + Math.random(),
+            "js/productos.js?" + Math.random(),
+            "js/repartos.js?" + Math.random(),
+            "js/productosdestacados.js?" + Math.random(),
+            "js/paginainicio.js?" + Math.random(),
+            "js/paginanosotros.js?" + Math.random(),
+            "js/metodospago.js?" + Math.random(),
+            "js/promociones.js?" + Math.random(),
+            "js/push.js?" + Math.random(),
+            "js/fidelizacion.js?" + Math.random(),
+            "js/pedidos.js?" + Math.random(),
+            "js/informes.js?" + Math.random(),
+            "js/correos.js?" + Math.random(),
+            "js/config.js?" + Math.random(),
+            "js/clientes.js?" + Math.random(),
+            "js/canvasjs.min.js?" + Math.random()
+            
+            
+        ];
+        for (j=0;j<scriptsjs.length;j++){
+            document.write('<script src="'+scriptsjs[j]+'"><\/script>');
+        }
+        
+    </script>
+
+
     
     <?php
         if ($_SESSION["autentificado"]) { 
