@@ -53,7 +53,7 @@ function clientes(pagina=1,filtro='', orden=0) {
                         '<th class="numeric-cell">'+(parseFloat(sumamonedero).toFixed(2))+'</th>'+
                     '<th class="numeric-cell">'+(parseFloat(sumamPedidos).toFixed(2))+'</th>'+
                       '</tr>';
-                
+                if (tipo!=null){
                 for (x=0;x<tipo.length;x++){
                     color='';
                     
@@ -76,7 +76,7 @@ function clientes(pagina=1,filtro='', orden=0) {
                       '</tr>';
                     
                 }
-                
+                }
                 var txt_pie="";
                 txt_pie+=
                     '<div class="data-table-footer" >'+
