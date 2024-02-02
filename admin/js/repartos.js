@@ -17,6 +17,16 @@ function ajustesrepartos(){
                     '<li>'+
                     '<div class="item-content item-input">'+
                       '<div class="item-inner">'+
+                        '<div class="item-title item-label">Máximo productos carrito</div>'+
+                        '<div class="item-input-wrap">'+
+                          '<input type="text" name="maximocarrito" placeholder=Máximo productos" value="'+obj.maximocarrito+'"/>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</li>'+
+                    '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
                         '<div class="item-title item-label">Pedido mínimo envío</div>'+
                         '<div class="item-input-wrap">'+
                           '<input type="text" name="minimoenvio" placeholder="Pedido mínimo envío" value="'+obj.minimo+'"/>'+
@@ -333,6 +343,7 @@ function guardaajustesreparto() {
     var minimoenvio=$('#ajustes-reparto-form input[name=minimoenvio]').val();
     var tiempoenvio=$('#ajustes-reparto-form input[name=tiempoenvio]').val();
     var cortesia=$("#cortesia").val();
+    var maximocarrito=$('#ajustes-reparto-form input[name=maximocarrito]').val();
     /*
     var pedidosportramoenvio=$('#ajustes-reparto-form input[name=pedidosportramoenvio]').val();
     var pedidosportramococina=$('#ajustes-reparto-form input[name=pedidosportramococina]').val();
@@ -353,7 +364,7 @@ function guardaajustesreparto() {
         url: server,
         dataType: "json",
         data: //{minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:pedidosportramoenvio,pedidosportramococina:pedidosportramococina,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis  },
-        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia  },
+        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito  },
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
