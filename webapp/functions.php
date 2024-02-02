@@ -1150,12 +1150,21 @@ class ImprimeTicket
     //public $ctrUsuRevo;
     public $http;
     public $url;
-    
+    public $telefono;
+    public $nombre_comercial;
     
     
     public function __construct(){
         $this->http=(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
         $this->url=$this->http.'://' . $_SERVER["HTTP_HOST"] ;
+        $sql="SELECT nombre_comercial,telefono FROM empresa WHERE id=1;";
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $datos = $result->fetch_object();
+        $this->telefono=$datos->telefono;
+        $this->nombre_comercial=$datos->nombre_comercial;
+        $database->freeResults();  
         
     }
     
@@ -1295,15 +1304,15 @@ class ImprimeTicket
 
         $y=$alto_calculado+(2*$margen)+10;
         
-        $dimensions = imagettfbbox(14, 0, $font_path_b, 'Food2Home');
+        $dimensions = imagettfbbox(14, 0, $font_path_b, $this->nombre_comercial);
         $textWidth = abs($dimensions[4] - $dimensions[0]);
         $x = round(($ancho-$textWidth)/2); //centrado
-        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, 'Food2Home');
+        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, $this->nombre_comercial);
         $y+=25;
-        $dimensions = imagettfbbox(14, 0, $font_path_b, '856839083');
+        $dimensions = imagettfbbox(14, 0, $font_path_b, $this->telefono);
         $textWidth = abs($dimensions[4] - $dimensions[0]);
         $x = round(($ancho-$textWidth)/2); //centrado
-        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, '856839083');
+        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, $this->telefono);
         $y+=25;
 
         $dimensions = imagettfbbox(30, 0, $font_path_b, $numero);
