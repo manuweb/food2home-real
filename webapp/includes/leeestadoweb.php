@@ -19,7 +19,7 @@ if ($result) {
 }
 
 $sql="SELECT estadoweb.estado AS estado, opcionescompra.fidelizacion AS fidelizacion, opcionescompra.porcentaje AS porcentaje,opcionescompra.tiempoenvio AS tiempoenvio, 
-opcionescompra.cortesia AS cortesia, opcionescompra.portesgratis AS portesgratis, opcionescompra.importeportesgratis AS importeportesgratis,
+opcionescompra.cortesia AS cortesia, opcionescompra.maximocarrito AS maximocarrito, opcionescompra.portesgratis AS portesgratis, opcionescompra.importeportesgratis AS importeportesgratis,
 opcionescompra.portesgratismensaje AS portesgratismensaje,
 opcionescompra.norepartomensaje AS norepartomensaje,
 opcionescompra.minimo AS pedidominimo, integracion.tipo AS integracion, empresa.movil AS movil, empresa.nombre_comercial AS nombre_comercial FROM estadoweb LEFT JOIN opcionescompra ON opcionescompra.id=estadoweb.id LEFT JOIN integracion ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=opcionescompra.id Where estadoweb.id=1";
@@ -37,6 +37,7 @@ if ($result) {
     $porcentaje=$estado ->porcentaje;
     $tiempoenvio=$estado ->tiempoenvio;
     $cortesia=$estado ->cortesia;
+    $maximocarrito=$estado->maximocarrito;
     $integracion=$estado ->integracion;
     $pedidominimo=$estado ->pedidominimo;
     $portesgratis=$estado ->portesgratis;
@@ -72,7 +73,7 @@ if ($result) {
 }
 $database->freeResults();
 
-$json=array("valid"=>$checking, "movil"=>$movil, "on"=>$on,"fidelizacion"=>$fidelizacion, "porcentaje"=>$porcentaje, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "integracion"=>$integracion, "pedidominimo"=>$pedidominimo,"id"=>$id,"alias"=>$alias,"domicilio"=>$domicilio,"telefono"=>$telefono,"lat"=>$lat,"lng"=>$lng, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje, "nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys);
+$json=array("valid"=>$checking, "movil"=>$movil, "on"=>$on,"fidelizacion"=>$fidelizacion, "porcentaje"=>$porcentaje, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "maximocarrito"=>$maximocarrito,  "integracion"=>$integracion, "pedidominimo"=>$pedidominimo,"id"=>$id,"alias"=>$alias,"domicilio"=>$domicilio,"telefono"=>$telefono,"lat"=>$lat,"lng"=>$lng, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje, "nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys);
 
 ob_end_clean();
 echo json_encode($json);    
