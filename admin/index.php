@@ -102,7 +102,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                 </div>
                             </div>
                         </li>
-                       <li>
+                       <li id="in_push">
                         <a href="javascript:navegar('#view-push');" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">bell</i></div>
                           <div class="item-inner">
@@ -134,7 +134,7 @@ include "../webapp/MySQL/DataBase.class.php";
                           </div>
                         </a>
                       </li>  
-                      <li>
+                      <li id="in_prom">
                         <a href="javascript:navegar('#view-promos');promociones();" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">tickets</i></div>
                           <div class="item-inner">
@@ -556,7 +556,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                 <b>Método envío</b>:<br><label class="radio"><input type="radio" name="filtro-envio" value="0" checked="checked"><i class="icon-radio"></i></label>&nbsp;Todos&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-envio" value="2" ><i class="icon-radio"></i></label> &nbsp;<img src="img/recoger.png" width="24" height="24" style="vertical-align: middle;">&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-envio" value="1" id="tratamiento-sra"><i class="icon-radio"></i></label> &nbsp;<img src="img/reparto.png" width="24" height="24" style="vertical-align: middle;">
                             </div>
                           <div class="block block-strong inset" style="margin: 0;">
-                                <b>Método pago</b>:<br><label class="radio"><input type="radio" name="filtro-metodo" value="0" checked="checked"><i class="icon-radio"></i></label>&nbsp;Todos&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-metodo" value="1" ><i class="icon-radio"></i></label> &nbsp;<img src="img/tarjeta.png" width="24" height="24"style="vertical-align: middle;">&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-metodo" value="2" ><i class="icon-radio"></i></label> &nbsp;<img src="img/efectivo.png" width="24" height="24" style="vertical-align: middle;">
+                                <b>Método pago</b>:<br><label class="radio"><input type="radio" name="filtro-metodo" value="0" checked="checked"><i class="icon-radio"></i></label>&nbsp;Todos&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-metodo" value="1" id="metodo-pago-tarjeta"><i class="icon-radio"></i></label> &nbsp;<img src="img/tarjeta.png" width="24" height="24"style="vertical-align: middle;">&nbsp;&nbsp;<label class="radio"><input type="radio" name="filtro-metodo" value="2" ><i class="icon-radio"></i></label> &nbsp;<img src="img/efectivo.png" width="24" height="24" style="vertical-align: middle;">
                             </div>
   
                         </div>
@@ -1700,7 +1700,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
-                                    <li>
+                                    <li id="in_mail_birday">
                                       <a href="javascript:correoBirday();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons">person_crop_circle_badge_checkmark</i></div>
                                           <div class="item-inner">
@@ -1708,7 +1708,7 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
-                                    <li>
+                                    <li id="in_mail_campain">
                                       <a href="javascript:correoCampaign();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons">speaker_1</i></div>
                                           <div class="item-inner">
