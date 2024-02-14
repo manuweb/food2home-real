@@ -512,8 +512,8 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
         while ($MenuCategories = $result->fetch_object()){
             
             if ($MenuCategories->eleMulti==0 ){
-                $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="1"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Obligatorio &nbsp;&nbsp;<i class="icon f7-icons text-color-red icon_menu" style="font-size: 10px;">xmark</i></button></span>';
-                $obligatorios++;
+                $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="0"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Opcional &nbsp;&nbsp;<i class="icon f7-icons text-color-green icon_menu" style="font-size: 10px;">xmark</i></button></span>';
+                //$obligatorios++;
                 $txt_exp='Seleccione 1';
             }
             if ($MenuCategories->eleMulti==1 ){
@@ -646,7 +646,12 @@ function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,
      if ($eleMulti==1 || $eleMulti==3){
          $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#0#999#'.$precio.'#'.$imagen.'#'.$impuesto;
      }
-    if ($eleMulti==0 || $eleMulti==2){
+    if ($eleMulti==0){
+        //seleccionar 1
+        $txt='<label class="checkbox"><input type="checkbox" name="chk-ele-multi-'.$id.'" value="'.$pasa.'" class="elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-checkbox"></i></label>';
+        
+    }
+    if ($eleMulti==2){
         //seleccionar 1
         $txt='<label class="radio"><input type="radio" name="chk-ele-multi-'.$id.'" value="'.$pasa.'" class=" 
         elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-radio icon-radio-menus"></i></label>';
