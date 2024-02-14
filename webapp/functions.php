@@ -3,8 +3,8 @@
  *
  * Archivo: functions.php
  *
- * Version: 1.0.3
- * Fecha  : 31/12/2023
+ * Version: 1.0.4
+ * Fecha  : 14/02/2024
  * 
  * ALGUNAS FUNCIONES
  *
@@ -834,6 +834,14 @@ class MisMails
         return $head.$textomail;
     }
     
+    public function CreaBodyCampaign($datos){
+        $devuelve=[
+            'textomail'=>$datos['textomail'],
+            'subject'=>$datos['subject']
+        ]; 
+        return $devuelve;
+    }
+        
     public function CreaBodyTextoContacto($datos){
         $subject='Formulario de contacto';
         $textomail= "<p>Ha sido contactado por:</p>";
@@ -1219,7 +1227,11 @@ class ImprimeTicket
         $largo_pedido=0;
         for ($x=0;$x<count($carrito);$x++){
             $largo_pedido+=30;
-
+            $lines = explode("\n", wordwrap($carrito[$x]['nombre'], 25, "\n"));
+            for ($h=0;$h<count($lines);$h++){
+                $largo_pedido+=30;
+            }
+            $largo_pedido-=30;
             if ($carrito[$x]['comentario'] !=""){
                 $largo_pedido+=30;
             }
@@ -1381,15 +1393,21 @@ class ImprimeTicket
             if ($carrito[$n]['menu']==1){
 
                 $txt='MENU '.$carrito[$n]['nombre'];
-                imagettftext($ticket, 20, 0, $margen+50, $y, $negro, $font_path_b, $txt);
+                
 
             }
             else {
                 $txt=$carrito[$n]['nombre'];
-                imagettftext($ticket, 20, 0, $margen+50, $y, $negro, $font_path_b, $txt);
+                
             }
-
-
+            
+            //imagettftext($ticket, 20, 0, $margen+50, $y, $negro, $font_path_b, $txt);
+            $lines = explode("\n", wordwrap($txt, 25, "\n"));
+            for ($h=0;$h<count($lines);$h++){
+                imagettftext($ticket, 20, 0, $margen+50, $y, $negro, $font_path_b, $lines[$h]);
+                $y+=30;
+            }
+            $y-=30;
             $txt=number_format($carrito[$n]['cantidad']*$carrito[$n]['precio'], 2, ',', '.');
             $dimensions = imagettfbbox(20, 0, $font_path_b, $txt);
             $textWidth = abs($dimensions[4] - $dimensions[0]);
@@ -1593,4 +1611,39 @@ class ImprimeTicket
     }
     
 }
+
+class Monedero {
+    //public $http;
+    public function __construct(){
+    }
+    
+    public function leeMonedero($cliente){
+        $sql="SELECT monedero FROM usuarios_app WHERE id='".$cliente."';"; 
+        $monedero=0;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result){
+            $usu = $result->fetch_object();
+            $monedero=$usu->monedero;
+        }
+        $database->freeResults();  
+        return $monedero;         
+    }
+    
+    public function guardaMonedero($cliente,$importe){
+        $sql="UPDATE usuarios_app SET monedero=".$importe." WHERE id='".$cliente."';"; 
+        $monedero=false;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result){
+            $monedero=true;
+        }
+        $database->freeResults();  
+        return $monedero;         
+    }
+    
+}
+
 ?>
