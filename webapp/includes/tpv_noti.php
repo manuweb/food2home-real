@@ -56,20 +56,6 @@ include_once('Sermepa/Tpv/Tpv.php');
         if ($result) {
             $integra = $result->fetch_object();
             $integracion=$integra->tipo;
-            
-            $Pedido = new RecomponePedido;
-            $order=$Pedido->DatosGlobalesPedido($idpedido);
-            $order['carrito']=$Pedido->LineasPedido($idpedido);
-            ['fide']
-            if ($order['importe_fidelizacion']>0){
-                $elmonedero = new Monedero;
-                $saldo=$elmonedero->leeMonedero($order['cliente']);
-
-                $nuevo_monedero=$saldo+($order['importe_fidelizacion']-$order['monedero']);
-                $actualizacione=$elmonedero->guardaMonedero($order['cliente'],$nuevo_monedero);
-            }
-            
-            
             if ($integracion==1){
                 $idRedsys=0;
                 $sql="SELECT id, idrevo FROM metodospago WHERE esRedsys=1;";
@@ -85,6 +71,9 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $Revo = new PedidosRevo;
                 $datos=$Revo->BuscaDatos();
 
+                $Pedido = new RecomponePedido;
+                $order=$Pedido->DatosGlobalesPedido($idpedido);
+                $order['carrito']=$Pedido->LineasPedido($idpedido);
 
                 $revoid= $Revo->addPedidoRevo($order,$idRedsys);
 

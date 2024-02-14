@@ -15,8 +15,6 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL-2/DataBase.class.php";
-include "../../webapp/MySQL/DataBase.class.php";
-
 /*
 TRUNCATE `pedidos`;
 TRUNCATE `orders`; 
@@ -101,17 +99,7 @@ $domicilio['complementario']=eliminaComillas($domicilio['complementario']);
 
 
 
-$idRedsys=0;
-$sql="SELECT id, idrevo FROM metodospago WHERE esRedsys=1 AND activo=1;";
-$database = DataBase::getInstance();
-$database->setQuery($sql);
-$result = $database->execute();
-$idRedsys=0;
-if ($resultado->num_rows > 0) {
-    $redsys = $result->fetch_object();
-    $idRedsys=$redsys->idrevo;
-}
-$database->freeResults();  
+
 
 // Buscar impuestos
 
@@ -327,7 +315,7 @@ for ($x=0;$x<count($carrito);$x++){
 
 $order['fecha']=date('Y-m-d H:i:s');
 
-$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$hora."',".$cliente.",".$subtotal.",".$sumadeivas.",".$portes.",".$descuento.",'".$tipo_descuento."','".$cupon."',".$monedero.",".$importe_fidelizacion.",".$total.",".$envio.",".$tarjeta.",0,".$canal.",'".$comentario."',0);";
+$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', CURRENT_TIMESTAMP, '".$hora."',".$cliente.",".$subtotal.",".$sumadeivas.",".$portes.",".$descuento.",'".$tipo_descuento."','".$cupon."',".$monedero.",".$importe_fidelizacion.",".$total.",".$envio.",".$tarjeta.",0,".$canal.",'".$comentario."',0);";
 
 
 
@@ -356,17 +344,10 @@ if ($db->alter()){
 if ($cliente!=0){
     //fwrite($file, "Cliente ". PHP_EOL);
     
-   if($importe_fidelizacion>0 && $idRedsys==0){
+   if($importe_fidelizacion>0){
        //fwrite($file, "Fidelizacion ". PHP_EOL);
-        
-        $elmonedero = new Monedero;
-        $saldo=$elmonedero->leeMonedero($cliente);
-
-        $nuevo_monedero=$saldo+($importe_fidelizacion-$monedero);
-        $actualizacione=$elmonedero->guardaMonedero($cliente,$nuevo_monedero);
-       
-        /*
-       $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
+        $importe_fide=0;
+        $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
        
        //fwrite($file, "sql: ".$sql. PHP_EOL);
         
@@ -383,9 +364,6 @@ if ($cliente!=0){
            //fwrite($file, "sql NO ". PHP_EOL);
        }
         //$db->freeResults();
-        
-        */
-       
    }
 }
 //$idPedido
