@@ -984,7 +984,7 @@ function probarcampaign(){
         app.dialog.alert('Introduzca un texto');
         return;
     }
-    console.log(texto);
+    //console.log(texto);
     app.dialog.prompt('Introduzca un email', function (name) {
         if(validarEmail(name)) {
             var server=servidor+'admin/includes/probarcampaign.php'; $.ajax({

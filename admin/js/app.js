@@ -222,6 +222,7 @@ function leeEstaoWeb() {
             var obj=Object(data);
             if (obj.valid==true){
                 idRedsys=obj.idRedsys;
+                $('#metodo-pago-tarjeta').val(idRedsys);
                 in_mail=obj.mail;
                 in_prom=obj.promos;
                 in_push=obj.push;
@@ -261,16 +262,19 @@ function leeEstaoWeb() {
                     $('#grid-app-en-mantenimiento').addClass('medium-grid-cols-1');
                     
                 }
-                /*
+                if (in_push==0){
+                    $('#in_push').hide();
+                }
                 if (in_mail==0){
+                    $('#in_mail_birday').hide();
                     $('#in_mail_campain').hide();
                 }
                 if (in_prom==0){
                     $('#in_prom').hide();
                 }
-                if (in_push==0){
-                    $('#in_push').hide();
-                }
+                /*
+                
+                
                 if (in_multi==1){
                     for(x=0;x<obj.alias.length;x++){
                         nombreTiendas[obj.id[x]]=obj.alias[x];
