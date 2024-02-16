@@ -240,7 +240,7 @@ function verpedido(idpedido,anulado){
         content: ''+
           '<div class="popup">'+
             '<div class="block page-content">'+
-              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><button class="button button-fill button-round color-red" id="boton-anular-pedido" onclick="anularPedido();" style="margin: auto;width: 30%;float: left;">ANUALAR</button><br><br>'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><button class="button button-fill button-round color-red" id="boton-anular-pedido" onclick="anularPedido();" style="margin: auto;width: 30%;float: left;">ANULAR</button><br><br>'+
                 '<div id="detallepedido"></div>'+         
             '</div>'+
           '</div>'  ,
