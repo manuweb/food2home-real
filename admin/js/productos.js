@@ -29,7 +29,7 @@ function muestragrupos(){
                 var txtcolor0="text-color-gray";
                 var txtcolor="";
                 //var txt='<div class="row"><div class="col-60"></div><div class="col-20">WEB</div><div class="col-20">APP</div></div>';
-                var txt='<div class="grid grid-cols-2"><div class=""></div><div class="">WEB</div></div>';
+                var txt='<div class="grid grid-cols-2"><div class=""></div><div class=""></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable" id="lista-grupos">'+
                     '<ul id="prod">';
                 for (x=0;x<id.length;x++){
@@ -65,10 +65,10 @@ function muestragrupos(){
                         
                                 '<div class="item-title '+txtcolor+'" style="width: 100%;">'+
                                     '<div class="grid grid-cols-2">'+
-                                        '<div class="" onclick="javascript:muestracategorias(\''+id[x]+'\',\''+nombre[x]+'\');">'+nombre[x]+' ('+total[x]+')'+
+                                        '<div class="" ><label class="checkbox"><input type="checkbox" name="activo_web-'+id[x]+'" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="grupos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label> <span onclick="javascript:muestracategorias(\''+id[x]+'\',\''+nombre[x]+'\');">'+nombre[x]+' ('+total[x]+')'+
 
-                                        '</div>'+
-                                        '<div class=""><label class="checkbox"><input type="checkbox" name="activo_web-'+id[x]+'" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="grupos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label>'+
+                                        '</span></div>'+
+                                        '<div class="">'+
 
                                         '</div>'+
                                         //'<div class=""><label class="checkbox"><input type="checkbox" name="activo_app-'+id[x]+'" '+chk_app+' data-id="'+id[x]+'" data-tipo="app" data-elemento="grupos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label></div>'+
@@ -513,7 +513,7 @@ function muestracategorias(grupo,nombregrupo){
                 var txtcolor1="";
                 var txtcolor0="text-color-gray";
                 var txtcolor="";
-                var txt='<div class="grid grid-cols-2"><div class=""></div><div class="">WEB</div></div>';
+                var txt='<div class="grid grid-cols-2"><div class=""></div><div class=""></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable" id="lista-categorias">'+
                     '<ul id="prod">';
 
@@ -551,12 +551,12 @@ function muestracategorias(grupo,nombregrupo){
 
                         
                         '<div class="item-title '+txtcolor+'" style="width: 100%;"><div class="grid grid-cols-2">'+
-                            '<div class="" onclick="javascript:muestraproductos(\''+grupo+'\',\''+nombregrupo+'\',\''+id[x]+'\',\''+nombre[x]+'\');">'+nombre[x]+' ('+total[x]+')'+
-                            '</div>'+
+                            '<div class=""><label class="checkbox"><input type="checkbox" name="activo_web" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="categorias" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label> <span onclick="javascript:muestraproductos(\''+grupo+'\',\''+nombregrupo+'\',\''+id[x]+'\',\''+nombre[x]+'\');">'+nombre[x]+' ('+total[x]+')'+
+                            '</span></div>'+
                         
                         
                         
-                            '<div class=""><label class="checkbox"><input type="checkbox" name="activo_web" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="categorias" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label>'+
+                            '<div class="">'+
 
                             '</div>'+
                                // '<div class=""><label class="checkbox"><input type="checkbox" name="activo_app" '+chk_app+' data-id="'+id[x]+'" data-tipo="app" data-elemento="categorias" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label></div>'+
@@ -661,13 +661,13 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                   '</li>'+ 
                 '</ul>'+   
                 '</div>'+
-                '<div style="text-align:center;"><span style="font-size:12px;">Imagen Revo: </span></div>'+
+                '<div style="text-align:center;" id="revo-img"> <span style="font-size:12px;">Imagen Revo: </span><br>'+
                 '<div class="text-align-center">'+
                     '<img src="" id="imagen-revo">'+
-                '</div>'+
+                '</div></div>'+
                 '<div class="simple-list">'+
                 '<ul>'+
-                  '<li>'+
+                  '<li id="revo-act">'+
                       '<span>Activo Revo</span>'+
                       '<label class="toggle toggle-init">'+
                         '<input id="chk-activo" type="checkbox" checked disabled/>'+
@@ -681,13 +681,7 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                         '<span class="toggle-icon"></span>'+
                       '</label>'+               
                     '</li>'+
-                    '<li>'+
-                      '<span>Activo APP</span>'+
-                      '<label class="toggle toggle-init">'+
-                        '<input id="chk-activo-app" name="chk-activo-app" type="checkbox" checked />'+
-                        '<span class="toggle-icon"></span>'+
-                      '</label>'+         
-                    '</li>'+                      
+                                         
                   '</ul>'+ 
                 '</div>'+
         
@@ -758,6 +752,19 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                         }
                     }
                 });
+              if(integracion==1){
+                    //nombre
+                    //impuesto
+                    //revo-img
+                    //revo-act
+                    $('input[name=nombre]').attr('disabled',true);
+                    $('input[name=impuesto]').attr('disabled',true);
+                }
+                else {
+                    $('#revo-img').hide();
+                    $('#revo-act').hide();
+                    $('#titulo-edita-grupo').html('NUEVO GRUPO');
+                }
                     
           },
           opened: function (popup) {
@@ -867,7 +874,7 @@ function muestraproductos(grupo,nombregrupo,categoria,nombrecategoria){
                 var txtcolor1="";
                 var txtcolor0="text-color-gray";
                 var txtcolor="";
-                var txt='<div class="grid grid-cols-2"><div class=""></div><div class="">WEB</div></div>';
+                var txt='<div class="grid grid-cols-2"><div class=""></div><div class=""></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios" id="lista-productos">'+
                     '<ul id="prod">';
                 
@@ -913,9 +920,9 @@ function muestraproductos(grupo,nombregrupo,categoria,nombrecategoria){
                         
                                 '<div class="item-title '+txtcolor+'" style="width: 100%;">'+
                                     '<div class="grid grid-cols-2">'+
-                                        '<div class="">'+textoesMenu+
-                                        '</div>'+
-                                        '<div class=""><label class="checkbox"><input type="checkbox" name="activo_app" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="productos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label>'+
+                                        '<div class=""><label class="checkbox"><input type="checkbox" name="activo_app" '+chk_web+' data-id="'+id[x]+'" data-tipo="web" data-elemento="productos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label> <span>'+textoesMenu+
+                                        '</span></div>'+
+                                        '<div class="">'+
 
                                         '</div>'+
                                         //'<div class=""><label class="checkbox"><input type="checkbox" name="activo_app" '+chk_app+' data-id="'+id[x]+'" data-tipo="app" data-elemento="productos" onclick="cambiaActivoGrupo(this);"><i class="icon-checkbox"></i></label>'+
@@ -1032,13 +1039,13 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                   '</li>'+ 
                 '</ul>'+   
                 '</div>'+
-                '<div style="text-align:center;"><span style="font-size:12px;">Imagen Revo: </span></div>'+
+                '<div style="text-align:center;" id="revo-img"><span style="font-size:12px;">Imagen Revo: </span><br>'+
                 '<div class="text-align-center">'+
                     '<img src="" id="imagen-revo">'+
-                '</div>'+
+                '</div></div>'+
                 '<div class="simple-list">'+
                 '<ul>'+
-                  '<li>'+
+                  '<li id="revo-act">'+
                       '<span>Activo Revo</span>'+
                       '<label class="toggle toggle-init">'+
                         '<input id="chk-activo" type="checkbox" checked disabled/>'+
@@ -1082,7 +1089,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                           '</div>'+
                         '</div>'+
                       '</li>'+
-                    '<li>'+
+                    '<li id="precio-revo">'+
                         '<div class="item-content item-input">'+
                           '<div class="item-inner">'+
                             '<div class="item-title item-label">Precio Revo</div>'+
@@ -1294,6 +1301,20 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                         }
                     }
                 });
+              if(integracion==1){
+                    //nombre
+                    //impuesto
+                    //revo-img
+                    //revo-act
+                    $('input[name=nombre]').attr('disabled',true);
+                    $('input[name=impuesto]').attr('disabled',true);
+                }
+                else {
+                    $('#revo-img').hide();
+                    $('#revo-act').hide();
+                    $('#precio-revo').hide();
+                    //$('#titulo-edita-grupo').html('NUEVO PRODUCTO');
+                }
 
           },
           opened: function (popup) {

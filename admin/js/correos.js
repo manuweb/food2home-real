@@ -491,7 +491,7 @@ function correoCampaign() {
                 var fechas=obj.fecha;
                 var usuario=obj.usuario;
                 var grupo=obj.grupo;
-                //var realizada=obj.realizada;
+                var alcance=obj.alcance;
 
 
                 var txt='';
@@ -521,6 +521,9 @@ function correoCampaign() {
                     }
                     if (usuario[x]==3){
                         tipo='Grupo';
+                    }
+                    if (usuario[x]==4){
+                        tipo='Compras >';
                     }
 
 
@@ -566,6 +569,76 @@ function correoCampaign() {
         
 }
 
+function muestraOcultaEmails(){
+    var estado=$('#lista-de-emails').css('display');
+    if (estado=='none'){
+        $('#lista-de-emails').show();
+    }
+    else {
+        $('#lista-de-emails').hide();
+    }
+    
+}
+function verCampaign(id){
+    var server=servidor+'admin/includes/leecampaign.php';
+    $.ajax({
+        type: "POST",
+        url: server,
+        data: {foo:'id',id:id},
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                var id=obj.id;
+                var nombre=obj.nombre;
+                var fechas=obj.fecha;
+                var usuario=obj.usuario;
+                var grupo=obj.grupo;
+                var texto=obj.texto;
+                var alcance=obj.alcance;
+                var emails=obj.emails;
+                var lafecha=fechas[0].substr(8,2)+'/'+fechas[0].substr(5,2)+'/'+fechas[0].substr(0,4)
+                var dynamicPopup = app.popup.create({
+                content: ''+
+                    '<div class="popup">'+
+                        '<div class="block page-content">'+
+                            '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+                            '<div class="block-title"><i>Fecha</i>: <b>'+lafecha+'</b> - <i>Alcance</i>:<a href="#" onclick="muestraOcultaEmails();">'+alcance[0]+' <i>usuarios</i></a></div>'+
+                            '<div id="lista-de-emails" style="display:none;"><hr>'+emails[0]+'<hr></div>'+
+                            '<div class="block-title">Título: '+nombre[0]+'</div><hr>'+
+                            '<div>'+texto[0]+'</div>'+
+                        '</div>'+
+                    '</div>'
+
+                     ,
+                    // Events
+                    on: {
+                        open: function (popup) {
+
+
+                        },
+                        opened: function (popup) {
+
+                        },
+                    }
+                });  
+                
+                dynamicPopup.open();
+                   
+                
+                
+                
+            }
+            else{
+                app.dialog.alert('No se pudo leer las campañas');
+
+            }
+        }
+
+    });
+}
+
+
 function editaCampaign(id=0,nombre='Nueva'){
     var txt_old=$('#emails-page').html();
     localStorage.setItem("contenidopagina-correo", txt_old);
@@ -605,6 +678,7 @@ function editaCampaign(id=0,nombre='Nueva'){
                                     '<option value="1">Todos los usuarios</option>'+
                                     '<option value="2">Solos los usuarios registrados</option>'+
                                     '<option value="3">Grupo fidelización</option>'+
+                                    '<option value="4">Ultima compra > que</option>'+
                                    
                                 ' </select>'+
                             '</div>'+
@@ -617,6 +691,18 @@ function editaCampaign(id=0,nombre='Nueva'){
                             '<div class="item-title item-label">Grupos</div>'+
                             '<div id="contenido-grupos"></div>'+
                               
+                          '</div>'+
+                        '</div>'+
+                      '</li>'+ 
+                    '<li id="fechasclientes">'+
+                        '<div class="item-content item-input">'+
+                          '<div class="item-inner">'+
+                            '<div class="item-title item-label">Fecha</div>'+
+                            '<div id="contenido-fechasclientes">'+
+                              '<p><label class="radio"><input type="radio" name="fecha_compra" value="30" id="fecha_compra_30" checked><i class="icon-radio"></i></label> 30 días '+
+                              '<label class="radio"><input type="radio" name="fecha_compra" value="60" id="fecha_compra_60"><i class="icon-radio"></i></label> 60 días '+
+                            '<label class="radio"><input type="radio" name="fecha_compra" value="90" id="fecha_compra_90"><i class="icon-radio"></i></label> 90 días</p>'+
+                            '</div>'+
                           '</div>'+
                         '</div>'+
                       '</li>'+ 
@@ -772,7 +858,7 @@ function editaCampaign(id=0,nombre='Nueva'){
                
                 app.dialog.create({
                   title: 'Datos del cupón',
-                  text: 'Seleccione dato del usuario',
+                  text: 'Seleccione un cupón',
                   buttons: botones,
                   verticalButtons: true,
                 }).open();
@@ -863,12 +949,20 @@ function editaCampaign(id=0,nombre='Nueva'){
                         closeOnSelect:true,
                         dateFormat: 'dd/mm/yyyy'
                     });
-                    if (usuario[0]<3){
-                        $('#grupos').hide();
-                    }
-                    else {
+                    
+                    $('#grupos').hide();
+                        $('#fechasclientes').hide();
+                    if (usuario[0]==3){
                             rellenagruposbeneficiarios(grupo[0]);
                         $('#grupos').show();
+                        
+                    }
+                    if (usuario[0]==4){
+                            //rellenafechasclientes(grupo[0]);
+                        $('#fechasclientes').show();
+                        $("#fecha_compra_"+grupo[0]).attr('checked',true);
+                        
+
                         
                     }
                     
@@ -885,6 +979,8 @@ function editaCampaign(id=0,nombre='Nueva'){
            
     }
     else {
+        $('#grupos').hide();
+        $('#fechasclientes').hide();
         fhasta=new Date();
         fhasta.setDate(fhasta.getDate() + 1);
         calendarDesde = app.calendar.create({
@@ -923,13 +1019,27 @@ function editaCampaign(id=0,nombre='Nueva'){
     
 }
 
+function cambiatipodestino(e) {
+    var sel=$('#destino-cupon').val();
+    $('#fechasclientes').hide();
+    $('#grupos').hide();
+    if (sel==3){
+        rellenagruposbeneficiarios('grupo');
+        $('#grupos').show();
+    }
+    if (sel==4){
+        $('#fechasclientes').show();
+    }
+    
+}
+
+
 function guardacampaign(){
     var textEditor = app.textEditor.get('.text-editor');
     var texto=textEditor.getValue();
     var fecha=$('input[name=hasta]').val();
     var nombre=$('input[name=nombre]').val();
     var id=$('input[name=idcamp]').val();
-    
     var usuario=$('#destino-cupon').val();
     var grupo='';
     if (usuario==3){
@@ -940,6 +1050,9 @@ function guardacampaign(){
             grupo+=$(this).attr('data-id')+',';
         });
         grupo=grupo.slice(0, grupo.length - 1);
+    }
+    if (usuario==4){
+        grupo=$("input:radio[name=fecha_compra]:checked").val();
     }
     if (nombre==''){
         app.dialog.alert('Introduzca un nombre');
