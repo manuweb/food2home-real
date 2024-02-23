@@ -15,7 +15,7 @@ $where='';
 if ($array['foo']=='id'){
     $where=' WHERE id='.$array['id'];
 }
-$sql="SELECT id,nombre, fecha, usuario, grupo, CONVERT(texto USING utf8) AS texto FROM campaign".$where." ORDER BY ID DESC;";
+$sql="SELECT id,nombre, fecha, usuario, grupo, CONVERT(texto USING utf8) AS texto, alcance, emails FROM campaign".$where." ORDER BY ID DESC;";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -30,12 +30,14 @@ if ($result) {
         $usuario[]=$camp->usuario;
         $grupo[]=$camp->grupo;
         $texto[]=$camp->texto;
+        $alcance[]=$camp->alcance;
+        $emails[]=str_replace(array("\r\n", "\r", "\n"), "<br>", $camp->emails);
     }
 }	
 
 $database->freeResults();
 
-$json=array("valid"=>$checking,"nombre"=>$nombre,"id"=>$id,"fecha"=>$fecha,"usuario"=>$usuario,"grupo"=>$grupo,"texto"=>$texto);
+$json=array("valid"=>$checking, "nombre"=>$nombre, "id"=>$id, "fecha"=>$fecha, "usuario"=>$usuario, "grupo"=>$grupo, "texto"=>$texto, "alcance"=>$alcance, "emails"=>$emails);
 
 echo json_encode($json); 
 
