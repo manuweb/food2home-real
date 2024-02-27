@@ -11,7 +11,7 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
 
-$sql="SELECT opcionescompra.minimo, opcionescompra.portesgratis, opcionescompra.importeportesgratis, opcionescompra.portesgratismensaje, opcionescompra.norepartomensaje, opcionescompra.tiempoenvio, opcionescompra.cortesia, opcionescompra.maximocarrito, opcionescompra.pedidosportramoenvio,opcionescompra.pedidosportramococina, productos.nombre AS portes, opcionescompra.idEnvio, opcionescompra.ivaEnvio AS ivaEnvio, opcionescompra.tarifa AS tarifa FROM opcionescompra LEFT JOIN productos ON opcionescompra.idEnvio=productos.id WHERE opcionescompra.id=1";
+$sql="SELECT opcionescompra.minimo, opcionescompra.portesgratis, opcionescompra.importeportesgratis, opcionescompra.portesgratismensaje, opcionescompra.norepartomensaje, opcionescompra.tiempoenvio, opcionescompra.cortesia, opcionescompra.maximocarrito, opcionescompra.pedidosportramoenvio,opcionescompra.pedidosportramococina, productos.nombre AS portes, opcionescompra.idEnvio, opcionescompra.ivaEnvio AS ivaEnvio, opcionescompra.tarifa AS tarifa, opcionescompra.tipo_seleccion_horas AS tipo_seleccion_horas FROM opcionescompra LEFT JOIN productos ON opcionescompra.idEnvio=productos.id WHERE opcionescompra.id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -32,13 +32,14 @@ if ($result) {
     $iva=$grupo->ivaEnvio;
     $idenvio=$grupo->idEnvio;
     $tarifa=$grupo->tarifa;
+    $tipo_seleccion_horas=$grupo->tipo_seleccion_horas;
 
     $checking=true;
 }
 
 $database->freeResults();
 
-$json=array("valid"=>$checking, "minimo"=>$minimo, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "maximocarrito"=>$maximocarrito, "pedidosportramoenvio"=>$pedidosportramoenvio, "pedidosportramococina"=>$pedidosportramococina, "portes"=>$portes, "iva"=>$iva, "idenvio"=>$idenvio, "tarifa"=>$tarifa, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje);
+$json=array("valid"=>$checking, "minimo"=>$minimo, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "maximocarrito"=>$maximocarrito, "pedidosportramoenvio"=>$pedidosportramoenvio, "pedidosportramococina"=>$pedidosportramococina, "portes"=>$portes, "iva"=>$iva, "idenvio"=>$idenvio, "tarifa"=>$tarifa, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje, "tipo_seleccion_horas"=>$tipo_seleccion_horas);
 
 
 echo json_encode($json); 

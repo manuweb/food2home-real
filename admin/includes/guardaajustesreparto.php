@@ -14,7 +14,7 @@ idEnvio='".$array['portes']."',
 tarifa='".$array['tarifa']."', 
 portesgratis='".$array['portesgratis']."', 
 importeportesgratis='".$array['importeportesgratis']."', 
-portesgratismensaje='".$array['portesgratismensaje']."', norepartomensaje='".$array['norepartomensaje']."' WHERE id=1";
+portesgratismensaje='".$array['portesgratismensaje']."', norepartomensaje='".$array['norepartomensaje']."', tipo_seleccion_horas='".$array['tipo_seleccion_horas']."' WHERE id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
