@@ -767,7 +767,7 @@ function editaCampaign(id=0,nombre='Nueva'){
         },
           producto: {
           // button html content
-          content: '<i class="icon f7-icons food-icon"></i>',
+          content: '<i class="icon material-icons">fastfood</i>',
           // button click handler
           onClick(event, buttonEl) {
             /*

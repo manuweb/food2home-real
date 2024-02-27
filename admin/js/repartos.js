@@ -70,6 +70,16 @@ function ajustesrepartos(){
                     '</div>'+
                   '</li>'+
                     '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title item-label">Uso tramos horarios</div>'+
+                        '<div class="item-input-wrap">'+
+                          '<label class="radio"><input type="radio" name="tipo_seleccion_horas" value="0"><i class="icon-radio"></i></label> No usar <label class="radio"><input type="radio" name="tipo_seleccion_horas" value="1"><i class="icon-radio"></i></label> En lista <label class="radio"><input type="radio" name="tipo_seleccion_horas" value="2"><i class="icon-radio"></i></label> Cuadrícula'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</li>'+
+                    '<li>'+
                     '<a class="item-link smart-select smart-select-init" data-open-in="popover">'+
 
                         '<select id="cortesia" name="cortesia">'+
@@ -172,6 +182,14 @@ function ajustesrepartos(){
             else {
                 $('input[name=toggle-envio-gratis-mensaje]').prop('checked', false);
             }
+            
+            $('input[name=tipo_seleccion_horas]').each(function() {
+                if ($(this).val()==obj.tipo_seleccion_horas){
+                    $(this).prop('checked',true);
+                }
+            });
+            
+            
             
             $('#ajustes-reparto-form input[name*="idportes"]').val(obj.idenvio);
             
@@ -331,6 +349,7 @@ function guardaajustesreparto() {
     var portesgratis=0;
     var portesgratismensaje=0;
     var norepartomensaje=$('#ajustes-reparto-form input[name=norepartomensaje]').val();
+    var tipo_seleccion_horas=$('input[name=tipo_seleccion_horas]:checked').val();
     
     if ($('#toggle-envio-gratis-mensaje').prop("checked")){
         portesgratismensaje=1
@@ -364,7 +383,7 @@ function guardaajustesreparto() {
         url: server,
         dataType: "json",
         data: //{minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:pedidosportramoenvio,pedidosportramococina:pedidosportramococina,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis  },
-        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito  },
+        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,tipo_seleccion_horas:tipo_seleccion_horas  },
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
