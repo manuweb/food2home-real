@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<title>Food2Home</title>
+    <link rel="shortcut icon" sizes="16x16" href="assets/icon-16x16.png">
+    <link rel="shortcut icon" sizes="196x196" href="assets/icon-196x196.png">
+    <script>
+  function validarPassword(){
+    texto = prompt("Para ver la página introduzca su contraseña");
+    while(texto!="Redsys"){
+      alert("Password incorrecta");
+      texto = prompt("Para ver la página introduzca su contraseña");
+    }
+    //alert("Password Correcta");
+  }
+</script>
+</head>
+  <script>validarPassword();</script>  
+<body style="margin: auto;width: 395px;max-height: 800px;min-height: 800px;padding: 61px 21px 63px 22px;">
+
+<iframe id="safari_window" src="index.html"  border="0" scrolling="no" marginwidth="0" marginheight="0" style="height: 700px;
+    border: 0;
+    width: 352px;
+    max-height: 800px;
+    z-index: 0;
+    margin-left: 21px;
+    position: absolute;
+    border-bottom-left-radius: 35px;
+    border-bottom-right-radius: 35px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;">
+                                    </iframe>  
+
+<div id='iphone' style="background-image: url(img/apple-iphone-14-2.png);
+    background-repeat: no-repeat;
+    background-position: top center;
+    z-index: -1;
+    position: absolute;
+    height: 800px;
+    background-color: transparent;
+    width: 100%;
+    top: 0;
+    left: 0%;">
+</div>
+<span id="hora-reloj" style="    font-size: 16px;
+    position: absolute;
+    top: 44px;
+    z-index: 9001;
+    margin-left: 58px;font-family:sans-serif;"><b>11:59</b></span>
+<script>
+
+function cargarReloj(){
+
+    // Haciendo uso del objeto Date() obtenemos la hora, minuto y segundo 
+    var fechahora = new Date();
+    var hora = fechahora.getHours(); 
+    var minuto = fechahora.getMinutes(); 
+    
+    
+    // Si la hora es igual a 0, declaramos la hora con el valor 12 
+    if(hora == 0){
+
+        hora = 12;
+        
+    }
+    
+    // Si la hora es mayor a 12, restamos la hora - 12 y mostramos la variable meridiano con el valor 'PM' 
+    if(hora > 12) {
+
+        //hora = hora - 12;
+
+        // Variable meridiano con el valor 'PM' 
+       
+
+    }
+    
+    // Formateamos los ceros '0' del reloj 
+    hora = (hora < 10) ? "0" + hora : hora;
+    minuto = (minuto < 10) ? "0" + minuto : minuto;
+    
+    
+    // Enviamos la hora a la vista HTML 
+    var tiempo = hora + ":" + minuto ;    
+
+    //$('#hora-reloj').html(tiempo);
+	document.getElementById("hora-reloj").innerHTML='<b>'+tiempo+'</b>';
+    // Cargamos el reloj a los 500 milisegundos 
+    setTimeout(cargarReloj, 1000);
+    
+}
+
+// Ejecutamos la funciÃ³n 'CargarReloj' 
+cargarReloj();
+
+
+    // ocultar ajustes
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i) || window.innerWidth <= 780) {
+	location.href='index.html';
+	}
+
+</script>
+</body>
+</html>
