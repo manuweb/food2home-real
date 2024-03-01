@@ -163,6 +163,7 @@ function borranosotros(id,nombre='',tipo=1){
             success: function(data){
                 var obj=Object(data);
                 if (obj.valid==true){  
+                    /*
                     var aGrupos=new Array();
                     var n=0;
 
@@ -174,7 +175,7 @@ function borranosotros(id,nombre='',tipo=1){
                         n++;
                     });
                     //console.log(aGrupos);
-                    app.preloader.show();
+                    //app.preloader.show();
                     var server=servidor+'admin/includes/ordenpaginanosotros.php';  
                     $.ajax({
                         type: "POST",
@@ -184,7 +185,7 @@ function borranosotros(id,nombre='',tipo=1){
                         success: function(data){
                             var obj=Object(data);
                             if (obj.valid==true){
-                                document.getElementById('safari_window').contentWindow.location.reload(); 
+                                //document.getElementById('safari_window').contentWindow.location.reload(); 
                             }
                             else{
                                 console.log('ERROR');
@@ -192,7 +193,7 @@ function borranosotros(id,nombre='',tipo=1){
                         }
                      });
                     
-                    
+                    */
                     paginanosotros();
                     //document.getElementById('safari_window').contentWindow.location.reload();   
                 }
@@ -451,28 +452,27 @@ function cambiatipobloquenosotros(e) {
     }
     if (tipo=='4') {
         var txt=''+   
-
-     '<div class="row">'+
+'<div class="row">'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image1" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image1" onchange="loadFileimagen(event,this);"/><br>'+
-            '<input type="text" name="articulo1" id="art1" disabled/>'+
+            '<input type="file" name="image[]" id="image1" onchange="loadFileImg(event,\'#visor-image1\');"/><br>'+
+            '<input type="text" name="articulo1" id="art1" placeholder="Producto" />'+
          '</div>'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image2" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image2" onchange="loadFileimagen(event,this);"/><br>'+
-            '<input type="text" name="articulo2" id="art2" disabled" />'+       
+            '<input type="file" name="image[]" id="image2" onchange="loadFileImg(event,\'#visor-image2\');"/><br>'+
+            '<input type="text" name="articulo2" id="art2" placeholder="Producto" />'+       
          '</div>'+
                  '<div class="row">'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image3" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image3" onchange="loadFileimagen(event,this);"/><br>'+
-            '<input type="text" name="articulo3" id="art3" disabled" />'+
+            '<input type="file" name="image[]" id="image3" onchange="loadFileImg(event,\'#visor-image3\');"/><br>'+
+            '<input type="text" name="articulo3" id="art3" placeholder="Producto" />'+
          '</div>'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image4" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image4" onchange="loadFileimagen(event,this);"/><br>'+
-            '<input type="text" name="articulo4" id="art4" disabled" />'+       
+            '<input type="file" name="image[]" id="image4" onchange="loadFileImg(event,\'#visor-image4\');"/><br>'+
+            '<input type="text" name="articulo4" id="art4" placeholder="Producto" />'+       
          '</div>'+
     ' </div> ' ;   
 
@@ -608,12 +608,12 @@ function guardanosotros(e) {
                 if (obj.valid==true){
                     //leealergenos();
                     paginanosotros();
-                    document.getElementById('safari_window').contentWindow.location.reload();  
+                    //document.getElementById('safari_window').contentWindow.location.reload();  
                 }
                 else{
                     app.dialog.alert('No se pudo guardar');
                 }
-                
+                paginanosotros();
             }
         });  
         

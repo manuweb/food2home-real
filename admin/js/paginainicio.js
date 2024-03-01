@@ -216,7 +216,7 @@ function borrainicio(id,nombre='',tipo=1){
                     
                     */
                     paginainicio();
-                    document.getElementById('safari_window').contentWindow.location.reload();   
+                    //document.getElementById('safari_window').contentWindow.location.reload();   
                 }
                 else{
                     app.dialog.alert('No se pudo Borrar');
@@ -558,18 +558,18 @@ function cambiatipobloque(e) {
      '<div class="row">'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image1" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image1" onchange="loadFileimagen(event,\'#visor-image1\');"/><br>'+
+            '<input type="file" name="image[]" id="image1" onchange="loadFileImg(event,\'#visor-image1\');"/><br>'+
             '<input type="text" name="articulo1" id="art1" placeholder="Producto" />'+
          '</div>'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image2" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image2" onchange="loadFileimagen(event,\'#visor-image2\');"/><br>'+
+            '<input type="file" name="image[]" id="image2" onchange="loadFileImg(event,\'#visor-image2\');"/><br>'+
             '<input type="text" name="articulo2" id="art2" placeholder="Producto" />'+       
          '</div>'+
                  '<div class="row">'+
          '<div class="col-50">'+
             '<img name="imagen" id="visor-image3" src="" width="50%" height="auto"/>  '+
-            '<input type="file" name="image[]" id="image3" onchange="loadFileimagen(event,\'#visor-image3\');"/><br>'+
+            '<input type="file" name="image[]" id="image3" onchange="loadFileImg(event,\'#visor-image3\');"/><br>'+
             '<input type="text" name="articulo3" id="art3" placeholder="Producto" />'+
          '</div>'+
          '<div class="col-50">'+
@@ -693,12 +693,13 @@ function guardainicio(e) {
                 if (obj.valid==true){
                     //leealergenos();
                     paginainicio();
-                    document.getElementById('safari_window').contentWindow.location.reload();  
+                    //document.getElementById('safari_window').contentWindow.location.reload();  
                 }
                 else{
                     app.dialog.alert('No se pudo guardar');
+                    
                 }
-                
+                paginainicio();
             }
         });
         

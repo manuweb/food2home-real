@@ -1041,7 +1041,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                 '</div>'+
                 '<div style="text-align:center;" id="revo-img"><span style="font-size:12px;">Imagen Revo: </span><br>'+
                 '<div class="text-align-center">'+
-                    '<img src="" id="imagen-revo">'+
+                    '<img src="" id="imagen-revo" width="80%" height="auto">'+
                 '</div></div>'+
                 '<div class="simple-list">'+
                 '<ul>'+
