@@ -18,21 +18,39 @@ if (isset($_FILES)) {
     $sep=explode('image/',$_FILES["imagen"]["type"]); 
     $tipo=$sep[1]; 
     if($tipo == "jpg" || $tipo == "jpeg" || $tipo == "png" || $tipo == "gif"){ 
-        //unlink($uploaddir.$arvhivo);
-        $resultado = move_uploaded_file($_FILES["imagen"]["tmp_name"], $uploaddir.$newFileName.'.'.$tipo);
-        if ($resultado){
+        
+        $Ext=$_FILES["imagen"]["type"];
             
-            $sql="UPDATE productos SET imagen_app1='".$newFileName.'.'.$tipo."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."';";
-
-            $database = DataBase::getInstance();
-            $database->setQuery($sql);
-            $result = $database->execute();
-            
-            if ($result) {   
-                $checking=true;
-            }	
-            $database->freeResults();
+        $tempArchivo=$_FILES["imagen"]["tmp_name"];
+        switch ($Ext) {
+            case "image/jpeg":
+                $img = imagecreatefromjpeg($tempArchivo);
+                break;
+            case "image/png":
+                $img = imagecreatefrompng($tempArchivo);
+                break;
+            case "image/bmp":
+                $img = imagecreatefrombmp($tempArchivo);
+                break;
         }
+            
+           
+        imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+        imagedestroy($img);
+        
+
+            
+        $sql="UPDATE productos SET imagen_app1='".$newFileName.'.webp'."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."';";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+
+        if ($result) {   
+            $checking=true;
+        }	
+        $database->freeResults();
+
     }
 
 }

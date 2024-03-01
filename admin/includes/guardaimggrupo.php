@@ -21,20 +21,41 @@ if (isset($_FILES)) {
     $tipo=$sep[1]; 
     if($tipo == "jpg" || $tipo == "jpeg" || $tipo == "png" || $tipo == "gif"){ 
         //unlink($uploaddir.$arvhivo);
-        $resultado = move_uploaded_file($_FILES["imagen"]["tmp_name"], $uploaddir.$newFileName.'.'.$tipo);
-        if ($resultado){
-            $sql="UPDATE grupos SET imagen_app='".$newFileName.'.'.$tipo."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."';";
-
-            $database = DataBase::getInstance();
-            $database->setQuery($sql);
-            $result = $database->execute();
+        
+        
+        $Ext=$_FILES["imagen"]["type"];
             
-            if ($result) {    
-
-                $checking=true;
-            }	       
-            $database->freeResults();
+        $tempArchivo=$_FILES["imagen"]["tmp_name"];
+        switch ($Ext) {
+            case "image/jpeg":
+                $img = imagecreatefromjpeg($tempArchivo);
+                break;
+            case "image/png":
+                $img = imagecreatefrompng($tempArchivo);
+                break;
+            case "image/bmp":
+                $img = imagecreatefrombmp($tempArchivo);
+                break;
         }
+            
+           
+        imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+        imagedestroy($img);
+        
+        
+
+        $sql="UPDATE grupos SET imagen_app='".$newFileName.'.webp'."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."';";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+
+        if ($result) {    
+
+            $checking=true;
+        }	       
+        $database->freeResults();
+
     }
 
 }

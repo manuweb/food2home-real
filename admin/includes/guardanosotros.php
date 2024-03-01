@@ -32,17 +32,40 @@ else {
  
         for($i=0;$i<count($_FILES["files"]["name"]);$i++)
         {
+            
             $newFileName = uniqid('', true);
 
             $arvhivo=$_FILES["files"]["name"][$i];
             $sep=explode('image/',$_FILES["files"]["type"][$i]); 
             $tipo=$sep[1]; 
+            $Ext=$_FILES["files"]["type"][$i];
+            
+            $file = fopen("zz-imagen.txt", "w");
+            fwrite($file, "Ext: ". $Ext . PHP_EOL);
+
+            fclose($file);
+            
+            switch ($Ext) {
+                case "image/jpeg":
+                    $img = imagecreatefromjpeg($arvhivo);
+                    break;
+                case "image/png":
+                    $img = imagecreatefrompng($arvhivo);
+                    break;
+                case "image/bmp":
+                    $img = imagecreatefrombmp($arvhivo);
+                    break;
+            }
+            imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+
+            imagedestroy($img);
+            
 
 
-            unlink($uploaddir.$arvhivo);
-            move_uploaded_file($_FILES["files"]["tmp_name"][$i], $uploaddir.$newFileName.'.'.$tipo);
-            $texto.=$newFileName.'.'.$tipo."##".$articulos[$i]."||";
 
+            //unlink($uploaddir.$newFileName.$tipo);
+            //move_uploaded_file($_FILES["files"]["tmp_name"][$i], $uploaddir.$newFileName.'.'.$tipo);
+            $texto.=$newFileName.'.webp'."##".$articulos[$i]."||";
 
         }
     }
