@@ -37,31 +37,26 @@ else {
             $tipo=$sep[1]; 
             $Ext=$_FILES["files"]["type"][$i];
             
-            $file = fopen("zz-imagen.txt", "w");
-            fwrite($file, "Ext: ". $Ext . PHP_EOL);
+            
 
-            fclose($file);
+            $tempArchivo=$_FILES["files"]["tmp_name"][$i];
             
             switch ($Ext) {
                 case "image/jpeg":
-                    $img = imagecreatefromjpeg($arvhivo);
+                    $img = imagecreatefromjpeg($tempArchivo);
                     break;
                 case "image/png":
-                    $img = imagecreatefrompng($arvhivo);
+                    $img = imagecreatefrompng($tempArchivo);
                     break;
                 case "image/bmp":
-                    $img = imagecreatefrombmp($arvhivo);
+                    $img = imagecreatefrombmp($tempArchivo);
                     break;
             }
-            imagewebp($img, $uploaddir.$newFileName.'.webp',80);
-
-            imagedestroy($img);
             
+           
+            imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+            imagedestroy($img);
 
-
-
-            //unlink($uploaddir.$newFileName.$tipo);
-            //move_uploaded_file($_FILES["files"]["tmp_name"][$i], $uploaddir.$newFileName.'.'.$tipo);
             $texto.=$newFileName.'.webp'."##".$articulos[$i]."||";
 
 
