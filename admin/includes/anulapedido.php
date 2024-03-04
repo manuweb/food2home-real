@@ -191,20 +191,20 @@ else {
     //$order['importe_fidelizacion'
    if($order['importe_fidelizacion']<0){
        //fwrite($file, "Fidelizacion ". PHP_EOL);
-        
+        /*
         $elmonedero = new Monedero;
         $saldo=$elmonedero->leeMonedero($order['cliente']);
 
         $nuevo_monedero=$saldo+($order['importe_fidelizacion']-$order['monedero']);
         $actualizacione=$elmonedero->guardaMonedero($order['cliente'],$nuevo_monedero);
-       
-        /*
+       */
+        
         $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$cliente.";";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
         $database->freeResults();
-        */
+        
     }
     //fwrite($file, "sql: ". $sql . PHP_EOL);
 
