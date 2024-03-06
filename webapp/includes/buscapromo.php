@@ -71,7 +71,11 @@ if (count($promos)>0) {
                 $valido='no';
                 $motivo='Cupón expirado';
             }
-        }    
+        }  
+	else {
+            $valido='no';
+            $motivo='Cupón no válido';
+        }  
     } 
     if ($maximo>0){
         $sql="SELECT count(codigo) AS cantidad FROM cupones WHERE codigo='".$array['codigo']."'";
