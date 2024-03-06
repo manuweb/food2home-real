@@ -273,6 +273,9 @@ echo json_encode($json);
 
 
 function generaNegativo($numero){
+    if($numero=NULL){
+       $numero = 0;
+    }
     $nuevo=0-$numero;
     return $nuevo;
 }
