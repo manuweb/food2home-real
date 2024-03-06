@@ -42,9 +42,18 @@ if ($result->num_rows>0) {
     
     if ($syncimagen=='true'){
         if ($array['imagen']!=''){
+            
+            
             $imagen=", imagen='".$array['imagen']."'";
             $temp=$url_img_revo.USUARIOREVO.'/images/'.$array['imagen'];
-            captureImage($temp, $destino.$array['imagen']);
+            $sep=explode('.',$array['imagen']);
+
+            GuardaImagenWebp($temp, $destino,$sep[0],80) {
+                
+            $imagen=", imagen='".$sep[0].'.webp'."'";
+
+            
+            //captureImage($temp, $destino.$array['imagen']);
             
         }
         
@@ -67,8 +76,14 @@ else {
         if ($array['imagen']!=''){
             $temp=$url_img_revo.USUARIOREVO.'/images/'.$array['imagen'];
 
-            captureImage($temp, $destino.$array['imagen']);
-            $imagen=", '".$array['imagen']."'"; 
+            $sep=explode('.',$array['imagen']);
+
+            GuardaImagenWebp($temp, $destino,$sep[0],80) {
+                
+            //$imagen=", imagen='".$sep[0].'.webp'."'";
+            
+           // captureImage($temp, $destino.$array['imagen']);
+            $imagen=", '".$sep[0].'.webp'."'"; 
             $txt_imagen=", imagen";
             
             
@@ -110,7 +125,52 @@ fclose($file);
 
 */
 
+
+
+function GuardaImagenWebp($origen, $destino,$nombre,$calidad) {
+    $ext=get_image_type($origen);
+
+    switch ($Ext) {
+        case "jpeg":
+            $img = imagecreatefromjpeg($tempArchivo);
+            break;
+        case "png":
+            $img = imagecreatefrompng($tempArchivo);
+            break;
+        case "bmp":
+            $img = imagecreatefrombmp($tempArchivo);
+            break;
+    }
+    imagewebp($img, $destino.$nombre.'.webp',$calidad);
+    imagedestroy($img);
+    
+}
+
+function get_image_type($image_path){
+
+        $extension  = array(IMAGETYPE_GIF => "gif",
+        IMAGETYPE_JPEG => "jpeg",
+        IMAGETYPE_PNG => "png",
+        IMAGETYPE_SWF => "swf",
+        IMAGETYPE_PSD => "psd",
+        IMAGETYPE_BMP => "bmp",
+        IMAGETYPE_TIFF_II => "tiff",
+        IMAGETYPE_TIFF_MM => "tiff",
+        IMAGETYPE_JPC => "jpc",
+        IMAGETYPE_JP2 => "jp2",
+        IMAGETYPE_JPX => "jpx",
+        IMAGETYPE_JB2 => "jb2",
+        IMAGETYPE_SWC => "swc",
+        IMAGETYPE_IFF => "iff",
+        IMAGETYPE_WBMP => "wbmp",
+        IMAGETYPE_XBM => "xbm",
+        IMAGETYPE_ICO => "ico");
+
+        return $extension[exif_imagetype($image_path)];
+}
+
 function captureImage($origin, $destination) { 
+    
     $mi_curl = curl_init ($origin); 
     $fp_destination = fopen ($destination, "w"); 
     curl_setopt ($mi_curl, CURLOPT_FILE, $fp_destination); 
