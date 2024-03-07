@@ -64,12 +64,26 @@ if ($result){
 
         }
     }
+    $sql="SELECT COUNT(*) as cantidad, pedidos_lineas_modificadores.idModificador, pedidos_lineas_modificadores.descripcion AS nombre, pedidos_lineas.id FROM pedidos_lineas_modificadores LEFT JOIN pedidos_lineas on pedidos_lineas.id=pedidos_lineas_modificadores.idLineaPedido LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND pedidos.anulado=0 GROUP BY pedidos_lineas_modificadores.idModificador order BY cantidad DESC LIMIT 8;";
+    $database->setQuery($sql);
+    
+    $resultmod = $database->execute();
+    if ($resultmod){
+        while ($mod = $resultmod->fetch_object()) {
+            $nombreM[]=$mod->nombre;
+            $cantidadM[]=$mod->cantidad;
+
+        }
+        
+    }
+    
+    
 }
 
 
 $database->freeResults();  
 
-$json=array("valid"=>$checking, "fecha"=>$fecha, "cantidad"=>$cantidad, "suma_total"=>$suma_total, "nombreP"=>$nombreP, "cantidadP"=>$cantidadP, "cantEnvio"=>$cantEnvio, "cantRecoger"=>$cantRecoger, "cantEfectivo"=>$cantEfectivo, "cantTarjetas"=>$cantTarjetas);
+$json=array("valid"=>$checking, "fecha"=>$fecha, "cantidad"=>$cantidad, "suma_total"=>$suma_total, "nombreP"=>$nombreP, "cantidadP"=>$cantidadP, "nombreM"=>$nombreM, "cantidadM"=>$cantidadM, "cantEnvio"=>$cantEnvio, "cantRecoger"=>$cantRecoger, "cantEfectivo"=>$cantEfectivo, "cantTarjetas"=>$cantTarjetas);
 
 echo json_encode($json); 
 

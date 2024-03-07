@@ -24,7 +24,7 @@ $checking=false;
 
 
 
-$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha  FROM pedidos WHERE estadoPago>=0 AND anulado=0 AND ".$rangofecha." GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d')".$limit.";";
+$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha  FROM pedidos WHERE estadoPago>=0 AND ".$rangofecha." GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d')".$limit.";";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -85,6 +85,27 @@ if ($result->num_rows>0){
             $json=array("valid"=>$checking,  "nombreP"=>$nombreP, "cantidadP"=>$cantidadP);
         
         }
+        else {
+            $json=array("valid"=>false);
+        }
+
+    }
+    
+    if ($tipo==7){
+         
+        $sql="SELECT COUNT(*) as cantidad, pedidos_lineas_modificadores.idModificador, pedidos_lineas_modificadores.descripcion AS nombre, pedidos_lineas.id FROM pedidos_lineas_modificadores LEFT JOIN pedidos_lineas on pedidos_lineas.id=pedidos_lineas_modificadores.idLineaPedido LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND pedidos.anulado=0 GROUP BY pedidos_lineas_modificadores.idModificador order BY cantidad DESC LIMIT 12;";
+        $database->setQuery($sql);
+
+        $resultmod = $database->execute();
+        if ($resultmod){
+            while ($mod = $resultmod->fetch_object()) {
+                $nombreM[]=$mod->nombre;
+                $cantidadM[]=$mod->cantidad;
+
+            }
+            $json=array("valid"=>$checking,  "nombreM"=>$nombreM, "cantidadM"=>$cantidadM);
+        }
+        
         else {
             $json=array("valid"=>false);
         }

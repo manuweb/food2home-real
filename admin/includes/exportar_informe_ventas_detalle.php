@@ -181,6 +181,34 @@ if ($result->num_rows>0){
         
         //$json=array("valid"=>$checking);
     }
+    
+    if ($tipo==7){
+        $sql="SELECT COUNT(*) as cantidad, pedidos_lineas_modificadores.idModificador, pedidos_lineas_modificadores.descripcion AS nombre, pedidos_lineas.id FROM pedidos_lineas_modificadores LEFT JOIN pedidos_lineas on pedidos_lineas.id=pedidos_lineas_modificadores.idLineaPedido LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND pedidos.anulado=0 GROUP BY pedidos_lineas_modificadores.idModificador order BY cantidad DESC;";
+        $database->setQuery($sql);
+
+        $resultmod = $database->execute();
+        if ($resultmod){
+
+            while ($mod = $resultmod->fetch_object()) {
+                $nombreM[]=$mod->nombre;
+                $cantidadM[]=$mod->cantidad;
+
+            }
+            $output.="<table>";
+            $output.="<tr><td style='text-align:left;font-size:20px;' colspan=2><b>Informe Top Modificadores</b></td></tr><tr><td style='text-align:left;font-size:18px;' colspan=2><b>".$rango."</b></td></tr><tr></tr>";
+            $output.="<tr><td style='text-align:left;'><b>Nombre</b></td><td><b>Cantidad</b></td></tr>";
+            for ($x=0;$x<count($nombreM);$x++){
+                $output.="<tr><td style='text-align:left;'>".$nombreM[$x]."</td><td>".$cantidadM[$x]."</td></tr>";
+            }
+            $output.="</table>";
+        
+
+        
+        
+        }
+        
+
+    }
 }
 
 
