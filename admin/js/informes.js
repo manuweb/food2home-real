@@ -1,16 +1,23 @@
 
-function informes() {
+function informes(todos=0) {
    
     $(".title-informes").html("Informes <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
     $('#informes-page').show();
     $('#desarrollado-para').show();
     $('#informes-resultados-page').hide();
-    
-    $('#app-en-mantenimiento').show();
+    $( "#otros-informes").remove();
+    if (todos==0){
+        $('#app-en-mantenimiento').show();
+        
+    }
+    else {
+        $('#app-en-mantenimiento').hide();
+    }
     $("#input_contenido_informes_filtro").val('');
     $("#input_informes_filtro").val('30');
     var txt_informes_filtro=''+
         '<button class="button button-small button-outline" style="width: 30px;" onclick="cambiaFiltroInformes(-1,1);"><</button>&nbsp;&nbsp;<button class="button button-small button-outline" style="width: auto;text-transform: unset;" id="cambia-filtro-informes" onclick="cambiaFiltroInformes(0,1);"><i class="f7-icons size-18">calendar</i>&nbsp;Últimos 30 días</button>&nbsp;&nbsp;<button class="button button-small button-outline" style="width: 30px;" onclick="cambiaFiltroInformes(1,1);">></button>';
+    
     $("#informes-filtro").html(txt_informes_filtro);
     var server=servidor+'admin/includes/informe_ventas.php';           $.ajax({
         type: "POST",
@@ -274,6 +281,17 @@ function informes() {
             console.log('error');
         }
     });
+    if (todos==1){
+        var txt_otros='<div id="otros-informes"><div class="grid grid-gap medium-grid-cols-3  xsmall-grid-cols-1" style="padding: 15px;padding-bottom: 0;">';
+        txt_otros+='<div class="block block-strong inset" style="margin: 0;">'+
+            '<div class="block-title">Modificadores</div>'+
+            '<div style="margin-top: 15px;"><a href="#" onclick="informeDetallado(7);" class="">Ver informes</a></div>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+
+        $('#informes-page').append(txt_otros);
+    }
 
 }
 
@@ -287,6 +305,7 @@ function informeDetallado(id){
     //informes-filtro
     var txt_informes_filtro=''+
         '<button class="button button-small button-outline" style="width: 30px;" onclick="cambiaFiltroInformes(-1,'+id+');"><</button>&nbsp;&nbsp;<button class="button button-small button-outline" style="width: auto;text-transform: unset;" id="cambia-filtro-informes" onclick="cambiaFiltroInformes(0,'+id+');"><i class="f7-icons size-18">calendar</i>&nbsp;Últimos 30 días</button>&nbsp;&nbsp;<button class="button button-small button-outline" style="width: 30px;" onclick="cambiaFiltroInformes(1,'+id+');">></button>';
+    txt_informes_filtro+='<button id="boton-exportar" class="button button-fill" style="    width: 25%; right: 20px;position: absolute;" onclick="exportaInforme('+id+');">Exportar</button>';
     
     //$(".title-informes").html(title);
     $('#informes-page').hide();
@@ -312,7 +331,10 @@ function informeDetallado(id){
     if (id==6){
         title='Informe Medios de envío';
     }
-    $(".title-informes").html('<a href="javascript:navegar(\'#view-home\');informes();">Informes</a> -> '+title);
+    if (id==7){
+        title='Informe Modificadores';
+    }
+    $(".title-informes").html('<a href="javascript:navegar(\'#view-home\');informes(1);">Informes</a> -> '+title);
     if (informe_filtro=='30') {
         dia = 30;
         var addMlSeconds = 60*60000*24*dia;
@@ -352,14 +374,27 @@ function informeDetallado(id){
             else {
                 $('#informes-resultados-completo').html('Sin datos');
                 $('#tabla-resultados-completo').html('Sin datos');
+                $("#boton-exportar").attr("onclick","");
             }
         },
         error: function(e){
             console.log('error');
         }
     });   
+    
+    
 }
 
+
+function exportaInforme(id){
+    var contenido_informe_filtro=$("#input_contenido_informes_filtro").val();
+    
+    server=servidor+'admin/includes/exportar_informe_ventas_detalle.php';
+    
+    w=window.open(server+"?tipo="+id+"&rango="+$("#input_contenido_informes_filtro").val(),"_blank","width=800,height=500,top=0,left=0,scrollbars=no,resizable=yes,directories=no,location=no,menubar=no,status=yes,titlebar=yestoolbar=no");
+    
+     
+}
 function muestraDatosInforme(data,id){
     //$('#informes-resultados-completo').html('');
     $('#tabla-resultados-completo').show();
@@ -744,7 +779,9 @@ function muestraDatosInforme(data,id){
         }
         
     }
-    
+    if (id==7){
+        
+    }
     if (id==5){
         var dataP=[];
         var dataP2=[];
