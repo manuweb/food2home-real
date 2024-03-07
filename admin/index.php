@@ -150,16 +150,16 @@ include "../webapp/MySQL/DataBase.class.php";
                           </div>
                         </a>
                       </li> 
-                        <!--
+                        
                         <li>
-                        <a href="javascript:navegar('#view-informes');informes();" class="item-link item-content">
+                        <a href="javascript:navegar('#view-home');informes(1);" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">printer</i></div>
                           <div class="item-inner">
                             <div class="item-title">Informes</div>
                           </div>
                         </a>
                       </li> 
--->
+
                       <li>
                         <a href="javascript:navegar('#view-setting');" class="item-link item-content">
                           <div class="item-media"><i class="icon f7-icons">gear_alt</i></div>
