@@ -32,12 +32,15 @@ function informes(todos=0) {
                 var dataP2=[];
                 var dataP3=[];
                 var dataP4=[];
+                var dataP7=[];
                 
                 var fecha=obj.fecha;
                 var cantidad=obj.cantidad;
                 var suma_total=obj.suma_total;
                 var nombreP=obj.nombreP;
                 var cantidadP=obj.cantidadP;
+                var nombreM=obj.nombreM;
+                var cantidadM=obj.cantidadM;
                 var sumEnv=parseInt(obj.cantEnvio)+parseInt(obj.cantRecoger);
                 var sumPag=parseInt(obj.cantEfectivo)+parseInt(obj.cantTarjetas);
                 
@@ -65,6 +68,9 @@ function informes(todos=0) {
                     
                     for (x=0;x<nombreP.length;x++){
                         dataP4.push({ y: Number(cantidadP[x]),name:nombreP[x]});
+                    }
+                    for (x=0;x<nombreM.length;x++){
+                        dataP7.push({ y: Number(cantidadM[x]),name:nombreM[x]});
                     }
                     
                     CanvasJS.addCultureInfo("es", 
@@ -269,6 +275,51 @@ function informes(todos=0) {
                     chart4.render();
                     chart5.render();
                     chart6.render();
+                    if (todos==1){
+                       
+                        var txt_otros='<div id="otros-informes"><div class="grid grid-gap medium-grid-cols-3  xsmall-grid-cols-1" style="padding: 15px;padding-bottom: 0;">';
+                        txt_otros+='<div class="block block-strong inset" style="margin: 0;" >'+
+                            '<div id="informe-modificadores" style="height: 150px; width: 100%;"></div>'+
+                                '<div style="margin-top: 15px;"><a href="#" onclick="informeDetallado(7);">Ver informes</a></div>'+
+                            '</div>'+
+
+                            '</div>';
+
+                        $('#informes-page').append(txt_otros);
+
+                        var chart7 = new CanvasJS.Chart("informe-modificadores", {
+                            culture:  "es",
+                            animationEnabled: true,
+                            theme: "light2",
+                            title:{
+                                text: "Top modificadores",
+                                fontSize:16,
+                                margin: 30,
+                                fontWeight: "bold",
+                                horizontalAlign: "left" 
+                            },
+                            axisX:{
+                              valueFormatString: " ",
+                              tickLength: 0
+                            },
+                            toolTip: {
+                                fontColor: "#00495e",
+                                borderColor:"#00495e",
+                                cornerRadius: 5 
+                             },
+                            data: [{      
+                                type: "pie",
+                                radius:  "95%", 
+                                //showInLegend: true,
+                                toolTipContent: "{name}: <strong>{y}</strong>",
+                                indexLabel: "{name}",
+
+                                dataPoints: dataP7
+                            }]
+                        });
+                        chart7.render();
+                    }
+                    
                     //
                     // eliminación marca de agua
                     //
@@ -281,17 +332,7 @@ function informes(todos=0) {
             console.log('error');
         }
     });
-    if (todos==1){
-        var txt_otros='<div id="otros-informes"><div class="grid grid-gap medium-grid-cols-3  xsmall-grid-cols-1" style="padding: 15px;padding-bottom: 0;">';
-        txt_otros+='<div class="block block-strong inset" style="margin: 0;">'+
-            '<div class="block-title">Modificadores</div>'+
-            '<div style="margin-top: 15px;"><a href="#" onclick="informeDetallado(7);" class="">Ver informes</a></div>'+
-            '</div>'+
-            '</div>'+
-            '</div>';
-
-        $('#informes-page').append(txt_otros);
-    }
+    
 
 }
 
@@ -396,6 +437,7 @@ function exportaInforme(id){
      
 }
 function muestraDatosInforme(data,id){
+    
     //$('#informes-resultados-completo').html('');
     $('#tabla-resultados-completo').show();
     var obj=Object(data);
@@ -779,9 +821,72 @@ function muestraDatosInforme(data,id){
         }
         
     }
+
     if (id==7){
+        var dataM=[];
+                
+        var nombreM=obj.nombreM;
+        var cantidadM=obj.cantidadM;
+        
+        
+        if (nombreM!=null){
+            var tabla_txt='<div class="data-table">'+
+                '<table>'+
+                    '<thead>'+
+                        '<tr>'+
+                            '<th class="label-cell">Modificador</th>'+
+                            '<th class="numeric-cell">Cantidad</th>'+
+                        '</tr>'+
+                    '<thead>'+
+                    '<tbody>';
+                
+            for (x=0;x<nombreM.length;x++){
+                
+                dataM.push({ y: Number(cantidadM[x]),label:nombreM[x]});
+                
+                tabla_txt+=''+
+                    '<tr>'+
+                        '<th class="label-cell">'+nombreM[x]+'</th>'+
+                        '<th class="numeric-cell">'+cantidadM[x]+'</th>'+
+                    '</tr>';
+            }
+
+              
+            tabla_txt+='</tbody>'+
+                    '</table>'+
+                '</div>';                                                            
+            $('#tabla-resultados-completo').html(tabla_txt);
+
+            var chart = new CanvasJS.Chart("informes-resultados-completo", {
+                culture:  "es",
+                animationEnabled: true,
+                theme: "light2",
+                title:{
+                    text: "Top modificadores",
+                    fontSize:16,
+                    margin: 30,
+                    fontWeight: "bold",
+                    horizontalAlign: "left" 
+                },
+                
+                toolTip: {
+                    fontColor: "#00495e",
+                    borderColor:"#00495e",
+                    cornerRadius: 5 
+                 },
+                data: [{        
+                    type: "column",
+                    //lineColor:"#f35605",
+                    //indexLabelFontSize: 10,
+                    //indexLabelWrap: false,
+                    dataPoints: dataM
+                }]
+            });
+            chart.render();
+        }
         
     }
+    
     if (id==5){
         var dataP=[];
         var dataP2=[];
