@@ -24,7 +24,7 @@ $checking=false;
 
 
 
-$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha  FROM pedidos WHERE estadoPago>=0 AND ".$rangofecha." GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d')".$limit.";";
+$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha  FROM pedidos WHERE estadoPago>=0 AND anulado=0 AND ".$rangofecha." GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d')".$limit.";";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -43,7 +43,7 @@ if ($result->num_rows>0){
     
     if ($tipo==1 || $tipo==2|| $tipo==3){
         
-        $sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, count(*) as cantidad, SUM(total) AS suma_total, SUM(subtotal) AS suma_subtotal, SUM(subtotal) AS suma_subtotal, SUM(portes) AS suma_portes, SUM(descuento) AS suma_descuento, SUM(monedero) AS suma_monedero, SUM(importe_fidelizacion) AS suma_importe_fidelizacion FROM pedidos WHERE DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND estadoPago>=0 GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d');";
+        $sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, count(*) as cantidad, SUM(total) AS suma_total, SUM(subtotal) AS suma_subtotal, SUM(subtotal) AS suma_subtotal, SUM(portes) AS suma_portes, SUM(descuento) AS suma_descuento, SUM(monedero) AS suma_monedero, SUM(importe_fidelizacion) AS suma_importe_fidelizacion FROM pedidos WHERE DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND estadoPago>=0 AND anulado=0 GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d');";
         //fwrite($file, "sql: ". $sql . PHP_EOL);
         //fclose($file);
 
@@ -69,7 +69,7 @@ if ($result->num_rows>0){
     }
     
     if ($tipo==4){
-        $sql="SELECT pedidos_lineas.idArticulo, productos.nombre, SUM(pedidos_lineas.canidad) AS TotalVentas FROM pedidos_lineas LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido LEFT JOIN productos on productos.id=pedidos_lineas.idArticulo where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") GROUP BY pedidos_lineas.idArticulo ORDER BY SUM(pedidos_lineas.canidad) DESC LIMIT 12;";
+        $sql="SELECT pedidos_lineas.idArticulo, productos.nombre, SUM(pedidos_lineas.canidad) AS TotalVentas FROM pedidos_lineas LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido LEFT JOIN productos on productos.id=pedidos_lineas.idArticulo where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND pedidos.anulado=0 GROUP BY pedidos_lineas.idArticulo ORDER BY SUM(pedidos_lineas.canidad) DESC LIMIT 12;";
 
         $database->setQuery($sql);
         $resulta = $database->execute();
@@ -93,7 +93,7 @@ if ($result->num_rows>0){
     
     if ($tipo==6 || $tipo==5){
         
-        $sql="SELECT total, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, metodoEnvio, metodoPago FROM pedidos WHERE DATE_FORMAT(fecha, '%Y-%m-%d') IN (".$txt.") AND estadoPago>=0 ORDER BY fecha;";
+        $sql="SELECT total, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, metodoEnvio, metodoPago FROM pedidos WHERE DATE_FORMAT(fecha, '%Y-%m-%d') IN (".$txt.") AND estadoPago>=0 AND anulado=0 ORDER BY fecha;";
 
         $database->setQuery($sql);
         $resulta = $database->execute();

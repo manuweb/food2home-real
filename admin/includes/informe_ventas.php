@@ -11,7 +11,7 @@ $array = json_decode(json_encode($_POST), true);
 
 $checking=false;
 
-$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, count(*) as cantidad, SUM(total) AS suma_total FROM pedidos where estadoPago>=0 GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d') ORDER BY fecha DESC LIMIT 7;";
+$sql="SELECT DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, count(*) as cantidad, SUM(total) AS suma_total FROM pedidos where estadoPago>=0 AND anulado=0 GROUP BY DATE_FORMAT(fecha, '%Y-%m-%d') ORDER BY fecha DESC LIMIT 7;";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -27,7 +27,7 @@ if ($result){
         $txt.="'".$pedidos->fecha."',";
     }
     $txt = substr($txt, 0, -1);
-    $sql="SELECT pedidos_lineas.idArticulo, productos.nombre, SUM(pedidos_lineas.canidad) AS TotalVentas FROM pedidos_lineas LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido LEFT JOIN productos on productos.id=pedidos_lineas.idArticulo where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") GROUP BY pedidos_lineas.idArticulo ORDER BY SUM(pedidos_lineas.canidad) DESC LIMIT 8;";
+    $sql="SELECT pedidos_lineas.idArticulo, productos.nombre, SUM(pedidos_lineas.canidad) AS TotalVentas FROM pedidos_lineas LEFT JOIN pedidos on pedidos.id=pedidos_lineas.idPedido LEFT JOIN productos on productos.id=pedidos_lineas.idArticulo where DATE_FORMAT(pedidos.fecha, '%Y-%m-%d') IN (".$txt.") AND pedidos.anulado=0 GROUP BY pedidos_lineas.idArticulo ORDER BY SUM(pedidos_lineas.canidad) DESC LIMIT 8;";
 
     $database->setQuery($sql);
     $resulta = $database->execute();
@@ -38,7 +38,7 @@ if ($result){
 
         }
     }
-    $sql="SELECT metodoEnvio, metodoPago FROM pedidos WHERE DATE_FORMAT(fecha, '%Y-%m-%d') IN (".$txt.") ";
+    $sql="SELECT metodoEnvio, metodoPago FROM pedidos WHERE DATE_FORMAT(fecha, '%Y-%m-%d') IN (".$txt.") AND anulado=0";
 
     $database->setQuery($sql);
     
