@@ -456,6 +456,17 @@ include "../webapp/MySQL/DataBase.class.php";
                                 <div id='tabla-resultados-completo' style="width: 100%;"></div>
                             </div>
                         </div>
+                        
+                      <div class="block block-strong inset list" id="app-novedades" style="margin-bottom: 10px;margin-top: 15px;">
+                          <p style=""display: flex;><i class="f7-icons size-20">doc_text</i> Registro de cambios</p>
+                          <div class="block" style="font-size: 0.8em;margin-top: 0;margin-bottom: 0;" id="app-novedades-txt">
+                              <p>lorep insum lorep insum lorep insum lorep insum v lorep insum lorep insum lorep insum lorep insum lorep insum v lorep insum</p>
+                              <p>lorep insum lorep insum lorep insum lorep insum v lorep insum lorep insum lorep insum lorep insum lorep insum v lorep insum</p>
+                              <p>lorep insum lorep insum lorep insum lorep insum v lorep insum lorep insum lorep insum lorep insum lorep insum v lorep insum</p>
+                              <p>lorep insum lorep insum lorep insum lorep insum v lorep insum lorep insum lorep insum lorep insum lorep insum v lorep insum</p>
+                          </div>
+                        </div>
+                        
                         <!--
                         <div class="block block-strong inset grid grid-cols-2" style="margin-top: 15px;" id="desarrollado-para">
                             <div>
