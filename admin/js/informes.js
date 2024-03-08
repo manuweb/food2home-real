@@ -1,17 +1,21 @@
 
 function informes(todos=0) {
    
-    $(".title-informes").html("Informes <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
+    //$(".title-informes").html("Informes <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
     $('#informes-page').show();
     $('#desarrollado-para').show();
     $('#informes-resultados-page').hide();
     $( "#otros-informes").remove();
     if (todos==0){
         $('#app-en-mantenimiento').show();
+        $('#app-novedades').show();
+        $(".title-informes").html("Panel de control <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
         
     }
     else {
         $('#app-en-mantenimiento').hide();
+        $('#app-novedades').hide();
+        $(".title-informes").html("Informes <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
     }
     $("#input_contenido_informes_filtro").val('');
     $("#input_informes_filtro").val('30');
@@ -353,6 +357,7 @@ function informeDetallado(id){
     $('#desarrollado-para').hide();
     $('#informes-resultados-page').show();
     $('#app-en-mantenimiento').hide();
+    $('#app-novedades').hide();
     $("#informes-filtro").html(txt_informes_filtro);
     if (id==1){
         title='Informe de ventas';

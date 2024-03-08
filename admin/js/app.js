@@ -293,7 +293,30 @@ function leeEstaoWeb() {
         }
     }); 
 }
-
+leeNovedades();
+function leeNovedades (){
+    var server=servidor+'admin/includes/leeNovedades.php';
+    
+    $.ajax({
+        type: "POST",
+        url: server,
+        data:{ foo:'foo'},
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                $('#app-novedades-txt').html(obj.txt);
+            }
+            else{
+                $('#app-novedades-txt').html('Error cargando Registro de cambios');
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            console.log(xhr.status);
+            console.log(thrownError);
+            }
+    });
+}
 
 function cambiaEstadoWeb(estado){
     //console.log(estado.checked);
