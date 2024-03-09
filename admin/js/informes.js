@@ -7,13 +7,13 @@ function informes(todos=0) {
     $('#informes-resultados-page').hide();
     $( "#otros-informes").remove();
     if (todos==0){
-        $('#app-en-mantenimiento').show();
+        $('#grid-app-en-mantenimiento').show();
         $('#app-novedades').show();
         $(".title-informes").html("Panel de control <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
         
     }
     else {
-        $('#app-en-mantenimiento').hide();
+        $('#grid-app-en-mantenimiento').hide();
         $('#app-novedades').hide();
         $(".title-informes").html("Informes <span style='float: right;font-weight: normal;font-size: 12px;'>Últimos 7 días de ventas</span>");
     }
@@ -359,7 +359,7 @@ function informeDetallado(id){
     $('#informes-page').hide();
     $('#desarrollado-para').hide();
     $('#informes-resultados-page').show();
-    $('#app-en-mantenimiento').hide();
+    $('#grid-app-en-mantenimiento').hide();
     $('#app-novedades').hide();
     $("#informes-filtro").html(txt_informes_filtro);
     if (id==1){
