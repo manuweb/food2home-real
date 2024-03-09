@@ -69,13 +69,16 @@ function informes(todos=0) {
                         sumaTotal+=parseFloat(suma_total[x]);
                         cantidadTotal+=parseInt(cantidad[x]);
                     }
-                    
-                    for (x=0;x<nombreP.length;x++){
-                        dataP4.push({ y: Number(cantidadP[x]),name:nombreP[x]});
-                    }
-                    for (x=0;x<nombreM.length;x++){
-                        dataP7.push({ y: Number(cantidadM[x]),name:nombreM[x]});
-                    }
+                    if (nombreP!=null){
+	                    for (x=0;x<nombreP.length;x++){
+	                        dataP4.push({ y: Number(cantidadP[x]),name:nombreP[x]});
+	                    }
+		    }
+		    if (nombreM!=null){
+	                    for (x=0;x<nombreM.length;x++){
+	                        dataP7.push({ y: Number(cantidadM[x]),name:nombreM[x]});
+	                    }
+		    }
                     
                     CanvasJS.addCultureInfo("es", 
                         {      
