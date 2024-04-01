@@ -716,7 +716,7 @@ class PedidosRevo
         $customer['phone']=$order['telefono'];
 
         $mifecha= date(substr($order['fecha'],0,10)." ". $order['hora'].":00"); 
-        $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
+        $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
         $delivery['channel']=22;
