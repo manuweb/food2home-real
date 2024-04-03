@@ -78,6 +78,7 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $revoid= $Revo->addPedidoRevo($order,$idRedsys);
 
                 // actualiza pedido con la id de revo y lo pone como pagado
+                        
                 $sql="UPDATE pedidos SET numeroRevo='".$revoid."', estadoPago='1' WHERE id='".$idpedido."';";
                 $database->setQuery($sql);
                 $result2 = $database->execute(); 
