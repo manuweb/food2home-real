@@ -25,6 +25,8 @@ on: {
           
           window.jQuery = jQuery;
           window.$ = jQuery;
+          
+          
          
       }
 },
@@ -210,6 +212,7 @@ var in_push=0;
 var in_mail=0;
 var in_prom=0;
 var in_multi=0;
+var dias_vista=1;
 leeEstaoWeb();
 
 function leeEstaoWeb() {
@@ -228,6 +231,7 @@ function leeEstaoWeb() {
                 in_push=obj.push;
                 dosTarifas=obj.tarifa;
                 in_multi=obj.multi;
+                dias_vista=obj.dias_vista;
                 
                 var nombre_comercial=obj.nombre_comercial;
                 app.name=nombre_comercial;

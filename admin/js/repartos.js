@@ -69,6 +69,16 @@ function ajustesrepartos(){
                       '</div>'+
                     '</div>'+
                   '</li>'+
+                '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title item-label">Días para hacer pedidos</div>'+
+                        '<div class="item-input-wrap">'+
+                          '<input type="text" name="dias_vista" placeholder="Días vista" value="'+obj.dias_vista+'"/>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</li>'+
                     '<li>'+
                     '<div class="item-content item-input">'+
                       '<div class="item-inner">'+
@@ -363,6 +373,7 @@ function guardaajustesreparto() {
     var tiempoenvio=$('#ajustes-reparto-form input[name=tiempoenvio]').val();
     var cortesia=$("#cortesia").val();
     var maximocarrito=$('#ajustes-reparto-form input[name=maximocarrito]').val();
+    var dias_vista=$('#ajustes-reparto-form input[name=dias_vista]').val();
     /*
     var pedidosportramoenvio=$('#ajustes-reparto-form input[name=pedidosportramoenvio]').val();
     var pedidosportramococina=$('#ajustes-reparto-form input[name=pedidosportramococina]').val();
@@ -383,7 +394,7 @@ function guardaajustesreparto() {
         url: server,
         dataType: "json",
         data: //{minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:pedidosportramoenvio,pedidosportramococina:pedidosportramococina,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis  },
-        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,tipo_seleccion_horas:tipo_seleccion_horas  },
+        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,tipo_seleccion_horas:tipo_seleccion_horas,dias_vista:dias_vista  },
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){

@@ -5,6 +5,12 @@ $('#sync-pedidos').on('click', function(){
     leepedidos(1,'');
 });
 
+var fecha_pedido;
+var hora_pedido;
+var cliente=new Array();
+var domicilio_cliente;
+
+
 $("input[name = 'filtro-envio']").change(function(){
     leepedidos(1,'');
 });
@@ -14,6 +20,13 @@ $("input[name = 'filtro-metodo']").change(function(){
 });
 
 function leepedidos(pagina=1,fecha='') {
+    $('#pedidos-page').show();
+    $('#pedido-manual').html('');
+    $('#pedido-manual').hide();
+    $('#boton-hacer-pedido').html('Hacer pedido');
+    $('#boton-hacer-pedido').css('background-color','#00495e');
+    $('#pedidos-titulo').html('Pedidos');
+    $('#boton-hacer-pedido').attr('onclick', 'hacerPedido()');
     var txt='';
     app.popup.destroy();
     var server=servidor+'admin/includes/leepedidos.php';             $.ajax({
@@ -33,6 +46,7 @@ function leepedidos(pagina=1,fecha='') {
                 var numero=obj.numero;
                 var numeroRevo=obj.numeroRevo;
                 var fecha=obj.fecha;
+                var dia=obj.dia;
                 var hora=obj.hora;
                 var cliente=obj.cliente;
                 var apellidos=obj.apellidos;
@@ -83,7 +97,14 @@ function leepedidos(pagina=1,fecha='') {
                 for (x=0;x<id.length;x++){
                     
                     //<tbody id="tabla-pedidos">
-                    fecha[x]=fecha[x].substr(8,2)+'/'+fecha[x].substr(5,2)+'/'+fecha[x].substr(0,4);
+                    //fecha[x]=fecha[x].substr(8,2)+'/'+fecha[x].substr(5,2)+'/'+fecha[x].substr(0,4);
+                    fecha[x]=fecha_php_a_castellano(fecha[x]);
+                    dia[x]=fecha_php_a_castellano(dia[x]) ;
+                    
+                    if (dia[x]==='00/00/0000'){
+                        dia[x]=fecha[x];
+                    }
+                    
                     var img_reparto=servidor+'admin/img/reparto.png';
                     if (envio[x]=='2'){
                         img_reparto=servidor+'admin/img/recoger.png';
@@ -138,7 +159,7 @@ function leepedidos(pagina=1,fecha='') {
                         '<tr '+color+'>'+
                             '<th class="label-cell"'+link+'>'+numero[x]+'</th>'+
                             '<th class="label-cell"'+linkRevo+'>'+numeroRevo[x]+'</th>'+
-                            '<th class="label-cell"'+link+'>'+fecha[x]+'</th>'+
+                            '<th class="label-cell"'+link+'>'+dia[x]+'</th>'+
                             '<th class="label-cell"'+link+'>'+hora[x]+'</th>'+
                             '<th class="label-cell"'+link+'>'+nom_cliente+'</th>'+
                             '<th class="numeric-cell"'+link+'>'+subtotal[x]+'</th>'+
@@ -277,9 +298,12 @@ function verpedido(idpedido,anulado){
                            } 
                         }
                         
-
-                        var fecha=order['fecha'].substr(8,2)+'/'+order['fecha'].substr(5,2)+'/'+order['fecha'].substr(0,4);
-                        txt +='Pedido: <b>'+order['pedido']+'</b> Fecha: <b>'+fecha+'</b>  ('+order['fecha'].substr(11,5)+') Hora:<b> '+order['hora']+'</b><br>';
+                        var fecha=fecha_php_a_castellano(order['fecha']);
+                        var dia=fecha_php_a_castellano(order['dia']);;
+                        if (dia=='00/00/0000'){
+                            dia=fecha;
+                        }
+                        txt +='Pedido: <b>'+order['pedido']+'</b><br>Fecha: <b>'+dia+'</b>   (Realizado el '+fecha+' a las '+order['fecha'].substr(11,5)+') <br>Hora:<b> '+order['hora']+'</b><br>';
                         //txt +='Pedido: <b>'+order['pedido']+'</b> Fecha: <b>'+fecha+'</b>  ('+order['fecha'].substr(11,5)+') Hora:<b> '+order['hora']+'</b> '+anulado+'<br>';
                         txt +='Nombre: <b>'+order['apellidos']+','+order['nombre']+'</b> <br>';
                         txt +='Teléfono: <b>'+order['telefono']+'</b> <br>';
@@ -546,6 +570,14 @@ function anularPedido(idpedido, numero){
     
 }
 
+function fecha_php_a_castellano(fecha){
+    var devuelve='00/00/0000';
+    if (fecha!=null){
+        devuelve=fecha.substr(8,2)+'/'+fecha.substr(5,2)+'/'+fecha.substr(0,4);
+    }
+    return devuelve;
+}
+
 function imprimePedido(idpedido){
     
     var server=servidor+'admin/includes/imprimeticket.php';     $.ajax({
@@ -567,3 +599,7 @@ function imprimePedido(idpedido){
     });    
     
 }
+
+
+
+
