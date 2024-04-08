@@ -15,7 +15,7 @@ header("Access-Control-Allow-Origin: *");
 //$numero='H137BL0T';
 //
 $idpedido=$array['idpedido'];
-//$idpedido=58;
+//$idpedido=83;
 
 
 $checking=false;
@@ -23,7 +23,6 @@ $checking=false;
 $Pedido = new RecomponePedido;
 $order=$Pedido->DatosGlobalesPedido($idpedido);
 $order['carrito']=$Pedido->LineasPedido($idpedido);
-
 
 //$estadoPago=$order['estadoPago'];
 $numero=$order['pedido'];
@@ -33,8 +32,10 @@ $OrderId=generate_string(8);
 //$file = fopen("zzz-anula.txt", "w");
 
 
-$sql="SELECT fecha, hora, cliente, subtotal, impuestos, portes, descuento, tipo_descuento, cupon, codigoCupon, monedero, importe_fidelizacion, total, metodoEnvio, metodoPago, estadoPago, canal FROM pedidos WHERE id=".$idpedido.";";
+$sql="SELECT fecha, dia, hora, cliente, subtotal, impuestos, portes, descuento, tipo_descuento, cupon, codigoCupon, monedero, importe_fidelizacion, total, metodoEnvio, metodoPago, estadoPago, canal FROM pedidos WHERE id=".$idpedido.";";
+
 //fwrite($file, "sql: ". $sql . PHP_EOL);
+//fwrite($file,  PHP_EOL);
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -42,6 +43,7 @@ $result = $database->execute();
 if ($result) {
     $pedido = $result->fetch_object();
     $fecha=$pedido->fecha;
+    $dia=$pedido->dia;
     $hora=$pedido->hora;
     $cliente=$pedido->cliente;
     $subtotal=$pedido->subtotal;
@@ -58,12 +60,12 @@ if ($result) {
     $metodoPago=$pedido->metodoPago;
     $estadoPago=$pedido->estadoPago;
     $canal=$pedido->canal;
-    $nueva_fecha=date('Y-m-d h:i:s');
+    $nueva_fecha=date('Y-m-d H:i:s');
     
-    $sql="INSERT INTO pedidos (numero,numeroRevo,fecha,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, codigoCupon, monedero, importe_fidelizacion, total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '1', '".$nueva_fecha."', '".$hora."',".$cliente.",".generaNegativo($subtotal).",".generaNegativo($impuestos).",".generaNegativo($portes).",".generaNegativo($descuento).",'".$tipo_descuento."','".generaNegativo($cupon)."','".$codigoCupon."',".generaNegativo($monedero).",".generaNegativo($importe_fidelizacion).",".generaNegativo($total).",".$metodoEnvio.",".$metodoPago.",1,".$canal.",'ANULACION PEDIDO: ".$numero."',2);";
+    $sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, codigoCupon, monedero, importe_fidelizacion, total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '1', '".$nueva_fecha."', '".$dia."', '".$hora."',".$cliente.",".generaNegativo($subtotal).",".generaNegativo($impuestos).",".generaNegativo($portes).",".generaNegativo($descuento).",'".$tipo_descuento."','".generaNegativo($cupon)."','".$codigoCupon."',".generaNegativo($monedero).",".generaNegativo($importe_fidelizacion).",".generaNegativo($total).",".$metodoEnvio.",".$metodoPago.",1,".$canal.",'ANULACION PEDIDO: ".$numero."',2);";
     
-//fwrite($file, "sql: ". $sql . PHP_EOL);
-
+    //fwrite($file, "sql: ". $sql . PHP_EOL);
+    //fwrite($file,  PHP_EOL);
 
     $database = DataBase::getInstance();
     $database->setQuery($sql);
@@ -72,7 +74,7 @@ if ($result) {
     if ($resulta) {
         $checking=true;
     }
-    $database->freeResults();
+    //$database->freeResults();
 }
 $database->freeResults();
 
@@ -84,9 +86,11 @@ if ($checking){
     $pedido = $resulta->fetch_object();  
     $idPedido=$pedido->id;
     $database->freeResults();
-    $checking=true; 
-//fwrite($file, "sql: ". $sql . PHP_EOL);
-
+    $checking=true;
+    
+    //fwrite($file, "sql: ". $sql . PHP_EOL);
+    //fwrite($file,  PHP_EOL);
+    
 }
   
 if ($checking){
@@ -100,6 +104,7 @@ if ($checking){
     $order['total']=generaNegativo($order['total']);
     $fecha_y_hora = date("Y-m-d H:i:s");
     $order['fecha']=$fecha_y_hora;
+    
     $carrito=$order['carrito'];
     
 }
@@ -108,14 +113,14 @@ if ($checking){
     for ($x=0;$x<count($carrito);$x++){
         //$carrito[$x]['cantidad']=generaNegativo($carrito[$x]['cantidad']);
         $carrito[$x]['cantidad']=$carrito[$x]['cantidad'];
-        $carrito[$x]['descuento']=generaNegativo($carrito[$x]['descuento']);
+        //$carrito[$x]['descuento']=generaNegativo($carrito[$x]['descuento']);
         $carrito[$x]['subtotal']=generaNegativo($carrito[$x]['subtotal']);
         $carrito[$x]['precio']=generaNegativo($carrito[$x]['precio']);
         $carrito[$x]['precio_sin']=generaNegativo($carrito[$x]['precio_sin']);
-        $carrito[$x]['nuevo_subtotal']=generaNegativo($carrito[$x]['nuevo_subtotal']);
-        $carrito[$x]['base']=generaNegativo($carrito[$x]['base']);
-        $carrito[$x]['iva_calculado']=generaNegativo($carrito[$x]['iva_calculado']);
-        $carrito[$x]['iva_calculado']=generaNegativo($carrito[$x]['iva_calculado']);
+        //$carrito[$x]['nuevo_subtotal']=generaNegativo($carrito[$x]['nuevo_subtotal']);
+        //$carrito[$x]['base']=generaNegativo($carrito[$x]['base']);
+        //$carrito[$x]['iva_calculado']=generaNegativo($carrito[$x]['iva_calculado']);
+        //$carrito[$x]['iva_calculado']=generaNegativo($carrito[$x]['iva_calculado']);
 
         $articulo= explode ('-',$carrito[$x]['id']);
         $idarticulo=$articulo[0];
@@ -124,7 +129,10 @@ if ($checking){
         $carrito[$x]['id']=$idarticulo;
 
         $sql="INSERT INTO pedidos_lineas (idPedido,idArticulo,descripcion,modificadores,canidad,precio,impuesto,menu,comentario) VALUES (".$idPedido.",".$idarticulo.",'".$descripcion."','".$modificador."',".$carrito[$x]['cantidad'].",".$carrito[$x]['precio_sin'].",".$carrito[$x]['iva'].",".$carrito[$x]['menu'].",'".$carrito[$x]['comentario']."');"; 
+        
         //fwrite($file, "sql: ". $sql . PHP_EOL);
+        //fwrite($file,  PHP_EOL);
+        
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
@@ -191,20 +199,12 @@ else {
     //$order['importe_fidelizacion'
    if($order['importe_fidelizacion']<0){
        //fwrite($file, "Fidelizacion ". PHP_EOL);
-        /*
-        $elmonedero = new Monedero;
-        $saldo=$elmonedero->leeMonedero($order['cliente']);
-
-        $nuevo_monedero=$saldo+($order['importe_fidelizacion']-$order['monedero']);
-        $actualizacione=$elmonedero->guardaMonedero($order['cliente'],$nuevo_monedero);
-       */
         
         $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$cliente.";";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
         $database->freeResults();
-        
     }
     //fwrite($file, "sql: ". $sql . PHP_EOL);
 
@@ -218,6 +218,7 @@ if ($order['metodo']<2){
     $database = DataBase::getInstance();
     $database->setQuery($sql);
     $result = $database->execute();
+    
     if ($result) { 
         $checking=true;
     }
@@ -236,10 +237,13 @@ if ($checking){
     if ($result) { 
         $checking=true;
     }
-
-    $database->freeResults();
+    else {
+        $checking=false;
+    }
     
-    /*
+    //fwrite($file, "sql: ". $sql . PHP_EOL);
+    
+    $database->freeResults();
     
     $sql="INSERT INTO orders (idPedido,datos) VALUES (".$idPedido.",'".json_encode($order,JSON_UNESCAPED_UNICODE)."');"; 
     $database = DataBase::getInstance();
@@ -252,13 +256,12 @@ if ($checking){
         $checking=false;
     }
     $database->freeResults();
-    //fwrite($file, "sql: ". $sql . PHP_EOL);
     
-    */
+    //fwrite($file, "sql: ". $sql . PHP_EOL);
 }
     
 
-$database->freeResults();  
+//$database->freeResults();  
 
 
 

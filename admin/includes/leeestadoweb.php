@@ -16,7 +16,7 @@ if ($result) {
     $idRedsys=$redsys->idrevo;
 }
 
-$sql="SELECT estadoweb.estado, integracion.tipo, empresa.nombre_comercial, incluye.push, incluye.mail, incluye.promos, incluye.multi, incluye.tarifas FROM estadoweb LEFT JOIN integracion ON integracion.id=estadoweb.id LEFT JOIN opcionescompra ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=estadoweb.id LEFT JOIN incluye ON incluye.id=estadoweb.id Where estadoweb.id=1";
+$sql="SELECT estadoweb.estado, integracion.tipo, empresa.nombre_comercial, incluye.push, incluye.mail, incluye.promos, incluye.multi, incluye.tarifas, opcionescompra.dias_vista FROM estadoweb LEFT JOIN integracion ON integracion.id=estadoweb.id LEFT JOIN opcionescompra ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=estadoweb.id LEFT JOIN incluye ON incluye.id=estadoweb.id Where estadoweb.id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -34,6 +34,7 @@ if ($result) {
         $mail=$estado ->mail;
         $promos=$estado ->promos;
         $multi=$estado ->multi;
+        $dias_vista=$estado ->dias_vista;
      }	
     
     $sql='SELECT id,alias FROM tiendas;';
@@ -54,7 +55,7 @@ $database->freeResults();
 
 
 
-$json=array("valid"=>$checking,"on"=>$on,"integracion"=>$integracion,"id"=>$id,"alias"=>$alias,"tarifa"=>$tarifa,"nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "push"=>$push, "mail"=>$mail, "promos"=>$promos, "multi"=>$multi);
+$json=array("valid"=>$checking,"on"=>$on,"integracion"=>$integracion,"id"=>$id,"dias_vista"=>$dias_vista,"alias"=>$alias,"tarifa"=>$tarifa,"nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "push"=>$push, "mail"=>$mail, "promos"=>$promos, "multi"=>$multi);
 
 ob_end_clean();
 echo json_encode($json);    
