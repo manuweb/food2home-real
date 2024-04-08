@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		
+		<title>Google Address Autocomplete API</title>
+	
+		
+		<link type="text/css" rel="stylesheet"  href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet"  href="css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet"  href="css/style.css">
+	</head>
+	<body>
+
+		<div class="" style="margin: 5px;margin-left:15px;margin-right: 15px;">
+			
+            <!-- Autocomplete location search input --> 
+            <div class="form-group">
+                <label style="font-weight: normal;">Domicilio:</label>
+                <input type="text" class="form-control" id="search_input" placeholder="Domicilio completo..." />
+                <input type="hidden" id="loc_lat" />
+                <input type="hidden" id="loc_long" />
+            
+
+            </div>
+
+        </div>
+
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&libraries=places&loading=async"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/script.js"> </script>
+	</body>
+</html>
