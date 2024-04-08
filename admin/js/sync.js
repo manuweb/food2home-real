@@ -5,6 +5,7 @@ $(".sync-button").on('click', function () {
     var productos=document.getElementById('chk-productos').checked;
     var modificadores=document.getElementById('chk-modificadores').checked;
     var imagenes=document.getElementById('chk-imagenes').checked;
+    var imagenes_png=document.getElementById('chk-imagenes-png').checked;
     $('.sync-button').prop('disabled', true);
     var precios=document.getElementById('chk-precios').checked;
     
@@ -12,10 +13,12 @@ $(".sync-button").on('click', function () {
     // grupos
     if (grupos==true){
         var syncimagen='false';
+        var syncimagen_png='false';
         if (imagenes==true) {syncimagen='true';}
+        if (imagenes_png==true) {syncimagen_png='true';}
         $('#li-grupos-progressbar').show();
         $('#li-grupos-progres').show();
-        $('#li-grupos-progress').html('Leyendo Grupos de Revo ..');
+        $('#grupos-progressbar-txt').html('Leyendo Grupos de Revo ..');
         var server=servidor+'admin/includes/syncgrupos.php';    
 
         $('.sync-button').prop('disabled', true);
@@ -36,23 +39,38 @@ $(".sync-button").on('click', function () {
 
                    // console.log(obj);
                     var pendientes=id.length;
+                    var hecho=0;
+                    var total=pendientes;
+                    $('#grupos-progressbar').removeClass('progressbar-infinite');
+                    
+                    $('#grupos-progressbar').addClass('progressbar');
+                    
                     for(n=0;n<id.length;n++){
-                       $('#li-grupos-progress').html('Grupo:'+nombre[n]); console.log('sinc:'+nombre[n]+'('+activo[n]+')');
+                       $('#grupos-progressbar-txt').html('Grupo:'+nombre[n]); //console.log('sinc:'+nombre[n]+'('+activo[n]+')');
+                        
                         var server=servidor+'admin/includes/syncguardagrupos.php';
+                        
+                        
                         $.ajax({
                             url: server,
-                            data:{id:id[n],nombre:nombre[n],imagen:imagen[n], orden:orden[n],impuesto:impuesto[n],activo:activo[n], syncimagen:syncimagen},
+                            data:{id:id[n],nombre:nombre[n],imagen:imagen[n], orden:orden[n],impuesto:impuesto[n],activo:activo[n], syncimagen:syncimagen,syncimagen_png:syncimagen_png},
                             method: "post",
                             dataType:"json",
                             success: function(data){    
                                 var obj=Object(data);
                                 if (obj.valid==true){
                                     pendientes--;
-                                    
+                                    hecho++;
+                                    app.progressbar.set('#grupos-progressbar', (hecho*100/total), 5);
                                     if (pendientes==0){
+                                        
                                         $('.sync-button').prop('disabled', false);
-                                        $('#li-grupos-progressbar').hide();
-                                        $('#li-grupos-progress').hide();
+                                        //$('#li-grupos-progressbar').hide();
+                                        //$('#li-grupos-progress').hide();
+                                        
+                                        $('#grupos-progressbar').hide();
+                                        $('#grupos-progressbar-txt').html('Resultado grupos: <a href="#" onclick="window.open(\''+servidor+'admin/includes/syncgrupos.txt\')">Ver log</a>');
+                                        
                                     }
                                 }
                             },
@@ -87,7 +105,7 @@ $(".sync-button").on('click', function () {
         if (imagenes==true) {syncimagen='true';}
         $('#li-categorias-progressbar').show();
         $('#li-categorias-progress').show();
-        $('#li-categorias-progress').html('Leyendo Categorías de Revo ..');
+        $('#categorias-progressbar-txt').html('Leyendo Categorías de Revo ..');
         $('.sync-button').prop('disabled', true);
         var server=servidor+'admin/includes/synccategorias.php';   $.ajax({
             url: server,
@@ -107,29 +125,39 @@ $(".sync-button").on('click', function () {
                     var modifier_category_id=obj.modifier_category_id;
                     var modifier_group_id=obj.modifier_group_id;
 
+                    $('#categorias-progressbar').removeClass('progressbar-infinite');
+                    
+                    $('#categorias-progressbar').addClass('progressbar');
                     
                     var el=$('#categorias-progressbar');
                     var pendientes=id.length;
-                    for(n=0;n<id.length;n++){
-                       $('#li-categorias-progress').html('Categoría:'+nombre[n]); console.log('sinc:'+nombre[n]+'('+activo[n]+')');
-
+                    var hecho=0;
+                    var total=pendientes;
                     
+                    for(n=0;n<id.length;n++){
+                        
+                       $('#categorias-progressbar-txt').html('Categoría:'+nombre[n]); //console.log('sinc:'+nombre[n]+'('+activo[n]+')');
+
+                        
                         var server=servidor+'admin/includes/syncguardacategorias.php';
                         
                         $.ajax({
                             url: server,
-                            data:{id:id[n], nombre:nombre[n], grupo:grupo[n], imagen:imagen[n], orden:orden[n], impuesto:impuesto[n], activo:activo[n], syncimagen:syncimagen, modifier_category_id:modifier_category_id[n], modifier_group_id:modifier_group_id[n]},
+                            data:{id:id[n], nombre:nombre[n], grupo:grupo[n], imagen:imagen[n], orden:orden[n], impuesto:impuesto[n], activo:activo[n], syncimagen:syncimagen, syncimagen_png:syncimagen_png, modifier_category_id:modifier_category_id[n], modifier_group_id:modifier_group_id[n]},
                             method: "post",
                             dataType:"json",
                             success: function(data){    
                                 var obj=Object(data);
                                 if (obj.valid==true){
                                     pendientes--;
-                                    
+                                    hecho++;
+                                    app.progressbar.set('#categorias-progressbar', (hecho*100/total), 5);
                                     if (pendientes==0){
                                         $('.sync-button').prop('disabled', false);
-                                        $('#li-categorias-progressbar').hide();
-                                        $('#li-categorias-progress').hide();
+                                        //$('#li-categorias-progressbar').hide();
+                                        //$('#li-categorias-progress').hide();
+                                        $('#categorias-progressbar').hide();
+                                        $('#categorias-progressbar-txt').html('Resultado categorías: <a href="#" onclick="window.open(\''+servidor+'admin/includes/synccategorias.txt\')">Ver log</a>');
                                     }
                                 }
                             },
@@ -166,7 +194,8 @@ $(".sync-button").on('click', function () {
         $('.sync-button').prop('disabled', true);
         $('#li-productos-progressbar').show();
         $('#li-productos-progress').show();
-        $('#li-productos-progress').html('Leyendo Productos de Revo ..');
+        $('#productos-progressbar-txt').html('Leyendo Productos de Revo ..');
+       
         var server=servidor+'admin/includes/syncproductos.php';  
         $.ajax({
             url: server,
@@ -193,10 +222,18 @@ $(".sync-button").on('click', function () {
                     //console.log('syncimagen:'+syncimagen);
                     //console.log('syncprecio:'+syncprecio);
                     
+                    
+                    $('#productos-progressbar').removeClass('progressbar-infinite');
+                    
+                    $('#productos-progressbar').addClass('progressbar');
                     //console.log(obj);
                     //for(n=0;n<1;n++){
                     var pendientes=id.length;
+                    var hecho=0;
+                    var total=pendientes;
+                    console.log('Total:'+total);
                     for(n=0;n<id.length;n++){
+                        
                         if (modifier_category_id[n]==null){
                             modifier_category_id[n]='';
                             
@@ -213,22 +250,27 @@ $(".sync-button").on('click', function () {
                             imagen[n]='';
                             
                         }
-                        $('#li-productos-progress').html('Producto:'+nombre[n]); console.log('sinc:'+nombre[n]+'('+activo[n]+')');
+                        $('#productos-progressbar-txt').html('Producto:'+nombre[n]); //console.log('sinc:'+nombre[n]+'('+activo[n]+')');
                         
                         var server=servidor+'admin/includes/syncguardaproductos.php';
                         $.ajax({
                             url: server,
-                            data:{ id:id[n], nombre:nombre[n], categoria:categoria[n], imagen:imagen[n], orden:orden[n], impuesto:impuesto[n], activo:activo[n], precio:precio[n], info:info[n],alergias:alergias[n], syncimagen:syncimagen, syncprecio:syncprecio, modifier_category_id:modifier_category_id[n], modifier_group_id:modifier_group_id[n], esMenu:esMenu[n]},
+                            data:{ id:id[n], nombre:nombre[n], categoria:categoria[n], imagen:imagen[n], orden:orden[n], impuesto:impuesto[n], activo:activo[n], precio:precio[n], info:info[n],alergias:alergias[n], syncimagen:syncimagen, syncimagen_png:syncimagen_png, syncprecio:syncprecio, modifier_category_id:modifier_category_id[n], modifier_group_id:modifier_group_id[n], esMenu:esMenu[n]},
                             method: "post",
                             dataType:"json",
                             success: function(data){    
                                 var obj=Object(data);
                                 if (obj.valid==true){
                                     pendientes--;
+                                    hecho++;
+                                    console.log('Pendientes:'+pendientes);
+                                    app.progressbar.set('#productos-progressbar', (hecho*100/total), 5);
                                     if (pendientes==0){
                                         $('.sync-button').prop('disabled', false);
-                                        $('#li-productos-progressbar').hide();
-                                        $('#li-productos-progres').hide();
+                                        //$('#li-productos-progressbar').hide();
+                                        //$('#li-productos-progres').hide();
+                                        $('#productos-progressbar').hide();
+                                        $('#productos-progressbar-txt').html('Resultado productos: <a href="#" onclick="window.open(\''+servidor+'admin/includes/syncproductos.txt\')">Ver log</a>');
                                     }
                                 }
                             },
