@@ -22,7 +22,7 @@ $sql="SELECT estadoweb.estado AS estado, opcionescompra.fidelizacion AS fideliza
 opcionescompra.cortesia AS cortesia, opcionescompra.maximocarrito AS maximocarrito, opcionescompra.portesgratis AS portesgratis, opcionescompra.importeportesgratis AS importeportesgratis,
 opcionescompra.portesgratismensaje AS portesgratismensaje,
 opcionescompra.norepartomensaje AS norepartomensaje,
-opcionescompra.minimo AS pedidominimo, opcionescompra.tipo_seleccion_horas AS tipo_seleccion_horas, integracion.tipo AS integracion, empresa.movil AS movil, empresa.nombre_comercial AS nombre_comercial FROM estadoweb LEFT JOIN opcionescompra ON opcionescompra.id=estadoweb.id LEFT JOIN integracion ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=opcionescompra.id Where estadoweb.id=1";
+opcionescompra.minimo AS pedidominimo, opcionescompra.tipo_seleccion_horas AS tipo_seleccion_horas, opcionescompra.dias_vista AS dias_vista, integracion.tipo AS integracion, empresa.movil AS movil, empresa.nombre_comercial AS nombre_comercial FROM estadoweb LEFT JOIN opcionescompra ON opcionescompra.id=estadoweb.id LEFT JOIN integracion ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=opcionescompra.id Where estadoweb.id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -48,7 +48,7 @@ if ($result) {
     $movil=$estado ->movil;
     $nombre_comercial=$estado ->nombre_comercial;
     $tipo_seleccion_horas=$estado ->tipo_seleccion_horas;
-    
+    $dias_vista=$estado ->dias_vista;
     $sql='SELECT id,alias, domicilio, telefono, lat, lng FROM tiendas;';
     //$database = DataBase::getInstance();
     $database->setQuery($sql);
@@ -74,7 +74,7 @@ if ($result) {
 }
 $database->freeResults();
 
-$json=array("valid"=>$checking, "movil"=>$movil, "on"=>$on,"fidelizacion"=>$fidelizacion, "porcentaje"=>$porcentaje, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "maximocarrito"=>$maximocarrito,  "integracion"=>$integracion, "pedidominimo"=>$pedidominimo,"id"=>$id,"alias"=>$alias,"domicilio"=>$domicilio,"telefono"=>$telefono,"lat"=>$lat,"lng"=>$lng, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje, "nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "tipo_seleccion_horas"=>$tipo_seleccion_horas);
+$json=array("valid"=>$checking, "movil"=>$movil, "on"=>$on,"fidelizacion"=>$fidelizacion, "porcentaje"=>$porcentaje, "tiempoenvio"=>$tiempoenvio, "cortesia"=>$cortesia, "maximocarrito"=>$maximocarrito,  "integracion"=>$integracion, "pedidominimo"=>$pedidominimo,"id"=>$id,"alias"=>$alias,"domicilio"=>$domicilio,"telefono"=>$telefono,"lat"=>$lat,"lng"=>$lng, "portesgratis"=>$portesgratis, "importeportesgratis"=>$importeportesgratis, "portesgratismensaje"=>$portesgratismensaje, "norepartomensaje"=>$norepartomensaje, "nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "tipo_seleccion_horas"=>$tipo_seleccion_horas, "dias_vista"=>$dias_vista);
 
 ob_end_clean();
 echo json_encode($json);    

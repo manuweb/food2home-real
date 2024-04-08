@@ -26,10 +26,16 @@ $checking=false;
 
 $horarioreparto=$array['horario'];
 $horariococina=$array['horariococina'];
+$lafecha=$array['fecha'];
+// 01/34/6789
+$fecha=date_create(substr($lafecha,6,4)."-".substr($lafecha,3,2)."-".substr($lafecha,0,2));
 
 $checking=false;
-$hoy=date('w');
+$hoy=date_format($fecha,'w');
 $busco='lpp';
+
+
+
 switch ($hoy) {
     case "0":
         $busco='dpp';
@@ -73,7 +79,7 @@ $db->setQuery($sql);
 $maximo = $db->loadObjectList();  
 */
 //$db->freeResults();
-$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE fecha LIKE "'.date('Y').'-'.date('m').'-'.date('d').'%" AND estadoPago>=0 GROUP by hora, metodoEnvio;';
+$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE dia="'.date_format($fecha,'Y-m-d').'" AND estadoPago>=0 GROUP by hora, metodoEnvio;';
 
 $database = DataBase::getInstance();
 $database->setQuery($sql1);

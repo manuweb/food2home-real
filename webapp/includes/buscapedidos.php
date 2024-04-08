@@ -40,7 +40,7 @@ if ($result && $result->num_rows != 0) {
     $numReg=$result->num_rows;
     $limitInf=($pagina-1)*$tamPagina;
 
-    $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha, pedidos.cliente as cliente, usuarios_app.id AS idusu, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.cliente=".$cliente." AND estadoPago>=0 AND anulado=0 ORDER BY pedidos.fecha DESC LIMIT ".$limitInf.",".$tamPagina.";";
+    $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha, pedidos.dia as dia, pedidos.cliente as cliente, usuarios_app.id AS idusu, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.cliente=".$cliente." AND estadoPago>=0 AND anulado=0 ORDER BY pedidos.dia DESC LIMIT ".$limitInf.",".$tamPagina.";";
 
     $database = DataBase::getInstance();
     $database->setQuery($sql);
@@ -54,6 +54,7 @@ if ($result && $result->num_rows != 0) {
             $numero[$n]=$pedidos->numero;
             $estadoPago[$n]=$pedidos->estadoPago;
             $fecha[$n]=$pedidos->fecha;
+            $dia[$n]=$pedidos->dia;
             $clientes[$n]=$pedidos->cliente;
             $apellidos[$n]=$pedidos->apellidos;
             $nombre[$n]=$pedidos->nombre;
@@ -100,7 +101,11 @@ if ($result && $result->num_rows != 0) {
 
     for ($x=0;$x<count($id);$x++){
 
-        $fecha2[$x]=substr($fecha[$x],8,2).'/'.substr($fecha[$x],5,2).'/'.substr($fecha[$x],0,4);
+        //$fecha2[$x]=substr($fecha[$x],8,2).'/'.substr($fecha[$x],5,2).'/'.substr($fecha[$x],0,4);
+       $fecha2[$x]= substr($fecha[$x],8,2).'/'.substr($fecha[$x],5,2).'/'.substr($fecha[$x],0,4);
+       if ($dia[$x]!=null){
+           $fecha2[$x]=substr($dia[$x],8,2).'/'.substr($dia[$x],5,2).'/'.substr($dia[$x],0,4);
+       }
         
  
         $img_reparto=$urlservidor.'/webapp/img/reparto.png';
@@ -167,7 +172,7 @@ else {
 
 $database->freeResults();  
 
-$json=array("valid"=>$checking,"id"=>$id,"numero"=>$numero,"fecha"=>$fecha,"cliente"=>$clientes,"apellidos"=>$apellidos,"nombre"=>$nombre,"ape_otro"=>$ape_otro,"nom_otro"=>$nom_otro,"subtotal"=>$subtotal,"impuestos"=>$impuestos,"descuentos"=>$descuentos,"total"=>$total,"envio"=>$envio,"metodo"=>$metodo,"estadoPago"=>$estadoPago,"registros"=>$numReg, "txt"=>$txt);
+$json=array("valid"=>$checking,"id"=>$id,"numero"=>$numero,"fecha"=>$fecha,"dia"=>$dia,"cliente"=>$clientes,"apellidos"=>$apellidos,"nombre"=>$nombre,"ape_otro"=>$ape_otro,"nom_otro"=>$nom_otro,"subtotal"=>$subtotal,"impuestos"=>$impuestos,"descuentos"=>$descuentos,"total"=>$total,"envio"=>$envio,"metodo"=>$metodo,"estadoPago"=>$estadoPago,"registros"=>$numReg, "txt"=>$txt);
 
 echo json_encode($json); 
 

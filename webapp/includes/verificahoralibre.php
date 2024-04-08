@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Archivo: mirapedidoshoy.php
+ * Archivo: verificahoralibre.php
  *
  * Version: 1.0.0
  * Fecha  : 18/08/2023
@@ -27,8 +27,14 @@ $checking=false;
 $envio=$array['envio'];
 $hora=$array['hora'];
 
+$lafecha=$array['dia'];
+// 01/34/6789
+$fecha=date_create(substr($lafecha,6,4)."-".substr($lafecha,3,2)."-".substr($lafecha,0,2));
+
 $checking=false;
-$hoy=date('w');
+//$hoy=date('w');
+$hoy=date_format($fecha,'w');
+
 $busco='lpp';
 switch ($hoy) {
     case "0":
@@ -77,7 +83,10 @@ $maximo = $db->loadObjectList();
 $envio=$array['envio'];
 $hora=$array['hora'];
 
-$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE fecha LIKE "'.date('Y').'-'.date('m').'-'.date('d').'%" AND estadoPago>=0  AND metodoEnvio='.$envio.' AND hora="'.$hora.'" GROUP by hora, metodoEnvio;';
+//$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE fecha LIKE "'.date('Y').'-'.date('m').'-'.date('d').'%" AND estadoPago>=0  AND metodoEnvio='.$envio.' AND hora="'.$hora.'" GROUP by hora, metodoEnvio;';
+
+$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE dia="'.date_format($fecha,'Y-m-d').'" AND estadoPago>=0 GROUP by hora, metodoEnvio;';
+
 
 $database = DataBase::getInstance();
 $database->setQuery($sql1);

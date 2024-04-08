@@ -56,6 +56,9 @@ $monedero=floatval($array['monedero']);
 
 $importe_fidelizacion=$array['importe_fidelizacion'];
 $hora=$array['hora'];
+//01/34/6789
+$dia=$array['dia'];
+$dia=substr($dia,6,4).'-'.substr($dia,3,2).'-'.substr($dia,0,2);
 $canal=$array['canal'];
 
 $subtotal=$array['subtotal'];
@@ -86,10 +89,11 @@ $order['cupon']=$array['cupon'];
 $order['monedero']=$monedero;
 $order['importe_fidelizacion']=$importe_fidelizacion;
 $order['hora']=$hora;
+$order['hora']=$dia;
 $order['canal']=$canal;
 $order['subtotal']=$subtotal;
 $order['canal']=$canal;
-$order['comentario']=$comentario;
+$order['comentario']=eliminaIntros($comentario);
 $order['total']=$total;
 $order['pedido']=$OrderId;
 $order['publicidad']=$publicidad;
@@ -99,6 +103,13 @@ $domicilio['complementario']=eliminaComillas($domicilio['complementario']);
 
 
 
+// idRedsys
+$sql="SELECT idrevo FROM metodospago WHERE esRedsys=1;";
+$db = DataBase::getInstance();  
+$db->setQuery($sql);  
+$iesRedsys = $db->loadObjectList();  
+$db->freeResults();
+$esRedsys=$iesRedsys[0]->idrevo;
 
 
 // Buscar impuestos
@@ -315,11 +326,9 @@ for ($x=0;$x<count($carrito);$x++){
 
 $order['fecha']=date('Y-m-d H:i:s');
 
-$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', CURRENT_TIMESTAMP, '".$hora."',".$cliente.",".$subtotal.",".$sumadeivas.",".$portes.",".$descuento.",'".$tipo_descuento."','".$cupon."',".$monedero.",".$importe_fidelizacion.",".$total.",".$envio.",".$tarjeta.",0,".$canal.",'".$comentario."',0);";
+$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", 0, ".$canal.", '".$comentario."', 0);";
 
-
-
-$order['fecha']=date('Y-m-d H:i:s');
+//$order['fecha']=date('Y-m-d H:i:s');
 
 $db = DataBase::getInstance();  
 $db->setQuery($sql);  
@@ -347,23 +356,29 @@ if ($cliente!=0){
    if($importe_fidelizacion>0){
        //fwrite($file, "Fidelizacion ". PHP_EOL);
         $importe_fide=0;
-        $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
+       
+       //$esRedsys != $tarjeta
+       if ($esRedsys != $tarjeta){
+            $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
        
        //fwrite($file, "sql: ".$sql. PHP_EOL);
         
-        $db = DataBase::getInstance();  
-        $db->setQuery($sql); 
+     
+            $db = DataBase::getInstance();  
+            $db->setQuery($sql); 
        
         
         //$moned = $db->loadObjectList(); 
        
-        if ($db->alter()){
-            //fwrite($file, "sql OK ". PHP_EOL);
-        }
-       else {
-           //fwrite($file, "sql NO ". PHP_EOL);
-       }
+            if ($db->alter()){
+                //fwrite($file, "sql OK ". PHP_EOL);
+            }
+            else {
+               //fwrite($file, "sql NO ". PHP_EOL);
+           }
         //$db->freeResults();
+        
+       }
    }
 }
 //$idPedido
@@ -622,6 +637,7 @@ function generate_string($strength = 8) {
  
     return $random_string;
 }
+
 
 function eliminaComillas($texto){
     $texto=str_replace('"', '*', $texto);  

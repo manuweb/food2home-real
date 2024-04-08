@@ -64,11 +64,12 @@ ob_end_clean();
 echo json_encode($json); 
 
 /*
-$file = fopen("leeunpedido.txt", "w");
+$file = fopen("zz-leeunpedido.txt", "w");
 
 
 fwrite($file, "JSON: ". json_encode($json) . PHP_EOL); 
-fwrite($file, "numero: ". $array['numero'] . PHP_EOL); 
+
 fclose($file);
 */
+
 ?>
