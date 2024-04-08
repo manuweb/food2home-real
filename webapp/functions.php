@@ -330,7 +330,7 @@ class RecomponePedido
     function DatosGlobalesPedido($IdPedido)     
     {
         
-        $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.numeroRevo as numeroRevo, pedidos.canal as canal, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha,pedidos.hora as hora, pedidos.cliente as cliente, usuarios_app.id AS idcliente, usuarios_app.tratamiento as tratamiento, usuarios_app.username as email, usuarios_app.telefono as telefono, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, pedidos.portes as portes, pedidos.descuento AS descuento, pedidos.monedero as monedero, pedidos.importe_fidelizacion as importe_fidelizacion, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodoPago, pedidos.codigoCupon as codigoCupon, pedidos.cupon as cupon, pedidos.tipo_descuento as tipo_descuento, pedidos.comentario as comentario, pedidos_clientes.tratamiento AS tra_otro, pedidos_clientes.email AS ema_otro, pedidos_clientes.telefono AS tel_otro, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.id=".$IdPedido.";";
+        $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.numeroRevo as numeroRevo, pedidos.canal as canal, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha,pedidos.dia as dia,pedidos.hora as hora, pedidos.cliente as cliente, usuarios_app.id AS idcliente, usuarios_app.tratamiento as tratamiento, usuarios_app.username as email, usuarios_app.telefono as telefono, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, pedidos.portes as portes, pedidos.descuento AS descuento, pedidos.monedero as monedero, pedidos.importe_fidelizacion as importe_fidelizacion, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodoPago, pedidos.codigoCupon as codigoCupon, pedidos.cupon as cupon, pedidos.tipo_descuento as tipo_descuento, pedidos.comentario as comentario, pedidos_clientes.tratamiento AS tra_otro, pedidos_clientes.email AS ema_otro, pedidos_clientes.telefono AS tel_otro, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.id=".$IdPedido.";";
 
         $database = DataBase::getInstance();
         $database->setQuery($sql);
@@ -341,6 +341,7 @@ class RecomponePedido
             $numero=$pedido->numero;
             $numeroRevo=$pedido->numeroRevo;
             $fecha=$pedido->fecha;
+            $dia=$pedido->dia;
             $hora=$pedido->hora;
             $cliente=$pedido->cliente;
             if ($cliente!=0){
@@ -387,6 +388,7 @@ class RecomponePedido
                 "tarjeta" =>$metodoPago,
                 "cliente" =>$cliente,
                 "fecha" =>$fecha,
+                "dia" =>$dia,
                 "hora" =>$hora,
                 "portes" =>$portes,
                 "descuento" =>$descuento,
@@ -715,11 +717,12 @@ class PedidosRevo
         $customer['postalCode']=$order['domicilio']['cod_postal'];
         $customer['phone']=$order['telefono'];
 
-        $mifecha= date(substr($order['fecha'],0,10)." ". $order['hora'].":00"); 
-        $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+        //$mifecha= date(substr($order['fecha'],0,10)." ". $order['hora'].":00"); 
+        $mifecha= date($order['dia']." ". $order['hora'].":00"); 
+        $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
-        $delivery['channel']=22;
+        //$delivery['channel']=22;
 
         if ($order['metodo']==1) { //1=enviar, 2=recoger
             $delivery['address']=$order['domicilio']['direccion'];
@@ -730,6 +733,10 @@ class PedidosRevo
         $delivery['date']=$NuevaFecha;
         $clienttoken=$this->clienttoken;
         $url=$this->url;
+        
+        $file = fopen("zz-leepedidos.txt", "w");
+        fwrite($file, "Fecha: ". $delivery['date'] . PHP_EOL);
+        fclose($file);
         $topost="customer=".json_encode($customer)."&order=".json_encode($orders)."&delivery=".json_encode($delivery);
         $header=array(
                 'tenant: ' . $user,"Authorization: Bearer ". $token, "client-token: ".$clienttoken
@@ -872,6 +879,66 @@ class MisMails
         return $devuelve;
     }
     
+    public function TextoCupon($cupon){
+        $devuelve='';
+        $sql="SELECT desde, hasta, tipo,logica FROM promos WHERE codigo='".$cupon."'";
+        
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows>0) {
+            $promos = $result->fetch_object();
+
+            $tipo=$promos->tipo;  
+            $desde=$promos->desde;
+            $hasta=$promos->hasta;
+
+            $logica=$promos->logica; 
+        }
+
+        $hoy = date("d-m-Y h:m:s");
+        //Incrementando x dias
+        $textoDescuento='';
+
+
+        $porciones = explode("##", $logica);
+
+        if ($tipo==1){
+            $textoDescuento='Tienes un <b>'.$porciones[0].'%</b> de descuento comprando un mínimo de <b>'.$porciones[1].'</b> &euro;.';
+        }
+        if ($tipo==2){
+            $sql="SELECT id, nombre FROM productos WHERE id='".$porciones[1]."'";
+            $database->setQuery($sql);
+            $result = $database->execute();
+            if ($result->num_rows>0) {
+                $prod = $result->fetch_object();
+            
+                $db->freeResults();
+                $producto=$prod->nombre;
+                $textoDescuento='Tienes un <b>'.$porciones[0].'%</b> de descuento al comprar <b><i>'.$producto.'</i></b>.';
+            }
+        }
+        if ($tipo==3){
+            $textoDescuento='Tienes Envío GRATIS';
+            if($porciones[0]==''){
+                $textoDescuento.='.';
+            }
+            else {
+                $textoDescuento.=' comprando un mínimo de <b>'.$porciones[0].'</b> &euro;.';
+            }
+        }
+        if ($tipo==4){
+            $textoDescuento='Tienes <b>'.$porciones[0].'</b> &euro; de descuento al comprar un mínimo de <b>'.$porciones[0].'</b> &euro;.';
+        }
+        $database->freeResults();
+            //0123-56-89 12:45
+        $desdetxt=substr($desde,8,2).'/'.substr($desde,5,2).'/'.substr($desde,0,4).' ('.substr($desde,11,5).')';
+        $hastatxt=substr($hasta,8,2).'/'.substr($hasta,5,2).'/'.substr($hasta,0,4).' ('.substr($hasta,11,5).')';
+        $devuelve='<h3 style="margin:0;"><img src="'.URLServidor.'webapp/img/cupon.png" width="64" height="64" alt="f" style="vertical-align: middle;padding: 10px;"><span style="border:solid 1px;border-radius:5px;">&nbsp;'.$cupon.'&nbsp;</span></h3><p>'.$textoDescuento.'<br><i>Usalo   desde el '.$desdetxt.' hasta el '.$hastatxt.'</i>.</p>';   
+
+        return $devuelve;
+    }
+    
     public function CreaBodyTextoRecupera($email){
         $devuelve=[];
         $textomail='';
@@ -933,6 +1000,8 @@ class MisMails
                 $textomail=str_replace('[usuarioApellidos]',$usuario->apellidos,$textomail);
                 $textomail=str_replace('[usuarioEmail]',$email,$textomail);
                 $textomail=str_replace('[usuarioTelefono]',$usuario->telefono,$textomail);
+                
+                
                 
                 $sql="SELECT dias,tipo,logica FROM promos WHERE id=1 AND activo=1;";
     
@@ -1339,7 +1408,7 @@ class ImprimeTicket
         if ($order['metodo']==2){
             $txt='Recogida programada';
         }
-        $fecha=$order['fecha'];
+        $fecha=$order['dia'];
         $hora=$order['hora'];
         $dimensions = imagettfbbox(24, 0, $font_path_b, $txt);
         $textWidth = abs($dimensions[4] - $dimensions[0]);
@@ -1612,7 +1681,8 @@ class ImprimeTicket
     
 }
 
-class Monedero {
+class Monedero 
+{
     //public $http;
     public function __construct(){
     }
@@ -1643,6 +1713,234 @@ class Monedero {
         $database->freeResults();  
         return $monedero;         
     }
+    
+}
+
+
+class Producto 
+{
+    //public $http;
+    public function __construct(){
+    }
+    
+    public function leegruposactivos($tienda=0){
+        $devuelve=[];
+        
+        $sql="SELECT grupos.id, grupos.nombre ,COUNT(productos.id) AS cantidad, grupos.imagen, grupos.imagen_app FROM grupos LEFT JOIN categorias ON categorias.grupo=grupos.id LEFT JOIN productos ON productos.categoria=categorias.id where grupos.activo_web=1 AND categorias.activo_web=1 AND productos.activo_web=1 AND grupos.tienda=".$tienda." AND categorias.tienda=".$tienda." AND productos.tienda=".$tienda." GROUP BY grupos.id ORDER BY grupos.orden;";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'cantidad'=>$grupo->cantidad,
+                    'imagen'=>$imagen=$grupo->imagen,
+                    'imagen_app'=>$grupo->imagen_app
+                ];      
+            }
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
+    public function leegrupo($id,$tienda=0){
+        $devuelve=[];
+        
+        $sql="SELECT grupos.id, grupos.nombre, grupos.activo, grupos.activo_web, grupos.imagen, grupos.imagen_app FROM grupos WHERE grupos.id=".$id." AND tienda=".$tienda.";";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            $grupo = $result->fetch_object();
+            $devuelve=[
+                'id'=>$grupo->id,
+                'nombre'=>$grupo->nombre,
+                'imagen'=>$grupo->imagen,
+                'imagen_app'=>$grupo->imagen,
+                'imagen'=>$grupo->imagen_app,
+                'activo'=>$grupo->activo,
+                'activo_web'=>$grupo->activo_web
+
+            ];      
+            
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
+    public function leecategoriasactivas($grupo=0,$tienda=0){
+        $devuelve=[];
+        $elgrupo='';
+        if ($grupo!=0){
+            $elgrupo=' AND categorias.grupo='.$grupo;
+        }
+        $sql="SELECT categorias.id, categorias.nombre , categorias.grupo ,COUNT(productos.id) AS cantidad, categorias.imagen, categorias.imagen_app, categorias.modifier_category_id, categorias.modifier_group_id FROM categorias LEFT JOIN productos ON productos.categoria=categorias.id WHERE categorias.activo_web=1 AND productos.activo_web=1 AND categorias.tienda=".$tienda.$elgrupo." AND productos.tienda=".$tienda." GROUP BY categorias.id ORDER BY categorias.orden;";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                $imagen=$grupo->imagen_app;
+                if ($imagen==''){
+                    $imagen=$grupo->imagen;
+                }
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'grupo'=>$grupo->grupo,
+                    'cantidad'=>$grupo->cantidad,
+                    'imagen'=>$imagen,
+                    'modifier_category_id'=>$grupo->modifier_category_id,
+                    'modifier_group_id'=>$grupo->modifier_group_id
+                ];      
+            }
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
+    public function leecategoria($id,$tienda=0){
+        $devuelve=[];
+        
+        $sql="SELECT categorias.id, categorias.nombre, categorias.grupo, categorias.activo, categorias.activo_web, categorias.imagen, categorias.imagen_app, categorias.modifier_category_id, categorias.modifier_group_id FROM categorias WHERE categorias.id=".$id." AND tienda=".$tienda.";";
+        
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            $grupo = $result->fetch_object();
+            $devuelve=[
+                'id'=>$grupo->id,
+                'nombre'=>$grupo->nombre,
+                'grupo'=>$grupo->grupo,
+                'imagen'=>$grupo->imagen,
+                'imagen_app'=>$grupo->imagen,
+                'imagen'=>$grupo->imagen_app,
+                'activo'=>$grupo->activo,
+                'activo_web'=>$grupo->activo_web,
+                'modifier_category_id'=>$grupo->modifier_category_id,
+                'modifier_group_id'=>$grupo->modifier_group_id
+
+            ];      
+            
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
+    public function leeproductosactivos($categoria=0,$tienda=0){
+        $devuelve=[];
+        $lacategoria='';
+        if ($categoria!=0){
+            $lacategoria=' AND productos.categoria='.$categoria;
+        }
+        $sql="SELECT productos.id, productos.nombre , productos.categoria, productos.precio_web, productos.imagen, productos.imagen_app1, productos.alergias, productos.modifier_category_id, productos.modifier_group_id, productos.modificadores, productos.esMenu, categorias.modifier_category_id as cat_modifier_category_id, categorias.modifier_group_id AS cat_modifier_group_id FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria WHERE productos.activo_web=1 AND productos.tienda=".$tienda.$lacategoria." ORDER BY productos.orden;";
+        
+       
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                $imagen=$grupo->imagen_app1;
+                if ($imagen==''){
+                    $imagen=$grupo->imagen;
+                }
+                $modifier_category_id='';
+                $modifier_group_id='';
+                if ($grupo->cat_modifier_category_id!=''){
+                    $modifier_category_id=$grupo->cat_modifier_category_id;
+                }
+                else {
+                    $modifier_category_id=$grupo->modifier_category_id;
+                }
+                if ($grupo->cat_modifier_group_id!=''){
+                    $modifier_group_id=$grupo->cat_modifier_group_id;
+                }
+                else {
+                    $modifier_category_id=$grupo->modifier_category_id;
+                }
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'categoria'=>$grupo->categoria,
+                    'precio'=>$grupo->precio_web,
+                    'imagen'=>$imagen,
+                    'alergias'=>$grupo->alergias,
+                    'modifier_category_id'=>$modifier_category_id,
+                    'modifier_group_id'=>$modifier_group_id,
+                    'modificadores'=>$grupo->modificadores,
+                    'esmenu'=>$grupo->esMenu
+                    
+                ];      
+            }
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
+    public function leeproducto($id,$tienda=0){
+        $devuelve=[];
+        $lacategoria='';
+        
+        $sql="SELECT productos.id, productos.nombre , productos.categoria, productos.precio_web, productos.imagen, productos.imagen_app1, productos.alergias,productos.activo, productos.activo_web, productos.modifier_category_id, productos.modifier_group_id, productos.modificadores, productos.esMenu, categorias.modifier_category_id as cat_modifier_category_id, categorias.modifier_group_id AS cat_modifier_group_id FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria WHERE productos.id=".$id." AND productos.tienda=".$tienda.";";
+
+        //echo $sql;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                $imagen=$grupo->imagen_app1;
+                if ($imagen==''){
+                    $imagen=$grupo->imagen;
+                }
+                $modifier_category_id='';
+                $modifier_group_id='';
+                if ($grupo->cat_modifier_category_id!=''){
+                    $modifier_category_id=$grupo->cat_modifier_category_id;
+                }
+                else {
+                    $modifier_category_id=$grupo->modifier_category_id;
+                }
+                if ($grupo->cat_modifier_group_id!=''){
+                    $modifier_group_id=$grupo->cat_modifier_group_id;
+                }
+                else {
+                    $modifier_category_id=$grupo->modifier_category_id;
+                }
+                $devuelve=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'categoria'=>$grupo->categoria,
+                    'precio'=>$grupo->precio_web,
+                    'imagen'=>$imagen,
+                    'alergias'=>$grupo->alergias,
+                    'activo'=>$grupo->activo,
+                    'activo_web'=>$grupo->activo_web,
+                    'modifier_category_id'=>$modifier_category_id,
+                    'modifier_group_id'=>$modifier_group_id,
+                    'modificadores'=>$grupo->modificadores,
+                    'esmenu'=>$grupo->esMenu
+                ];      
+            }
+        }
+        $database->freeResults(); 
+        return $devuelve;
+        
+    }
+    
     
 }
 
