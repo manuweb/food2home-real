@@ -1,1 +1,15 @@
+html {
+    /* background-color: #f0f3f4;*/
+    position: relative;
+    min-height: 100%;
+}
+body {
+    background-color: transparent;
+    color: #58666e;
+    font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+    /*padding-top: 50px;*/
+    /* margin-bottom: 60px;*/
+}
 
