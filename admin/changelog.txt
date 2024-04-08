@@ -1,5 +1,5 @@
 <p><i class="f7-icons size-16">calendar</i> 08/04/2024 MEJORAS:<br><b>Pedidos</b><br>
-Ya se puede realizar pedoidos a x días vista, por defecto está a 1 día (hoy).
+Ya se puede realizar pedidos a x días vista, por defecto está a 1 día (hoy).
 </p>
 <p><i class="f7-icons size-16">calendar</i> 07/03/2024 MEJORAS:<br><b>Informes</b><br>
 Ya se puede exportar los informes a Excel.<br>
