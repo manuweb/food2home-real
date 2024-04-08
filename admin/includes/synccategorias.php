@@ -16,6 +16,7 @@ $url=URLREVO.'api/external/v2/catalog/categories?page=';
 $pagina=1;
 $finished = false;    
 $contador=0;
+$datosRevo=[];
 while ( ! $finished ):                   // while not finished
     sleep(5);
     $curl = curl_init();
@@ -50,7 +51,17 @@ while ( ! $finished ):                   // while not finished
         $activo[]=$datos[$n]['active'];
         $modifier_group_id[]=$datos[$n]['modifier_group_id'];
         $modifier_category_id[]=$datos[$n]['modifier_category_id'];
-        
+        $datosRevo[]=[
+            'id'=>$datos[$n]['id'],
+            'grupo'=>$datos[$n]['group_id'],
+            'nombre'=>$datos[$n]['name'],
+            'imagen'=>$datos[$n]['photo'],
+            'impuesto'=>$datos[$n]['tax_id'],
+            'orden'=>$datos[$n]['order'],
+            'activo'=>$datos[$n]['active'],
+            'modifier_group_id'=>$datos[$n]['modifier_group_id'],
+            'modifier_category_id'=>$datos[$n]['modifier_category_id']
+        ];
     }
 
     $contador=$contador+count($datos);
@@ -69,5 +80,10 @@ $json=array("valid"=>$checking,"id"=>$id,"nombre"=>$nombre,"grupo"=>$grupo,"imag
 
 echo json_encode($json); 
 
+$file = fopen("synccategorias.txt", "w");
+fwrite($file, "Datos traidos de Revo: ".   PHP_EOL); 
+fwrite($file, "---------------------- ".   PHP_EOL); 
+fclose($file);
 
+file_put_contents('synccategorias.txt', print_r($datosRevo, true),FILE_APPEND);
 ?>

@@ -9,6 +9,7 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
 $syncimagen=$array['syncimagen'];
+$syncimagen_png=$array['syncimagen_png'];
 
 $sql="SELECT * FROM grupos WHERE id='".$array['id']."';";
 
@@ -19,6 +20,7 @@ $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
 
+$existe='UPDATE';
 // Verificar si se obtuvieron resultados
 if ($result->num_rows>0) {
     $checking=true;
@@ -31,6 +33,7 @@ if ($result->num_rows>0) {
 }
 
 else {
+    $existe='NEW';
      if ($syncimagen=='true'){
         $sql="INSERT INTO grupos (id, nombre, orden, imagen, impuesto, activo,imagen_app) VALUES ('".$array['id']."','".$array['nombre']."', '".$array['orden']."', '".$array['imagen']."', '".$array['impuesto']."', '".$array['activo']."','');";   
     }
@@ -44,10 +47,19 @@ else {
 $database->setQuery($sql);
 $result = $database->execute();
 
+$file = fopen("syncgrupos.txt", "a+");
+fwrite($file,  PHP_EOL); 
 
-if ($result->num_rows>0) {
+fwrite($file, "Grupo: ".$array['nombre']. ' ('.$array['id'].')'); 
+
+if ($result) {
    $checking=true; 
+    fwrite($file, " - ".$existe." - OK".  PHP_EOL); 
 }
+else {
+    fwrite($file, " - ".$existe." - KO".  PHP_EOL);
+}
+fclose($file);
 $database->freeResults();
 
 $json=array("valid"=>$checking);
