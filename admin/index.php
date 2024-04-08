@@ -31,6 +31,7 @@ include "../webapp/MySQL/DataBase.class.php";
     <link rel="stylesheet" href="framework7/framework7-bundle.min.css">
     <link rel="stylesheet" href="css/icons.css">
     <link rel="stylesheet" href="css/app.css">
+    
     <script src="../js/jquery.min.js"></script>  
     
 
@@ -543,7 +544,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     <!-- FIN navbar -->   
 
                   <div class="page-content">
-                    <div class="block-title block-title-medium" >Pedidos</div>
+                      <div class="block-title block-title-medium" ><span id="pedidos-titulo">Pedidos</span> <span style="float: right;"><button class="button button-fill" onclick="hacerPedido();" id="boton-hacer-pedido">Hacer pedido</button></span></div>
 
                     <div id="pedidos-page" class=""> 
                         <div class="grid grid-gap medium-grid-cols-3 small-grid-cols-2 xsmall-grid-cols-1" style="padding: 15px;padding-bottom: 0;">
@@ -631,7 +632,8 @@ include "../webapp/MySQL/DataBase.class.php";
                         
                         
                     </div>
-
+                    <div id="pedido-manual" style="display:none;"></div>  
+                      
                   </div>
                 </div>          
 
@@ -1969,33 +1971,41 @@ include "../webapp/MySQL/DataBase.class.php";
     <script>
         var autentificado='<?php echo $_SESSION["autentificado"];?>';
     </script>
-
+    <!--
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&libraries=places&loading=async" async></script>
+        
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs"></script>
+        -->
+    
+    
     <!-- App scripts -->
     <script>
+        var mathrandom=Math.random();
         var scriptsjs = [
-            "js/cnfg.js?" + Math.random(),
-            "js/integra.js?" + Math.random(),
-            "js/app.js?" + Math.random(),
-            "js/modificadores.js?" + Math.random(),
-            "js/impuestos.js?" + Math.random(),
-            "js/empresa.js?" + Math.random(),
-            "js/alergenos.js?" + Math.random(),
-            "js/sync.js?" + Math.random(),
-            "js/productos.js?" + Math.random(),
-            "js/repartos.js?" + Math.random(),
-            "js/productosdestacados.js?" + Math.random(),
-            "js/paginainicio.js?" + Math.random(),
-            "js/paginanosotros.js?" + Math.random(),
-            "js/metodospago.js?" + Math.random(),
-            "js/promociones.js?" + Math.random(),
-            "js/push.js?" + Math.random(),
-            "js/fidelizacion.js?" + Math.random(),
-            "js/pedidos.js?" + Math.random(),
-            "js/informes.js?" + Math.random(),
-            "js/correos.js?" + Math.random(),
-            "js/config.js?" + Math.random(),
-            "js/clientes.js?" + Math.random(),
-            "js/canvasjs.min.js?" + Math.random()
+            "js/cnfg.js?" + mathrandom,
+            "js/integra.js?" + mathrandom,
+            "js/app.js?" + mathrandom,
+            "js/modificadores.js?" + mathrandom,
+            "js/impuestos.js?" + mathrandom,
+            "js/empresa.js?" + mathrandom,
+            "js/alergenos.js?" + mathrandom,
+            "js/sync.js?" + mathrandom,
+            "js/productos.js?" + mathrandom,
+            "js/repartos.js?" + mathrandom,
+            "js/productosdestacados.js?" + mathrandom,
+            "js/paginainicio.js?" + mathrandom,
+            "js/paginanosotros.js?" + mathrandom,
+            "js/metodospago.js?" + mathrandom,
+            "js/promociones.js?" + mathrandom,
+            "js/push.js?" + mathrandom,
+            "js/fidelizacion.js?" + mathrandom,
+            "js/pedidos.js?" + mathrandom,
+            "js/hacerpedido.js?" + mathrandom,
+            "js/informes.js?" + mathrandom,
+            "js/correos.js?" + mathrandom,
+            "js/config.js?" + mathrandom,
+            "js/clientes.js?" + mathrandom,
+            "js/canvasjs.min.js?" + mathrandom
             
             
         ];
