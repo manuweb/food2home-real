@@ -82,6 +82,12 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $sql="UPDATE pedidos SET numeroRevo='".$revoid."', estadoPago='1' WHERE id='".$idpedido."';";
                 $database->setQuery($sql);
                 $result2 = $database->execute(); 
+                        
+                if ($order['cliente']>0){
+                    $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
+                    $database->setQuery($sql);
+                    $result3 = $database->execute(); 
+                }
             }
             else {
                 //include 'imprimeticket.php';
