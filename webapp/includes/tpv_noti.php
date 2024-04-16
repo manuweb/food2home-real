@@ -21,8 +21,7 @@ $sql="SELECT empresa.nombre_comercial,  redsys.MerchantCode, redsys.MerchantKey,
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
-
-            
+           
 $empresa = $result->fetch_object();
 $MerchantKey=$empresa->MerchantKey;
 
