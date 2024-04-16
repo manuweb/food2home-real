@@ -529,7 +529,8 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
                 $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="1"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Obligatorio &nbsp;&nbsp;<i class="icon f7-icons text-color-red icon_menu" style="font-size: 10px;">xmark</i></button></span>';
                 $txt_exp='Seleccione';
                 if ($MenuCategories->min>0){
-                    $txt_exp='Seleccione de '.$MenuCategories->min.' a '.$MenuCategories->max;
+			
+                    $txt_exp='Seleccione mínimo '.$MenuCategories->min.' y máximo '.$MenuCategories->max;
                 }
                 
                 $obligatorios++;
@@ -544,7 +545,7 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
                     $obligatorios++;
                 }
                 
-                $txt_exp='Seleccione de '.$MenuCategories->min.' a '.$MenuCategories->max;
+                $txt_exp='Seleccione mínimo '.$MenuCategories->min.' y máximo '.$MenuCategories->max;
             }
             
             $tmp.='<div class="grid grid-cols-2 grid-gap" style="margin:-15px;margin-top: 10px;padding: 5px;border: white 2px solid;border-radius: 5px;"><div class="" style="font-size:17px;font-weight: bold;">'.$MenuCategories->nombre.'</div><div class="" style="float: right;" >'.$forzoso.'</div></div>';
@@ -641,7 +642,7 @@ function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,
     // 3  seleccionar por defecto (min - max)
     // 4  personalizado (min - max) oblig 
     
-    $opcionSteeper=0;
+    $opcionSteeper=1;
     $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#'.$min.'#'.$max.'#'.$precio.'#'.$imagen.'#'.$impuesto;
      if ($eleMulti==1 || $eleMulti==3){
          $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#0#999#'.$precio.'#'.$imagen.'#'.$impuesto;
