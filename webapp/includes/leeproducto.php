@@ -664,7 +664,7 @@ function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,
     }
     if ($eleMulti==4){
         if ($opcionSteeper==1){
-        $txt='<div class="stepper stepper-raised stepper-small stepper-round stepper-fill stepper-init" >
+        $txt='<div class="stepper stepper-raised stepper-small stepper-round stepper-fill stepper-init" data-min="'.$min.'" data-max="'.$max.'" >
             <div class="stepper-button-minus" onclick="resta1Menu(\''.$pasa.'\')"></div>
             <div class="stepper-input-wrap">
                 <input type="text" name="chk-ele-multi-'.$id.'" value="0" class="elem-menu-opc menu-stepper-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'" step="1" data-contenido="'.$pasa.'" readonly />
