@@ -37,8 +37,9 @@
 	z-index: 2147483641;
 	padding: 0.7em 0.6em;
 	width: 18em;
+    border: 1px solid black;
 
-	background: #f35605;
+	background: white;
 	background-size: 100% auto;
 
 	box-shadow: 0 0.2em 0 #d1d1d1;
@@ -172,18 +173,18 @@
 }
 
 .ath-container p {
-    color:white;
+    color:black;
 	margin: 0;
 	padding: 0;
 	position: relative;
 	z-index: 2147483642;
-	text-shadow: 0 0.1em 0 #000;
+	/*text-shadow: 0 0.1em 0 #000;*/
 	font-size: 1.1em;
 }
 
 .ath-ios.ath-phone:after {
 	content: '';
-	background: #f35605;
+	background: white;
 	position: absolute;
 	width: 2em;
 	height: 2em;
