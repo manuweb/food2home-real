@@ -328,11 +328,13 @@ if (count($grupo)>0) {
     <p style="font-size:16px;font-weight: bold;color:var(--primario);">Descripción</p>
     <p>'.$info.'</p></div>';
     
+
+
     if (count($alergenos)<1){
         $alergi='<div style="float:left;margin:5px;" class="text-align-center"><img src="'.IMGALE.'sin.png" width="48px" height="auto"><br><span style="font-size:.8em;">Libre de alergenos</span></div>';
     }
     else {
-        $alergi='<div>';
+        $alergi='<div style="margin: 15px;margin-top: 0px;">';
         for ($h=0;$h<count($alergenos);$h++){
             $alergi.='<div style="float:left;margin:5px;" class="text-align-center">'.
                         '<img src="'.IMGALE.$alergenos[$h]['imagen'].'" width="32px" height="auto"><br><span style="font-size:.8em;">'.$alergenos[$h]['nombre'].'</span></div>';
@@ -342,8 +344,14 @@ if (count($grupo)>0) {
 
         $alergi.='</div>';
     }
+    /*
     $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
-        <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons tip-alergenos color-primary">info_circle_fill</i></p><br style="clear:both;"></div>';
+        <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons tip-alergenos color-primary">info_circle_fill</i></p></div>';
+        */
+    $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
+        <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons color-primary">info_circle_fill</i></p></div>';
+    $texto.=$alergi.'<br style="clear:both;">';
+	
     /*
     if (is_array($modifierCategories)){
         if (is_array($modifierCategoriesGru)){
