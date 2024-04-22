@@ -27,8 +27,18 @@
 
         </div>
 
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&libraries=places&loading=async"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&libraries=places&loading=async"></script>
 		<script src="js/jquery.min.js"></script>
-		<script src="js/script.js"> </script>
+        <script>
+        var mathrandom=Math.random();
+            var scriptsjs = [
+            "js/script.js?" + mathrandom
+                ];
+            for (j=0;j<scriptsjs.length;j++){
+                document.write('<script src="'+scriptsjs[j]+'"><\/script>');
+            }
+                
+        </script>
+		
 	</body>
 </html>

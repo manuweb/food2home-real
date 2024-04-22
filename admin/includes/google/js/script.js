@@ -1,15 +1,18 @@
 // Este ejemplo muestra un formulario de dirección, utilizando la función de autocompletar
 // de Google places API para ayudar a los usuarios rellenar la información.
-var searchInput = 'search_input';
+//var searchInput = 'search_input';
 
-var autocomplete;
+//var autocomplete;
 iniciaPlaces();
 
 
 function iniciaPlaces(){
-    autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput)), {
-        types: ['geocode'],componentRestrictions: { country: "ES" }
-    });
+    const options = {
+      componentRestrictions: { country: "ES" },
+      types: ['geocode'],
+    };
+
+    const autocomplete = new google.maps.places.Autocomplete(document.getElementById('search_input'), options);
    
     
     google.maps.event.addListener(autocomplete, 'place_changed', function () {
