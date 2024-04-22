@@ -213,6 +213,9 @@ var in_mail=0;
 var in_prom=0;
 var in_multi=0;
 var dias_vista=1;
+var pedidominimo=0;
+var importeportesgratis=0;
+
 leeEstaoWeb();
 
 function leeEstaoWeb() {
@@ -232,6 +235,8 @@ function leeEstaoWeb() {
                 dosTarifas=obj.tarifa;
                 in_multi=obj.multi;
                 dias_vista=obj.dias_vista;
+                pedidominimo=obj.pedidominimo;
+                importeportesgratis=obj.importeportesgratis;
                 
                 var nombre_comercial=obj.nombre_comercial;
                 app.name=nombre_comercial;
