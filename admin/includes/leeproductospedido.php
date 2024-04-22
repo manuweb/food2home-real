@@ -11,7 +11,7 @@ $array = json_decode(json_encode($_POST), true);
 
 $elgrupo = new Producto;
 
-$grupos=$elgrupo->leecategoriasactivas($array['id']);
+$grupos=$elgrupo->leeproductosactivos($array['id']);
 
 
 $json=array("valid"=>true, "grupos"=>$grupos);
