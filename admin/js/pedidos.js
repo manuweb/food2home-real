@@ -25,6 +25,7 @@ function leepedidos(pagina=1,fecha='') {
     $('#pedido-manual').hide();
     $('#boton-hacer-pedido').html('Hacer pedido');
     $('#boton-hacer-pedido').css('background-color','#00495e');
+    $('#boton-hacer-pedido').css('height','40px');
     $('#pedidos-titulo').html('Pedidos');
     $('#boton-hacer-pedido').attr('onclick', 'hacerPedido()');
     var txt='';
