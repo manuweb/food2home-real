@@ -96,7 +96,8 @@ if ($result->num_rows>0) {
         $precio=", precio='".$array['precio']."', precio_web='".$array['precio']."', precio_app='".$array['precio']."'";
     }
         //esMenu si es menu=1
-    $sql="UPDATE productos SET nombre='".$array['nombre']."', categoria='".$array['categoria']."', orden='".$array['orden']."'".$imagen.", impuesto='".$array['impuesto']."', activo='".$array['activo']."'".$precio.", info='".$array['info']."', alergias='".$array['alergias']."', modifier_category_id='".$array['modifier_category_id']."', modifier_group_id='".$array['modifier_group_id']."', esMenu='".$array['esMenu']."' WHERE id='".$array['id']."';";   
+    $sql="UPDATE productos SET nombre='".$array['nombre']."', categoria='".$array['categoria']."', orden='".$array['orden']."'".$imagen.", impuesto='".$array['impuesto']."', activo='".$array['activo']."'".$precio.", info='".$array['info']."', alergias='".$array['alergias']."', modifier_category_id='".$array['modifier_category_id']."', modifier_group_id='".$array['modifier_group_id']."', esMenu='".$array['esMenu']."' WHERE id='".$array['id']."';";  
+       
         
 }
 
