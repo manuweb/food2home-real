@@ -1222,8 +1222,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                       </label>
 
                                     </li>
-                                    <li id="li-grupos-progressbar" style="display:none;"><span class="progressbar-infinite" id="grupos-progressbar"></span></li>
-                                      <li id="li-grupos-progress" style="display:none;"><span ></span></li>
+                                    <li id="li-grupos-progressbar" style="display:none;">
+                                        <div style="width: 100%;">
+                                            <div class="progressbar-infinite color-green" data-progress="0" id="grupos-progressbar"></div>
+
+                                            <div id="grupos-progressbar-txt"></div>
+                                        </div>
+                                      </li>
+
                                     <li>
                                       <span>Categorías</span>
                                       <label class="toggle toggle-init">
@@ -1231,8 +1237,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                         <span class="toggle-icon"></span>
                                       </label>
                                     </li>
-                                      <li id="li-categorias-progressbar" style="display:none;"><span class="progressbar-infinite" id="categorias-progressbar"></span></li>
-                                      <li id="li-categorias-progress" style="display:none;"><span ></span></li>
+                                      <li id="li-categorias-progressbar" style="display:none;">
+                                          <div style="width: 100%;">
+                                            <div class="progressbar-infinite color-green" data-progress="0" id="categorias-progressbar"></div>
+
+                                            <div id="categorias-progressbar-txt"></div>
+                                        </div>
+                                      </li>
+                                     
                                      <li>
                                       <span>Productos</span>
                                       <label class="toggle toggle-init">
@@ -1240,8 +1252,15 @@ include "../webapp/MySQL/DataBase.class.php";
                                         <span class="toggle-icon"></span>
                                       </label>
                                     </li>
-                                    <li id="li-productos-progressbar" style="display:none;"><span class="progressbar-infinite" id="productos-progressbar"></span></li>
-                                      <li id="li-productos-progress" style="display:none;"><span ></span></li>
+                                    <li id="li-productos-progressbar" style="display:none;">
+                                        <div style="width: 100%;">
+                                            <div class="progressbar-infinite color-green" data-progress="0" id="productos-progressbar"></div>
+
+                                            <div id="productos-progressbar-txt"></div>
+                                        </div>
+
+                                    </li>
+
                                     <li>
                                       <span>Modificadores</span>
                                       <label class="toggle toggle-init">
@@ -1260,7 +1279,17 @@ include "../webapp/MySQL/DataBase.class.php";
                                         <div class="item-title">Sincronizar imagenes</div>
                                       </div>
                                     </label>
-                                  </li>  
+                                  </li> 
+                                      <li>
+
+                                    <label class="item-checkbox item-content" style="margin-left: 30px;">
+                                      <input type="checkbox" id="chk-imagenes-png" value="chk-imagenes-png" />
+                                      <i class="icon icon-checkbox"></i>
+                                      <div class="item-inner">
+                                        <div class="item-title">Convertir a WEBP</div>
+                                      </div>
+                                    </label>
+                                  </li> 
                                   <li>
 
                                     <label class="item-checkbox item-content">
@@ -1282,7 +1311,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     </div> 
                 </div>          
             </div>     
-            <!-- Fin Setting Sync -->       
+            <!-- Fin Setting Sync --> 
  
             <!-- Setting Repartos View -->
             <div id="view-setting-repartos" class="view view-init tab" data-name="seting" >
