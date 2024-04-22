@@ -1311,7 +1311,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     </div> 
                 </div>          
             </div>     
-            <!-- Fin Setting Sync --> 
+            <!-- Fin Setting Sync -->
  
             <!-- Setting Repartos View -->
             <div id="view-setting-repartos" class="view view-init tab" data-name="seting" >
