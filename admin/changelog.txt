@@ -1,3 +1,7 @@
+<p><i class="f7-icons size-16">calendar</i> 22/04/2024 MEJORAS:<br><b>Pedidos</b><br>
+Ya se puede realizar pedidos desde el Backoffice.<br>
+Solamente para pago en efectivo.
+</p>
 <p><i class="f7-icons size-16">calendar</i> 08/04/2024 MEJORAS:<br><b>Pedidos</b><br>
 Ya se puede realizar pedidos a x días vista, por defecto está a 1 día (hoy).
 </p>
