@@ -1311,7 +1311,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     </div> 
                 </div>          
             </div>     
-            <!-- Fin Setting Sync -->
+            <!-- Fin Setting Sync -->         
  
             <!-- Setting Repartos View -->
             <div id="view-setting-repartos" class="view view-init tab" data-name="seting" >
@@ -1989,6 +1989,16 @@ include "../webapp/MySQL/DataBase.class.php";
 
             </div>
             <!-- Fin USUARIOS View -->
+            
+            <!-- fake View -->
+              <div id="view-fake" class="view view-init tab" data-name="fake">
+                <div class="page" data-name="fake">
+                    <div class="page-content" >
+                        <div id="map" style="height: 300px;"></div>    
+                    </div> 
+                </div>
+              </div>          
+            <!-- fake View --> 
         
         </div>
         <!-- FIN Views/Tabs container -->
@@ -2044,6 +2054,7 @@ include "../webapp/MySQL/DataBase.class.php";
         
     </script>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsv3MEv58JZ42mQIqNyE_Zwpyo361dzhs&callback=initMap&libraries=geometry&v=weekly&loading=async" async></script>
 
     
     <?php
