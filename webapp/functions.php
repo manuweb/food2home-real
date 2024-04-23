@@ -1896,7 +1896,7 @@ class Producto
         $devuelve=[];
         $lacategoria='';
         
-        $sql="SELECT productos.id, productos.nombre , productos.categoria, productos.precio_web, productos.imagen, productos.imagen_app1, productos.alergias,productos.activo, productos.activo_web, productos.modifier_category_id, productos.modifier_group_id, productos.modificadores, productos.esMenu, categorias.modifier_category_id as cat_modifier_category_id, categorias.modifier_group_id AS cat_modifier_group_id FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria WHERE productos.id=".$id." AND productos.tienda=".$tienda.";";
+        $sql="SELECT productos.id, productos.nombre , productos.categoria, productos.precio_web, productos.info, productos.imagen, productos.imagen_app1, productos.alergias,productos.activo, productos.activo_web, productos.modifier_category_id, productos.modifier_group_id, productos.modificadores, productos.esMenu, categorias.modifier_category_id as cat_modifier_category_id, categorias.modifier_group_id AS cat_modifier_group_id FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria WHERE productos.id=".$id." AND productos.tienda=".$tienda.";";
 
         //echo $sql;
         $database = DataBase::getInstance();
@@ -1928,8 +1928,9 @@ class Producto
                     'categoria'=>$grupo->categoria,
                     'precio'=>$grupo->precio_web,
                     'imagen'=>$grupo->imagen,
-		    'imagen_app'=>$grupo->imagen_app1,
+		            'imagen_app'=>$grupo->imagen_app1,
                     'alergias'=>$grupo->alergias,
+                    'info'=>$grupo->info,
                     'activo'=>$grupo->activo,
                     'activo_web'=>$grupo->activo_web,
                     'modifier_category_id'=>$modifier_category_id,
@@ -1944,6 +1945,120 @@ class Producto
         
     }
     
+    public function leemodifierCategories($id){
+        $sql='SELECT activo,nombre,opciones,forzoso,maximo, modificadores FROM modifierCategories WHERE id='.$id.';';
+        echo $sql;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            $grupo = $result->fetch_object();
+            $sql='SELECT id,nombre,precio,autoseleccionado FROM modifiers WHERE id IN ('.$grupo->modificadores.') and activo=1;';
+            //echo $grupo->modificadores;
+            //die();
+            
+            $database = DataBase::getInstance();
+            $database->setQuery($sql);
+            $resulta = $database->execute();
+            while ($modi = $resulta->fetch_object()) {
+                $modificadores[]=[
+                    'id'=>$modi->id,
+                    'nombre'=>$modi->nombre,
+                    'precio'=>$modi->precio,
+                    'autoseleccionado'=>$modi->autoseleccionado
+                ];  
+            }
+            
+            $devuelve=[
+                    'nombre'=>$grupo->nombre,
+                    'activo'=>$grupo->activo,
+                    'opciones'=>$grupo->opciones,
+                    'forzoso'=>$grupo->forzoso,
+                    'maximo'=>$grupo->maximo, 
+                    'modificaores'=>$modificadores
+                ];  
+        }
+        $database->freeResults(); 
+        return $devuelve;
+    }
+    
+    public function leemodifierGroups($id){
+        $sql='SELECT nombre, modifierCategories_id FROM modifierGroups WHERE id='.$id.';';
+        echo $sql;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $devuelve=[];
+        if ($result->num_rows > 0) {
+            $grupo = $result->fetch_object();
+            //55,76,65
+            $sql='SELECT id,activo,nombre,opciones,forzoso,maximo, modificadores FROM modifierCategories WHERE id IN ('.$grupo->modifierCategories_id.') and activo=1;';
+            echo $sql;
+            $database = DataBase::getInstance();
+            $database->setQuery($sql);
+            $resulta = $database->execute();
+            while ($modi = $resulta->fetch_object()) {
+                $categor[]=$this->leemodifierCategories($modi->id);
+            }
+            $devuelve=$categor;
+            
+        }
+        $database->freeResults(); 
+        return $devuelve;    
+    }
+    
+    public function leeMenuCategories($id,$tienda=0){
+        $devuelve=[];
+        $sql="SELECT id, nombre, orden, eleMulti, min AS minimo, max AS maximo FROM MenuCategories WHERE producto='".$id."' ORDER BY orden;"; 
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'orden'=>$grupo->orden,
+                    'eleMulti'=>$grupo->eleMulti,
+                    'min'=>$grupo->minimo,
+                    'max'=>$grupo->maximo,
+                    'opcionesMenu'=>$this->leeMenuItems($grupo->id,$tienda)
+                ];
+            }
+            
+        }
+        $database->freeResults(); 
+        return $devuelve;
+    }
+    
+    public function leeMenuItems($id,$tienda=0){
+        $devuelve=[];
+        $sql="SELECT MenuItems.id, MenuItems.orden, MenuItems.precio, MenuItems.producto, MenuItems.modifier_group_id, MenuItems.addPrecioMod, productos.nombre , productos.imagen, productos.imagen_app1 ,productos.alergias, productos.info, impuestos.porcentaje AS impuesto FROM MenuItems LEFT JOIN productos ON MenuItems.producto=productos.id LEFT JOIN categorias ON categorias.id=productos.categoria LEFT JOIN grupos ON grupos.id=categorias.grupo LEFT JOIN impuestos ON if (productos.impuesto='', if (categorias.impuesto='', grupos.impuesto, categorias.impuesto), productos.impuesto)=impuestos.id WHERE MenuItems.category_id='".$id."' AND MenuItems.activo=1 group by MenuItems.orden;"; 
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            while ($grupo = $result->fetch_object()) {
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'orden'=>$grupo->orden,
+                    'nombre'=>$grupo->nombre,
+                    'producto'=>$grupo->producto,
+                    'precio'=>$grupo->precio,
+                    'modifier_group_id'=>$grupo->modifier_group_id,
+                    'addPrecioMod'=>$grupo->addPrecioMod,
+                    'imagen'=>$grupo->imagen,
+                    'imagen_app'=>$grupo->imagen_app1,
+                    'alergias'=>$grupo->alergias,
+                    'info'=>$grupo->alergias,
+                    'alergias'=>$grupo->alergias          
+                ];
+            }
+            
+        }
+        $database->freeResults(); 
+        return $devuelve;
+    }
     
 }
 
