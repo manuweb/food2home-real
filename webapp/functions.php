@@ -1797,7 +1797,8 @@ class Producto
                     'nombre'=>$grupo->nombre,
                     'grupo'=>$grupo->grupo,
                     'cantidad'=>$grupo->cantidad,
-                    'imagen'=>$imagen,
+                    'imagen'=>grupo->imagen,
+	    	    'imagen_app'=>grupo->imagen_app,
                     'modifier_category_id'=>$grupo->modifier_category_id,
                     'modifier_group_id'=>$grupo->modifier_group_id
                 ];      
