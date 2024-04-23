@@ -1925,7 +1925,8 @@ class Producto
                     'nombre'=>$grupo->nombre,
                     'categoria'=>$grupo->categoria,
                     'precio'=>$grupo->precio_web,
-                    'imagen'=>$imagen,
+                    'imagen'=>$grupo->imagen,
+		    'imagen_app'=>$grupo->imagen_app1;
                     'alergias'=>$grupo->alergias,
                     'activo'=>$grupo->activo,
                     'activo_web'=>$grupo->activo_web,
