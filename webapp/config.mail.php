@@ -9,7 +9,7 @@ $url=str_replace($nombre_archivo_me_llama,'',$url);
 $urlservidor=str_replace('/includes','',$url);
 
 //$urlservidor='http://localhost/apps/f7v8/www/';
-$sql="SELECT nombreremitente, mail,usuariomail,clavemail,host,puerto,SMTPSecure,sender,pie FROM mail WHERE id=1";
+$sql="SELECT nombreremitente, mail,usuariomail,clavemail,host,puerto,SMTPSecure,sender, cco, cco_registro, cco_pedidos, cco_contacto, pie FROM mail WHERE id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -24,6 +24,10 @@ define('SMTPSecure', $configmail->SMTPSecure);
 define('URLServidor', $urlservidor);
 define('NOMBREEmpresa', $configmail->nombreremitente);
 define('MAILsender', $configmail->sender);
+define('CCO', $configmail->cco);
+define('CCOREGISTRO', $configmail->cco_registro);
+define('CCOPEDIDOS', $configmail->cco_pedidos);
+define('CCOCONTACTO', $configmail->cco_contacto);
 define('PIECORREO', $configmail->pie);
 $database->freeResults();
 ?>

@@ -11,6 +11,7 @@
  * © Manuel Sánchez (www.elmaestroweb.es)
  *
 */
+include_once "../config.php";
 include_once "../config.mail.php";
 include_once "../PHPMailer/class.phpmailer.php";
 include_once "../PHPMailer/class.smtp.php";
@@ -378,6 +379,7 @@ class RecomponePedido
 
             $devuelve=[
                 "pedido" =>$numero,
+                "numeroRevo" =>$numeroRevo,
                 "cliente" =>$cliente,
                 "tratamiento" =>$tratamiento,
                 "nombre" =>$nombre,
@@ -819,6 +821,10 @@ class MisMails
             'Port'=>PUERTOMAIL,
             'Sender'=>MAILsender,
             'NombreEmpresa'=>NOMBREEmpresa,
+            'cco'=>CCO,
+            'cco_pedidos'=>CCOPEDIDOS,
+            'cco_registro'=>CCOREGISTRO,
+            'cco_contacto'=>CCOCONTACTO,
             'url'=>$this->url
         ]; 
         return $devuelve;  
@@ -866,6 +872,9 @@ class MisMails
     
     public function CreaBodyTextoDevolución($numero,$tarjeta,$importe){
         $subject='Anulación de pedido';
+        
+        //$numero=$order['pedido'];
+        
         $textomail= "<p>Su pedido número: <b>".$numero."</b> de importe <b>".$importe."</b> €, se ha anulado correctamente.</p>";
         if ($tarjeta){
             $textomail.= "<p>Se ha procedido a la devolución de <b>".$importe."</b> € a su tarjeta con la que realizó el pedido.</p>";
@@ -1091,6 +1100,13 @@ class MisMails
         $cortesia=$opciones->cortesia;
         $movil=$opciones->movil;
         $numero=$order['pedido'];
+        if (TIPOINTEGRACION==1){
+            if (USARNUMEROREVO==1){
+                $numero=$order['numeroRevo'];
+            }
+        }
+        
+        
         $subject='Su pedido '.$numero;
         $fecha=$order['fecha'];
         $cssmail=''.
@@ -1113,7 +1129,7 @@ class MisMails
             $trata="Sra.";
         }
 
-
+        $dia=substr($order['dia'],8,2)."/".substr($order['dia'],5,2)."/".substr($order['dia'],0,4);
         $hora=$order['hora'];
         $txt_cortesia='';
         if ($cortesia>0){
@@ -1140,7 +1156,7 @@ class MisMails
         $textomail .="<p>Teléfono: <b>".$order['telefono']."</b></p>";
         $textomail .="<p><b>".$trata." ".$order['nombre']." ".$order['apellidos']."</b></p>";
         if ($order['metodo']==1) {// metodo envio
-            $textomail.= "<h3>Entrega domicilio <b>hora:".$hora.$txt_cortesia."</b> en:</h3>";
+            $textomail.= "<h3>Entrega domicilio fecha: <b>".$dia."</b>, hora: <b>".$hora.$txt_cortesia."</b> en:</h3>";
             $textomail.= "<p>".$order['domicilio']['direccion']."<br>";
             if ($order['domicilio']['complementario']!=""){
                 $textomail.= $order['domicilio']['complementario']."<br>";
@@ -1148,7 +1164,7 @@ class MisMails
             $textomail .= $order['domicilio']['cod_postal']." - ".$order['domicilio']['poblacion']." (".$order['domicilio']['provincia'].")</p>";
         }
         else {
-            $textomail.= "<h3>Recoger en local <b>hora: ".$hora.$txt_cortesia."</b></h3>";
+            $textomail.= "<h3>Recoger en local fecha:<b>".$dia."</b>, hora: <b>".$hora.$txt_cortesia."</b></h3>";
         }
         if ($order['comentario']!=''){
             $textomail.= "<p>Comentario:<br><i>".$order['comentario']."</i></p>";

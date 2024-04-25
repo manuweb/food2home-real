@@ -17,7 +17,7 @@ define('URLREVO', "https://revoxef.works/");
 define('IMGAPP', $url.'img/productos/');
 define('IMGALE', $url.'img/alergenos/');
 
-$sql="SELECT empresa.nombre_comercial,empresa.logo, empresa.email, estilo.primario, estilo.secundario, integracion.usuario, integracion.token, opcionescompra.cortesia FROM empresa LEFT JOIN estilo ON estilo.id=empresa.id LEFT JOIN integracion ON integracion.id=empresa.id LEFT JOIN opcionescompra ON opcionescompra.id=empresa.id WHERE empresa.id=1";
+$sql="SELECT empresa.nombre_comercial,empresa.logo, empresa.email, estilo.primario, estilo.secundario, integracion.tipo, integracion.usuario, integracion.token, integracion.usar_numero_revo, opcionescompra.cortesia FROM empresa LEFT JOIN estilo ON estilo.id=empresa.id LEFT JOIN integracion ON integracion.id=empresa.id LEFT JOIN opcionescompra ON opcionescompra.id=empresa.id WHERE empresa.id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -28,6 +28,8 @@ define('LOGOEMPRESA', $empresa->logo);
 define('USUARIOREVO', $empresa->usuario);
 define('TOKENREVO', $empresa->token);
 define('MAILEMPRESA', $empresa->email);
+define('TIPOINTEGRACION', $empresa->tipo);
+define('USARNUMEROREVO', $empresa->usar_numero_revo);
 
 $colorprimario=$empresa->primario;
 $colorsecundario=$empresa->secundario;
