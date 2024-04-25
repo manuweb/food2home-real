@@ -94,29 +94,37 @@ $result = $database->execute();
 
 
 if ($result->num_rows>0) {
-
-    $horas = $result->fetch_object();
-    $horaEnc=$horas->hora;
-    $metodoEnvio=$horas->metodoEnvio;
-    $contado=$horas->contado;
-    if ($metodoEnvio==1){
-        if($contado>=$maximo_pedidosportramoenvio){
-            //
-            $checking=false;
+    while ($horas = $result->fetch_object()) {
+    
+        $horaEnc=$horas->hora;
+        $metodoEnvio=$horas->metodoEnvio;
+        $contado=$horas->contado;
+        if ($hora==$horaEnc){
+            if ($metodoEnvio==1){
+                if($contado>=$maximo_pedidosportramoenvio){
+                    //
+                    $checking=false;
+                }
+                else {
+                    $checking=true;
+                }
+            }
+            else {
+                if($contado>=$maximo_pedidosportramococina){
+                    $checking=false;
+                }
+                else {
+                    $checking=true;
+                }
+            }
         }
         else {
             $checking=true;
         }
-    }
-    else {
-        if($contado>=$maximo_pedidosportramococina){
-            $checking=false;
-        }
-        else {
-            $checking=true;
-        }
-    }
+            
 
+
+    }
 }
 else {
     $checking=true;
