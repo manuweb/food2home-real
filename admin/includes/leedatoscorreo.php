@@ -1,4 +1,5 @@
 <?php
+
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
 header("Access-Control-Allow-Origin: *");
@@ -11,7 +12,9 @@ $checking=false;
 
 
 
-$sql="SELECT nombreremitente, mail,usuariomail,clavemail,host,puerto,SMTPSecure,sender,pie FROM mail WHERE id=1";
+$sql="SELECT nombreremitente, mail, usuariomail, clavemail, host, puerto, SMTPSecure, sender, cco, cco_registro, cco_pedidos, cco_contacto, pie FROM mail WHERE id=1";
+
+
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
@@ -27,12 +30,16 @@ if ($result) {
     $puerto=$configmail->puerto;
     $SMTPSecure=$configmail->SMTPSecure;
     $sender=$configmail->sender;
+    $cco=$configmail->cco;
+    $cco_registro=$configmail->cco_registro;
+    $cco_pedidos=$configmail->cco_pedidos;
+    $cco_contacto=$configmail->cco_contacto;
     $pie=$configmail->pie;
 }	
 
 $database->freeResults();
 
-$json=array("valid"=>$checking,"nombreremitente"=>$nombreremitente,"mail"=>$mail,"usuariomail"=>$usuariomail,"clavemail"=>$clavemail,"host"=>$host,"puerto"=>$puerto,"SMTPSecure"=>$SMTPSecure,"sender"=>$sender,"pie"=>$pie);
+$json=array("valid"=>$checking,"nombreremitente"=>$nombreremitente,"mail"=>$mail,"usuariomail"=>$usuariomail,"clavemail"=>$clavemail,"host"=>$host,"puerto"=>$puerto,"SMTPSecure"=>$SMTPSecure,"sender"=>$sender,"cco"=>$cco,"cco_registro"=>$cco_registro,"cco_pedidos"=>$cco_pedidos, "cco_contacto"=>$cco_contacto,"pie"=>$pie);
 
 echo json_encode($json); 
 

@@ -11,7 +11,7 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 if ($array['id']!='foo'){
     //guardar
-    $sql="UPDATE integracion SET usuario='".$array['usuario']."', token='".$array['token']."' WHERE id=1";
+    $sql="UPDATE integracion SET usuario='".$array['usuario']."', token='".$array['token']."', usar_numero_revo='".$array['usar_numero_revo']."' WHERE id=1";
     $database = DataBase::getInstance();
     $database->setQuery($sql);
     $result = $database->execute();
@@ -22,7 +22,7 @@ if ($array['id']!='foo'){
     $database->freeResults();
 }
 else {
-    $sql="SELECT tipo, usuario, token, impresora, ClientType  FROM integracion WHERE id=1";
+    $sql="SELECT tipo, usuario, token,usar_numero_revo, impresora, ClientType  FROM integracion WHERE id=1";
     $database = DataBase::getInstance();
     $database->setQuery($sql);
     $result = $database->execute();
@@ -33,8 +33,9 @@ else {
         $usuario=$integra ->usuario;
         $token=$integra ->token;
         $impresora=$integra ->impresora;
+        $usar_numero_revo=$integra ->usar_numero_revo;
         $ClientType=$integra ->ClientType;
-        $json=array("valid"=>$checking,"integracion"=>$integracion,"usuario"=>$usuario,"token"=>$token,"impresora"=>$impresora,"ClientType"=>$ClientType);
+        $json=array("valid"=>$checking,"integracion"=>$integracion,"usuario"=>$usuario,"token"=>$token,"usar_numero_revo"=>$usar_numero_revo,"impresora"=>$impresora,"ClientType"=>$ClientType);
     }
     $database->freeResults();
     
