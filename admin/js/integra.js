@@ -29,11 +29,12 @@ function integration() {
                           '<ul>'+
                                 '<li class="item-content item-input">'+
                                   '<div class="item-inner">'+
-                                    '<div class="item-title item-label">Usuario Revo</div>'+
+                                    '<div class="item-title item-label">Usuario Revo Revo</div>'+
                                     '<div class="item-input-wrap">'+
                                       '<input type="text" name="usuario_revo_integra" value="'+obj.usuario+'" placeholder="Usuario Revo"/>'+
                                     '</div>'+
                                  ' </div>'+
+                                '</label>'+
                                 '</li>'+
                                 '<li class="item-content item-input">'+
                                   '<div class="item-inner">'+
@@ -43,11 +44,26 @@ function integration() {
                                    ' </div>'+
                                   '</div>'+
                                 '</li>'+
+                                '<li class="">'+
+                                '<label class="item-content">'+
+                                  '<div class="item-inner">'+
+                                    '<div class="item-title">Usar numero Revo en pedidos</div>'+
+                                    '<div class="item-after">'+
+                                    '<div class="toggle toggle-init">'+
+                                      '<input type="checkbox"  id="usar_numero_revo">'+
+                                      '<span class="toggle-icon"></span>'+
+                                    '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</li>'+
                            ' </ul>'+
                         '</div>'+
                         '<div class="row"><button onclick="guardaRevo();" class="button button-fill" style="margin:auto;width: 60%;">Guardar</button></div>'
                     
                     $('#integra-page').html(txt);
+                    if (obj.usar_numero_revo==1){
+                        $('#usar_numero_revo').prop('checked',true);
+                    }
                     
 
                 }
@@ -68,6 +84,10 @@ function integration() {
 function guardaRevo(){
     usuario=$('input:text[name=usuario_revo_integra]').val();
     token=$('input:text[name=token_revo_integra]').val();
+    var usar_numero_revo=0;
+    if ($('#usar_numero_revo').prop('checked')){
+        usar_numero_revo=1;
+    }
     if (usuario=='' || token==''){
         app.dialog.alert('Usuario o Token erroneo');
         return;
@@ -75,7 +95,7 @@ function guardaRevo(){
     var server=servidor+'admin/includes/integracion.php';
     $.ajax({
         type: "POST",
-        data: {id:1,usuario:usuario,token:token},
+        data: {id:1,usuario:usuario,token:token, usar_numero_revo:usar_numero_revo},
         url: server,
         dataType:"json",
         success: function(data){

@@ -20,6 +20,10 @@ function correoAjustes() {
                 var puerto=obj.puerto;
                 var SMTPSecure=obj.SMTPSecure;
                 var sender=obj.sender;
+                var cco=obj.cco;
+                var cco_registro=obj.cco_registro;
+                var cco_pedidos=obj.cco_pedidos;
+                var cco_contacto=obj.cco_contacto;
                 var pie=obj.pie;
                 txt+='<form class="list" id="correo-form" enctype="multipart/form-data">'+
             '<ul>'+
@@ -106,6 +110,26 @@ function correoAjustes() {
                 '<li>'+
                     '<div class="item-content item-input">'+
                       '<div class="item-inner">'+
+                        '<div class="item-title item-label">CCO</div>'+
+                        '<div class="item-input-wrap">'+
+                          '<input type="text" name="cco" placeholder="Indique email para copia oculta" value="'+cco+'"/>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                '</li>'+
+                '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title item-label">Recibr copia en</div>'+
+                        '<div class="item-input-wrap">'+
+                          '<label class="checkbox"><input type="checkbox" name="checkbox_cco_registro" id="checkbox-cco-registro"><i class="icon-checbox"></i></label>  Registro cliente&nbsp;&nbsp;<label class="checkbox"><input type="checkbox" name="checkbox_cco_pedido" id="checkbox-cco-pedido"><i class="icon-checkbox"></i></label> Pedidos&nbsp;&nbsp;<label class="checkbox"><input type="checkbox" name="checkbox_cco_contacto" id="checkbox-cco-contacto"><i class="icon-checkbox"></i></label> Formulario contacto'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                '</li>'+
+                '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
                         '<div class="item-title item-label">Pie correos</div>'+
                         '<div class="text-editor text-editor-init" style="width: 100%;">'+
                             '<div class="text-editor-content" contenteditable style="border: solid 1px lightgrey;padding-left: 10px;padding-right: 10px;">'+pie+'</div>'+
@@ -121,6 +145,21 @@ function correoAjustes() {
                 '</div>';
 
                 $('#emails-page').html(txt);
+                
+                
+                if (cco_registro==1){
+                    
+                    $('#checkbox-cco-registro').prop('checked',true);
+                }
+                if (cco_pedidos==1){
+                    
+                    $('#checkbox-cco-pedido').prop('checked',true);
+                }
+                if (cco_contacto==1){
+                    
+                    $('#checkbox-cco-contacto').prop('checked',true);
+                }
+                
                 var textEditor = app.textEditor.create({
                   el: '.text-editor',
                   customButtons: {
@@ -167,12 +206,24 @@ function correoAjustes() {
 function guardadatoscorreo(){   
     var textEditor = app.textEditor.get('.text-editor');
     var pie=textEditor.value;
+    var cco_pedidos=0;
+    var cco_registro=0;
+    var cco_contacto=0;
+    if ($('#checkbox-cco-pedido').prop('checked')){
+        cco_pedidos=1;
+    }
+    if ($('#checkbox-cco-registro').prop('checked')){
+        cco_registro=1;
+    }
+    if ($('#checkbox-cco-contacto').prop('checked')){
+        cco_contacto=1;
+    }
     var formData = app.form.convertToData('#correo-form'); 
     var server=servidor+'admin/includes/guardadatoscorreo.php';
     $.ajax({
         type: "POST",
         url: server,
-        data: {nombreremitente:formData['nombreremitente'], mail:formData['mail'], usuariomail:formData['usuariomail'], clavemail:formData['clavemail'],host:formData['host'], puerto:formData['puerto'], SMTPSecure:formData['SMTPSecure'], sender:formData['sender'],pie:pie},
+        data: {nombreremitente:formData['nombreremitente'], mail:formData['mail'], usuariomail:formData['usuariomail'], clavemail:formData['clavemail'],host:formData['host'], puerto:formData['puerto'], SMTPSecure:formData['SMTPSecure'], sender:formData['sender'], cco:formData['cco'], cco_pedidos:cco_pedidos, cco_registro:cco_registro, cco_contacto:cco_contacto, pie:pie},
         dataType:"json",
         success: function(data){
             var obj=Object(data);
