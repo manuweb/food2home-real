@@ -44,6 +44,10 @@ $phpmailer->Sender = $datosM['Sender'];;
 $phpmailer->SetFrom($datosM['Sender'], $datosM['NombreEmpresa']);
 $phpmailer->IsHTML(true);
 
+$cco=false;
+if ($datosM['cco']!=''){
+    $cco=true;
+}
 
 $checking=false;
 
@@ -57,6 +61,10 @@ if ($array['tipo']=='contacto'){
     ];
     $datos=$miMail->CreaBodyTextoContacto($contact);
     $para=MAILEMPRESA;
+    
+    if (($datosM['cco_contacto']==1)&&($cco)){
+        $phpmailer->addBCC($datosM['cco']);
+    }
 }
 
 if ($array['tipo']=='recupera'){
@@ -69,6 +77,10 @@ if ($array['tipo']=='recupera'){
 if ($array['tipo']=='nuevo'){
     $datos=$miMail->CreaBodyTextoNuevoUsuario($array['usuario']);
     $para=$array['usuario'];
+    
+    if (($datosM['cco_registro']==1)&&($cco)){
+        $phpmailer->addBCC($datosM['cco']);
+    }
 }
 
 if ($array['tipo']=='pedido'){
@@ -77,15 +89,40 @@ if ($array['tipo']=='pedido'){
     $order['carrito']=$Pedido->LineasPedido($array['idpedido']);
     $para=$order['email'];
     $datos=$miMail->CreaBodyTextoPedido($order);   
+    
+    if (($datosM['cco_pedidos']==1)&&($cco)){
+        $phpmailer->addBCC($datosM['cco']);
+    }
 }  
 
 if ($array['tipo']=='devolucion'){
+    
     $Pedido = new RecomponePedido;
     $order=$Pedido->DatosGlobalesPedido($array['idpedido']);
     $order['carrito']=$Pedido->LineasPedido($array['idpedido']);
     $para=$order['email'];
     
-    $datos=$miMail->CreaBodyTextoDevolución($order['pedido'],$array['tarjeta'],$order['total']);
+    if ($order['tarjeta']==2){
+        $tarjeta=false;
+    }
+    else {
+        $tarjeta=true;
+    }
+    
+    $numero=$order['pedido'];
+    if (TIPOINTEGRACION==1){
+        if (USARNUMEROREVO==1){
+            $numero=$order['numeroRevo'];
+        }
+    }
+    $datos=$miMail->CreaBodyTextoDevolución($numero,$tarjeta,$order['total']);
+    
+    
+    
+    if (($datosM['cco_pedidos']==1)&&($cco)){
+        $phpmailer->addBCC($datosM['cco']);
+    }
+    
 }
 
 //devolución
