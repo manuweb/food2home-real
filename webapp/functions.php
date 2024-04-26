@@ -633,17 +633,11 @@ class PedidosRevo
             //$productos[$x]['menuContents']=null;
             if (isset($carrito[$x]['elmentosMenu'] )){
                 $mod=[];
-                $h=0;
                 for ($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
-                    for ($s=0;$s<$carrito[$x]['elmentosMenu'][$j]['cantidad'];$s++){
-                        
-                        $mod[$h]['item_id'] = $carrito[$x]['elmentosMenu'][$j]['id'];
-                        //$mod[$s]['quantity'] = $carrito[$x]['elmentosMenu'][$j]['cantidad'];
-                        $mod[$h]['quantity'] = 1;
-                        $mod[$h]['name'] = $carrito[$x]['elmentosMenu'][$j]['nombre'];
-                        $mod[$h]['price'] = $carrito[$x]['elmentosMenu'][$j]['precio'];
-                        $h++;
-                    }
+                    $mod[$j]['item_id'] = $carrito[$x]['elmentosMenu'][$j]['id'];
+                    $mod[$j]['quantity'] = $carrito[$x]['elmentosMenu'][$j]['cantidad'];
+                    $mod[$j]['name'] = $carrito[$x]['elmentosMenu'][$j]['nombre'];
+                    $mod[$j]['price'] = $carrito[$x]['elmentosMenu'][$j]['precio'];
                 }
                 $productos[$x]['menuContents']=$mod;
             }
