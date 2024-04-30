@@ -35,8 +35,10 @@ function iniciaPlaces(){
         domicilio['poblacion']=near_place['address_components'][2]['long_name'];
         
         domicilio['provincia']=near_place['address_components'][3]['long_name'];
-        domicilio['lat']=near_place.geometry.location.lat();
-        domicilio['lng']=near_place.geometry.location.lng();
+       
+       domicilio['lat']=near_place.geometry.location.lat();
+       domicilio['lng']=near_place.geometry.location.lng();
+        domicilio['coordenadas']={'lat':domicilio['lat'],'lng':domicilio['lng']}; 
         /*
         console.log(near_place['address_components']);
         console.log(near_place['address_components'][1]['long_name']+', '+near_place['address_components'][0]['long_name']);
