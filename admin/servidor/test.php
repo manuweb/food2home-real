@@ -8,7 +8,7 @@ include "../../webapp/MySQL/DataBase.class.php";
 
 //select pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.estadoPago, pedidos.fecha FROM pedidos WHERE fecha like '2023-12-16%' ORDER BY pedidos.fecha DESC; 
 
-$sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.estadoPago, pedidos.fecha , pedidos.anulado, pedidos.total FROM pedidos  WHERE fecha >= '".date("Y")."-".date("m")."-".date("d")." 00:00:01' ORDER BY `pedidos`.`id` DESC;";
+$sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.estadoPago, pedidos.dia , pedidos.anulado, pedidos.total FROM pedidos  WHERE fecha >= '".date("Y")."-".date("m")."-".date("d")." 00:00:01' ORDER BY `pedidos`.`id` DESC;";
 
 
 //echo "sql:<br>";
@@ -23,7 +23,7 @@ $aquitar = [];
 echo "<style> td {border: solid 1px;padding:2px;}</style>";
     echo "<table>";
 while ($pedidos = $result->fetch_object()) {
-    $fecha=$pedidos->fecha;
+    $fecha=$pedidos->dia;
     $id=$pedidos->id;
     $numero=$pedidos->numero;
     $numeroRevo=$pedidos->numeroRevo;
