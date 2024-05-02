@@ -11,7 +11,9 @@ include "../../webapp/MySQL/DataBase.class.php";
 $sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.estadoPago, pedidos.dia , pedidos.anulado, pedidos.total FROM pedidos  WHERE fecha >= '".date("Y")."-".date("m")."-".date("d")." 00:00:01' ORDER BY `pedidos`.`id` DESC;";
 
 
-//echo "sql:<br>";
+//
+
+echo "sql:<br>";
 //echo $sql;
 //echo "<hr>";
 $database = DataBase::getInstance();
