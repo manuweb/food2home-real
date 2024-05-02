@@ -14,9 +14,9 @@ $sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.estadoPago,
 
 //
 
-echo "sql:<br>";
-echo $sql;
-echo "<hr>";
+//echo "sql:<br>";
+//echo $sql;
+//echo "<hr>";
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
