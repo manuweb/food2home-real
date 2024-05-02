@@ -730,7 +730,7 @@ class PedidosRevo
         $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
-        //$delivery['channel']=22;
+        $delivery['channel']=24;
 
         if ($order['metodo']==1) { //1=enviar, 2=recoger
             $delivery['address']=$order['domicilio']['direccion'];
