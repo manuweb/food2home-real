@@ -32,8 +32,8 @@ $checking=false;
 $modo=$array['modo'];
 $lafecha=$array['fecha'];
 
-//$modo=2;
-//$lafecha='20/03/2024';
+//$modo=1;
+//$lafecha='06/05/2024';
 
 // 01/34/6789
 $fecha=date_create(substr($lafecha,6,4)."-".substr($lafecha,3,2)."-".substr($lafecha,0,2));
@@ -341,17 +341,19 @@ if ($result->num_rows>0) {
                 
                 echo "encontrada->".$horario[$y]."<br>";
                 echo "corresponde->". $horacogida[$y]['hora']."<br>";
-                $horacogida[$y]['cantidad']=$contado;
+                
+                
+                
                 echo "hay->".$contado."<br>";
                 if ($horacogida[$y]['hora']==$hora){
-                
-                if($contado>=$maximo_pedidosportramo){
-                    
-                    $horacogida[$y]['disponible']=0;
-                    $pillados[]=$hora;
-                    //array_splice($horario, $y, 1);
-                    //unset($horarioreparto[$y]);
-                }
+                    $horacogida[$y]['cantidad']=$contado;
+                    if($contado>=$maximo_pedidosportramo){
+
+                        $horacogida[$y]['disponible']=0;
+                        $pillados[]=$hora;
+                        //array_splice($horario, $y, 1);
+                        //unset($horarioreparto[$y]);
+                    }
                 }
             }
         //}
@@ -391,6 +393,7 @@ echo "<pre>";
 print_r ($libreED);
 echo "</pre>";
 
+
 //echo "<pre>";
 //print_r ($horacogida);
 //echo "</pre>";
@@ -415,16 +418,10 @@ echo json_encode($json);
 $file = fopen("zz-mirapedidoshoy.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql1: ". $sql1 . PHP_EOL);
-fwrite($file, "maximo_pedidosportramo: ". $maximo_pedidosportramo . PHP_EOL);
-$maximo_pedidosportramoenvio . PHP_EOL);
-fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
-fwrite($file, "ENV: ". json_encode($horario) . PHP_EOL);
-
-fwrite($file, "p-ENV: ". json_encode($pillados) . PHP_EOL);
-fwrite($file, "d-ENV: ". json_encode($libreED) . PHP_EOL);
+fwrite($file, "cogido: ". json_encode($horacogida) . PHP_EOL);
 
 
 fclose($file);
-
 */
+
 ?>
