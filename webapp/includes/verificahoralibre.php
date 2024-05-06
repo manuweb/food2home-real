@@ -94,37 +94,33 @@ $result = $database->execute();
 
 
 if ($result->num_rows>0) {
+
+    $checking=true;
     while ($horas = $result->fetch_object()) {
-    
         $horaEnc=$horas->hora;
         $metodoEnvio=$horas->metodoEnvio;
         $contado=$horas->contado;
-        if ($hora==$horaEnc){
+        if ($hora==$horaEnc) {
             if ($metodoEnvio==1){
-                if($contado>=$maximo_pedidosportramoenvio){
-                    //
+                if ($contado>=$maximo_pedidosportramoenvio){
+            
+                //
                     $checking=false;
+                    break;
                 }
-                else {
-                    $checking=true;
-                }
+                
             }
             else {
-                if($contado>=$maximo_pedidosportramococina){
+                if ($contado>=$maximo_pedidosportramococina){
                     $checking=false;
-                }
-                else {
-                    $checking=true;
+                    break;
                 }
             }
-        }
-        else {
-            $checking=true;
-        }
             
-
-
+        }
+        
     }
+
 }
 else {
     $checking=true;
@@ -142,6 +138,7 @@ ob_end_clean();
 echo json_encode($json);
 
 /*
+
 $file = fopen("zz-verificahoras.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql1: ". $sql1 . PHP_EOL);
@@ -153,6 +150,6 @@ fwrite($file, "Contados: ". $contado . PHP_EOL);
 fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
 
 fclose($file);
-
 */
+
 ?>
