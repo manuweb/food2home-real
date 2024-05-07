@@ -1,3 +1,6 @@
+<p><i class="f7-icons size-16">calendar</i> 07/05/2024 MEJORAS:<br><span style='display: flex;'><b>Delivery</b> &nbsp;<i class="icons material-icons size-18">delivery_dining</i></span>
+Añadida posibilidad de integrar empresa de delivery.<br>
+En Ajustes->Integración, se puede configurar y añadir empresa de delivery. Se iran añadiendo las empresas que permitan integración con <b>Food2Home</b>.</p>
 <p><i class="f7-icons size-16">calendar</i> 25/04/2024 MEJORAS:<br><b>Email</b><br>
 Desde el Backoffice, en Emails->Ajustes de correo, se puede configurar si se desea recibir copia de los mails de pedidos, registro de clientes y formulario de contacto en una cuenta de correo especificada.<br>
 <b>Email pedidos</b><br>
@@ -17,6 +20,8 @@ Añadido informe de modificadores.
 <p><i class="f7-icons size-16">calendar</i> 03/03/2024 MEJORAS:<br><b>Imágenes</b><br>
 Mejora en la carga de imagenes al usar imagenes WEBP en lugar de PNG o JPG.
 </p>
+<p id='change-log-link'><a href='#' onclick='$("#change-log-more").show();$("#change-log-link").hide();'>Mostrar más</a>
+<div id='change-log-more' style='display:none;'>
 <p><i class="f7-icons size-16">calendar</i> 25/02/2024 MEJORAS:<br><b>Checkout</b><br>
 Las horas de las citas se pueden mostrar en un selector o en una vista en cuadrícula.<br>
 También se puede optar por no usar horarios.
@@ -30,4 +35,4 @@ Posibilidad de especificar máximos artículos en el carrito.
 <p><i class="f7-icons size-16">calendar</i> 02/01/2024 NUEVA VERSIÓN:<br><b>2.0.0</b><br>
 Nuevo BackOffice totalmete responsive.
 </p>
-
+</div>
