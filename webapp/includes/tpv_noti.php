@@ -109,6 +109,11 @@ include_once('Sermepa/Tpv/Tpv.php');
             $phpmailer->Sender = $datos['Sender'];;
             $phpmailer->SetFrom($datos['Sender'], $datos['NombreEmpresa']);
             $phpmailer->IsHTML(true);
+                   
+            if (($datos['cco_pedidos']==1)&&($cco)){
+                $phpmailer->addBCC($datos['cco']);
+            }
+           
             $Pedido = new RecomponePedido;
             $order=$Pedido->DatosGlobalesPedido($idpedido);
             $order['carrito']=$Pedido->LineasPedido($idpedido);
