@@ -47,7 +47,7 @@ include_once('Sermepa/Tpv/Tpv.php');
     $DsResponse = $parameters["Ds_Response"];
     $DsResponse += 0;
     if ($redsys->check($key, $_POST) && $DsResponse <= 99) {
-        $sql="SELECT tipo FROM integracion WHERE id=1";
+        $sql="SELECT tipo, delivery FROM integracion WHERE id=1";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
@@ -55,6 +55,8 @@ include_once('Sermepa/Tpv/Tpv.php');
         if ($result) {
             $integra = $result->fetch_object();
             $integracion=$integra->tipo;
+            $delivery=$integra->delivery;
+                   
             if ($integracion==1){
                 $idRedsys=0;
                 $sql="SELECT id, idrevo FROM metodospago WHERE esRedsys=1;";
