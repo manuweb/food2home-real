@@ -472,7 +472,7 @@ if (isset($idPedido)) {
 
     if ($envio<2){
         //add domicilio
-        $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia) VALUES (".$idPedido.",'".$domicilio['direccion']."','".$domicilio['complementario']."','".$domicilio['cod_postal']."','".$domicilio['poblacion']."','".$domicilio['provincia']."');"; 
+        $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia,lat,lng) VALUES (".$idPedido.",'".$domicilio['direccion']."','".$domicilio['complementario']."','".$domicilio['cod_postal']."','".$domicilio['poblacion']."','".$domicilio['provincia']."',".$domicilio['coordenadas']['lat'].",".$domicilio['coordenadas']['lng'].");"; 
         $db = DataBase::getInstance();  
         $db->setQuery($sql);  
         //$domi = $db->loadObjectList();

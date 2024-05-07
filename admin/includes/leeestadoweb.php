@@ -16,7 +16,7 @@ if ($result) {
     $idRedsys=$redsys->idrevo;
 }
 
-$sql="SELECT estadoweb.estado, integracion.tipo, empresa.nombre_comercial, incluye.push, incluye.mail, incluye.promos, incluye.multi, incluye.tarifas, opcionescompra.dias_vista, opcionescompra.minimo AS pedidominimo, opcionescompra.importeportesgratis AS importeportesgratis FROM estadoweb LEFT JOIN integracion ON integracion.id=estadoweb.id LEFT JOIN opcionescompra ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=estadoweb.id LEFT JOIN incluye ON incluye.id=estadoweb.id Where estadoweb.id=1";
+$sql="SELECT estadoweb.estado, integracion.tipo,integracion.delivery, empresa.nombre_comercial, incluye.push, incluye.mail, incluye.promos, incluye.multi, incluye.tarifas, opcionescompra.dias_vista, opcionescompra.minimo AS pedidominimo, opcionescompra.importeportesgratis AS importeportesgratis FROM estadoweb LEFT JOIN integracion ON integracion.id=estadoweb.id LEFT JOIN opcionescompra ON integracion.id=opcionescompra.id LEFT JOIN empresa ON empresa.id=estadoweb.id LEFT JOIN incluye ON incluye.id=estadoweb.id Where estadoweb.id=1";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -28,6 +28,7 @@ if ($result) {
     while ($estado = $result->fetch_object()) {
         $on=$estado ->estado;
         $integracion=$estado ->tipo;
+        $delivery=$estado ->delivery;
         $tarifa=$estado ->tarifas;
         $nombre_comercial=$estado ->nombre_comercial;
         $push=$estado ->push;
@@ -57,7 +58,7 @@ $database->freeResults();
 
 
 
-$json=array("valid"=>$checking,"on"=>$on,"integracion"=>$integracion,"id"=>$id,"dias_vista"=>$dias_vista,"alias"=>$alias,"tarifa"=>$tarifa,"nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "push"=>$push, "mail"=>$mail, "promos"=>$promos, "multi"=>$multi,"pedidominimo"=>$pedidominimo,"importeportesgratis"=>$importeportesgratis);
+$json=array("valid"=>$checking,"on"=>$on,"integracion"=>$integracion,"delivery"=>$delivery,"id"=>$id,"dias_vista"=>$dias_vista,"alias"=>$alias,"tarifa"=>$tarifa,"nombre_comercial"=>$nombre_comercial, "idRedsys"=>$idRedsys, "push"=>$push, "mail"=>$mail, "promos"=>$promos, "multi"=>$multi,"pedidominimo"=>$pedidominimo,"importeportesgratis"=>$importeportesgratis);
 
 ob_end_clean();
 echo json_encode($json);    

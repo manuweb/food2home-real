@@ -176,7 +176,7 @@ function eliminar_acentos($cadena){
 }
 
 function redimensionar($src, $ancho_forzado){
-
+echo $src."<br>";
    //if (file_exists($src)) {
       // echo $src."<hr>";
       list($width, $height, $type, $attr)= getimagesize($src);
@@ -197,6 +197,16 @@ function redimensionar($src, $ancho_forzado){
    //}
 
    return array($max_width, $height_dyn);
+}
+
+function esuntelefonomovil($telefono){
+    $devuelve='false';
+    $pre=substr($telefono,0,1);
+    if ($pre==6 ||$pre==7){
+        $devuelve='true';  
+    }
+    return $devuelve;
+    
 }
 
 class RecomponePedido 
@@ -232,7 +242,7 @@ class RecomponePedido
     }
     
     public function BuscaDomicilio($idPedido){
-        $sql="SELECT direccion,  complementario, cod_postal, poblacion, provincia FROM pedidos_domicilios WHERE idPedido=".$idPedido.";";
+        $sql="SELECT direccion,  complementario, cod_postal, poblacion, provincia,lat,lng FROM pedidos_domicilios WHERE idPedido=".$idPedido.";";
         $domicilio=[];
         $database = DataBase::getInstance();
         $database->setQuery($sql);
@@ -244,7 +254,9 @@ class RecomponePedido
                 "complementario"=>$datos->complementario,
                 "cod_postal"=>$datos->cod_postal,
                 "poblacion"=>$datos->poblacion,
-                "provincia"=>$datos->provincia
+                "provincia"=>$datos->provincia,
+                "lat"=>$datos->lat,
+                "lng"=>$datos->lng
             ];
 
         }
@@ -254,7 +266,9 @@ class RecomponePedido
                 "complementario"=>"",
                 "cod_postal"=>"",
                 "poblacion"=>"",
-                "provincia"=>""
+                "provincia"=>"",
+                "lat"=>0,
+                "lng"=>0
             ]; 
         }
         
@@ -624,6 +638,7 @@ class PedidosRevo
         $user=$userytoken['usuario'];
         $token=$userytoken['token'];
         
+        
         for ($x=0;$x<count($carrito);$x++){
 
 
@@ -631,6 +646,19 @@ class PedidosRevo
             $productos[$x]['quantity']=$carrito[$x]['cantidad'];
 
             //$productos[$x]['menuContents']=null;
+            /*
+            if (isset($carrito[$x]['elmentosMenu'] )){
+                $mod=[];
+                for ($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                    $mod[$j]['item_id'] = $carrito[$x]['elmentosMenu'][$j]['id'];
+                    $mod[$j]['quantity'] = $carrito[$x]['elmentosMenu'][$j]['cantidad'];
+                    $mod[$j]['name'] = $carrito[$x]['elmentosMenu'][$j]['nombre'];
+                    $mod[$j]['price'] = $carrito[$x]['elmentosMenu'][$j]['precio'];
+                }
+                $productos[$x]['menuContents']=$mod;
+            }
+            */
+            
             if (isset($carrito[$x]['elmentosMenu'] )){
                 $mod=[];
                 $h=0;
@@ -647,6 +675,7 @@ class PedidosRevo
                 }
                 $productos[$x]['menuContents']=$mod;
             }
+            
 
             $productos[$x]['itemPrice']=$carrito[$x]['precio_sin'];
 
@@ -730,7 +759,7 @@ class PedidosRevo
         $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
-        $delivery['channel']=24;
+        //$delivery['channel']=22;
 
         if ($order['metodo']==1) { //1=enviar, 2=recoger
             $delivery['address']=$order['domicilio']['direccion'];
@@ -742,9 +771,7 @@ class PedidosRevo
         $clienttoken=$this->clienttoken;
         $url=$this->url;
         
-        $file = fopen("zz-leepedidos.txt", "w");
-        fwrite($file, "Fecha: ". $delivery['date'] . PHP_EOL);
-        fclose($file);
+        
         $topost="customer=".json_encode($customer)."&order=".json_encode($orders)."&delivery=".json_encode($delivery);
         $header=array(
                 'tenant: ' . $user,"Authorization: Bearer ". $token, "client-token: ".$clienttoken
@@ -758,11 +785,11 @@ class PedidosRevo
                 'content' => $topost
             )
         );
-
         
         $context = stream_context_create($opts);
         $result = file_get_contents($url, true, $context);
         $resultado=json_decode($result);
+        
         $revoid=$resultado->{'order_id'};
         
         return $revoid;
@@ -1701,6 +1728,166 @@ class ImprimeTicket
         return $checking;
     }
     
+    public function generaTicketError($idpedido){
+        $Pedido = new RecomponePedido;
+        $order=$Pedido->DatosGlobalesPedido($idpedido);
+        $order['carrito']=$Pedido->LineasPedido($idpedido);
+        $carrito=$order['carrito'];
+        $numero=$order['pedido'];
+        /*
+        $font_path =$this->url_font.'Arial.ttf';
+        $font_path_b = $this->url_font.'Arial_Bold.ttf';
+        $font_path_i = $this->url_font.'ariali.ttf';
+        $font_path_bi = $this->url_font.'Arial_Bold_Italic.ttf';
+        */
+        
+        
+        $font_path = __DIR__.'/includes/fonts/Arial.ttf';
+        $font_path_b = __DIR__.'/includes/fonts/Arial_Bold.ttf';
+        $font_path_i = __DIR__.'/includes/fonts/ariali.ttf';
+        $font_path_bi = __DIR__.'/includes/fonts/Arial_Bold_Italic.ttf';
+
+        
+        $numero_pedidos=$this->cuentaPedidos($order);
+        
+        $logo_src=$this->url."/webapp/img/empresa/logo-impresora.png";
+
+        //echo "logo_src:".$logo_src."<hr>";
+        $logo=imagecreatefrompng($logo_src);
+        list($logo_w, $logo_h, $type, $attr) = getimagesize($logo_src);
+
+        $largo_pedido=10;
+        
+        
+        $margen=10;
+        $ancho=576;
+        $alto=950;
+        $porcentaje_redu=0.7;
+
+        $alto+=$largo_pedido;
+
+        $ancho_forzado=($ancho-(2*$margen))*$porcentaje_redu;
+        $pos_x=($ancho*$porcentaje_redu/2)-$margen;
+        $pos_x=round($pos_x/2);
+        list($ancho_calculado,$alto_calculado)=redimensionar($logo_src, $ancho_forzado);
+        $ancho_calculado=round($ancho_calculado);
+        $alto_calculado=round($alto_calculado);
+
+        $ticket = imagecreate($ancho, $alto);
+
+        $blanco = imagecolorallocate($ticket, 255, 255, 255);// blanco
+        $negro = imagecolorallocate($ticket, 0, 0, 0);
+        // Hacer el fondo transparente
+        //imagecolortransparent($ticket, $blanco);
+        imagefill($ticket, 0, 0, $blanco);
+        //$new_logo = imagecreatetruecolor($ancho_calculado, $alto_calculado);
+        
+        $new_logo = imagecreate($ancho_calculado, $alto_calculado);
+
+        imagecopyresampled($logo, $logo, 0, 0, 0, 0, $ancho_calculado, $alto_calculado, $logo_w, $logo_h);
+
+        imagecopy($ticket, $logo, $pos_x, $margen, 0, 0, $ancho, $alto);
+        imagefilledrectangle ($ticket, ($pos_x+$ancho_calculado), 0, $ancho, $alto, $blanco);
+        imagefilledrectangle ($ticket, 0, ($alto_calculado), $ancho, $alto, $blanco);
+
+        $y=$alto_calculado+(2*$margen)+10;
+        
+        $dimensions = imagettfbbox(14, 0, $font_path_b, $this->nombre_comercial);
+        $textWidth = abs($dimensions[4] - $dimensions[0]);
+        $x = round(($ancho-$textWidth)/2); //centrado
+        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, $this->nombre_comercial);
+        $y+=25;
+        $dimensions = imagettfbbox(14, 0, $font_path_b, $this->telefono);
+        $textWidth = abs($dimensions[4] - $dimensions[0]);
+        $x = round(($ancho-$textWidth)/2); //centrado
+        imagettftext($ticket, 14, 0, $x, $y, $negro, $font_path, $this->telefono);
+        $y+=25;
+
+        $dimensions = imagettfbbox(30, 0, $font_path_b, $numero);
+        $textWidth = abs($dimensions[4] - $dimensions[0]);
+
+        $x = round(($ancho-$textWidth)/2); //centrado
+        imagefilledrectangle ($ticket, $x-30, $y, $x+$textWidth+30, $y+50, $negro);
+        imagettftext($ticket, 30, 0, $x, $y+40, $blanco, $font_path_b, $numero);
+
+        $y+=100;
+        $txt='ERROR empresa Delivery';
+        
+        $fecha=$order['dia'];
+        $hora=$order['hora'];
+        $dimensions = imagettfbbox(24, 0, $font_path_b, $txt);
+        $textWidth = abs($dimensions[4] - $dimensions[0]);
+        $x = round(($ancho-$textWidth)/2); //centrado
+        imagettftext($ticket, 24, 0, $x, $y, $negro, $font_path_b, $txt);
+        $y+=35;
+        
+
+
+        
+
+       
+
+        
+        $y+=20;
+        imageline($ticket, $margen,$y,$ancho-$margen, $y, $negro);
+        $y+=40;
+        $lines = explode("\n", wordwrap($order['nombre']." ".$order['apellidos'], 25, "\n"));
+
+        for ($x=0;$x<count($lines);$x++){
+            imagettftext($ticket, 26, 0, $margen, $y, $negro, $font_path_b, $lines[$x]);
+            $y+=35;
+        }
+
+        if ($order['metodo']==1){
+
+            // domicilio
+            $lines = explode("\n", wordwrap($order['domicilio']['direccion'], 25, "\n"));
+
+            for ($x=0;$x<count($lines);$x++){
+                imagettftext($ticket, 26, 0, $margen, $y, $negro, $font_path_b, $lines[$x]);
+                $y+=35;
+            }
+            if ($order['domicilio']['complementario']!=""){
+                $lines = explode("\n", wordwrap($order['domicilio']['complementario'], 25, "\n"));
+
+                for ($x=0;$x<count($lines);$x++){
+                    imagettftext($ticket, 26, 0, $margen, $y, $negro, $font_path_b, $lines[$x]);
+                    $y+=35;
+                }
+            }
+            $lines = explode("\n", wordwrap($order['domicilio']['poblacion'], 25, "\n"));
+
+            for ($x=0;$x<count($lines);$x++){
+                imagettftext($ticket, 26, 0, $margen, $y, $negro, $font_path_b, $lines[$x]);
+                $y+=35;
+            }
+        }
+        imagettftext($ticket, 18, 0, $margen, $y, $negro, $font_path, 'Teléfono:');
+        $y+=35;
+        imagettftext($ticket, 26, 0, $margen, $y, $negro, $font_path_b, $order['telefono']);
+        $y+=35;
+
+        
+        //header('Content-type: image/png');
+        imagepng($ticket, __DIR__.'/printer/tickets/ticket-'.$numero.'.png',9);
+
+        $sql="INSERT INTO tickets (impreso,ticket) VALUES (0,'".$numero."');"; 
+        $checking=false;
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result){
+            $checking=true;
+        }
+        $database->freeResults();
+
+        
+
+        imagedestroy($ticket);
+        imagedestroy($logo); 
+        return $checking;
+    }
+    
 }
 
 class Monedero 
@@ -1737,7 +1924,6 @@ class Monedero
     }
     
 }
-
 
 class Producto 
 {
@@ -2084,4 +2270,155 @@ class Producto
     
 }
 
+class Delivery 
+{
+    //public $http;
+    public function __construct(){
+    }
+    
+    public function leeDeliverys($id){
+        $devuelve=[];
+        
+        $sql="SELECT nombre,logo,logica FROM delivery WHERE id=".$id.";";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result->num_rows > 0) {
+            $grupo = $result->fetch_object();
+                
+            $devuelve=[
+                'nombre'=>$grupo->nombre,
+                'logo'=>$grupo->logo,
+                'logica'=>$grupo->logica
+            ];      
+        }
+        $database->freeResults(); 
+        return $devuelve;        
+    }
+    
+    public function leeLogicaDeliverys($logica){
+        $devuelve=[];
+        $lineas_logica=explode("**||**", $logica);
+        for ($x=0;$x<count($lineas_logica);$x++){
+            $la_logica=explode("#||#", $lineas_logica[$x]);
+            $la_linea=preg_replace('/{/i','',$la_logica[0]);
+            $la_linea=preg_replace('/}/i','',$la_linea);
+            $variables=explode("|", $la_linea);
+               $devuelve[$variables[0]]=$la_logica[1];
+        }
+        return $devuelve;  
+    }
+    
+    public function enviaDeliverys($id,$variables,$order){
+        $devuelve='';
+        
+        if ($id==1){
+            // Jelp Delivery (Jerez)
+            $url='https://api.torredecontrol.io/dev/v3/order';
+            $mifecha= date($order['dia']." ". $order['hora'].":00"); 
+            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
+            
+            $numero=$order['pedido'];
+            if (TIPOINTEGRACION==1){
+                if (USARNUMEROREVO==1){
+                    $numero=$order['numeroRevo'];
+                }
+            }
+            $hora=substr($NuevaFecha,11,5);
+            $fecha=substr($NuevaFecha,0,10);;
+            
+            $scheduledDate=$fecha."T".$hora.":00.000Z";
+            $apykey=$variables['apykey'];
+            $sign=$variables['sign'];
+            $branch=$variables['branch'];
+            $paymentMethod='5c3fba2beb7ccb177b747a91';
+            $isPaid=true;
+            if ($order['tarjeta']==2){
+                $isPaid=false;
+                $paymentMethod='5c3fb8dcf894321699bcce55';
+            }
+            $isCellPhone=esuntelefonomovil($order['telefono']);
+            
+            $postfield=[
+                "total" =>$order['total'],
+                "subtotal" =>$order['total'],
+                "branch" =>$branch,
+                "isPaid" =>$isPaid,
+                "publicId" =>$numero,
+                "paidWith" =>$order['total'],
+                "currency" =>"EUR",
+                "phone" => [
+                        "isCellPhone" =>$isCellPhone,
+                        "countryCode"=>"+34",
+                        "phone" =>$order['telefono']
+                    ],
+                "customer" =>[
+                        "firstName" =>$order['nombre'],
+                        "firstLastName" =>$order['apellidos'],
+                        "fullName" => $order['nombre']." ".$order['apellidos']
+                    ],
+                "address"=> [
+                        "latitude" =>$order['domicilio']['lat'],
+                        "longitude" =>$order['domicilio']['lng'],
+                        "fullAddress" =>$order['domicilio']['direccion']." ".$order['domicilio']['poblacion'],
+                        "street" =>$order['domicilio']['direccion'],
+                        "neighborhood" =>null,
+                        "interiorNumber" =>null,
+                        "exteriorNumber" =>null,
+                        "references" =>null,
+                        "betweenStreet1" =>null,
+                        "betweenStreet2" =>null,
+                        "zipCode" => $order['domicilio']['cod_postal'],
+                        "city" => $order['domicilio']['poblacion'],
+                        "state" => $order['domicilio']['provincia'],
+                        "country" => "España"
+                    ],
+                "paymentMethod" =>$paymentMethod,
+                "collectionBranches" => [$branch],
+                "scheduledDate" => $scheduledDate,
+                "comment"=>$order['comentario'],
+                "orderType" =>"DELIVERY",
+                "files"=>[]
+            ];
+            
+            
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => json_encode($postfield, JSON_UNESCAPED_UNICODE),
+              CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'api-key: '.$apykey,
+                'sign: '.$sign
+              ),
+            ));
+
+            $response = curl_exec($curl);
+            
+            if(curl_errno($curl)){
+                $devuelve='error';
+            }
+            else {
+                $resultado=json_decode($response,true);
+                $devuelve=$resultado['requestId'];
+            }
+            curl_close($curl);
+
+            
+        
+            //$revoid=$resultado->{'order_id'};
+            
+        }
+        return $devuelve;
+    }
+}
 ?>

@@ -8,6 +8,27 @@ function integration() {
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                var txt_delivery=''+
+                    '<div class="list block" >'+
+                          '<ul>'+
+                            '<li class="">'+
+                                '<label class="item-content">'+
+                                  '<div class="item-inner">'+
+                                    '<div class="item-title">Usar empresa delivery</div>'+
+                                    '<div class="item-after">'+
+                                    '<div class="toggle toggle-init">'+
+                                      '<input type="checkbox"  id="usar_delivery" onclick="usarDelivery();">'+
+                                      '<span class="toggle-icon"></span>'+
+                                    '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</li>'+
+                            ' </ul>'+
+                        '</div>'+
+                    '<br><div id="delivery-txt" style="border:1px solid;">'+
+                    
+                    '</div><br>';
+                
                 if (obj.integracion==2){
                     //star
                     txt=''+
@@ -16,7 +37,7 @@ function integration() {
                     '<div id="deviceListIntegra">Buscando . . . </div>'+
                     '<p>Para conectar un nuevo dispositivo, configure su URL de CloudPRNT en:</p><br/>'+
                     '<div style="background-color: whitesmoke; font-weight: bold;border-color: black;border-style: solid;border-width: 1px;border-radius: 4px;padding: 4px;display: inline-block;"><span id="cpurl-integra">...</span></div></div>';
-                    $('#integra-page').html(txt);
+                    $('#integra-page').html(txt+txt_delivery);
                     var url=window.location.href.replace("admin/", "webapp/printer/cloudprnt.php");
                     url=url.replace("index.php", "");
                     $("#cpurl-integra").html(url);
@@ -57,7 +78,7 @@ function integration() {
                                   '</div>'+
                                 '</li>'+
                            ' </ul>'+
-                        '</div>'+
+                        '</div>'+txt_delivery+
                         '<div class="row"><button onclick="guardaRevo();" class="button button-fill" style="margin:auto;width: 60%;">Guardar</button></div>'
                     
                     $('#integra-page').html(txt);
@@ -67,6 +88,15 @@ function integration() {
                     
 
                 }
+                $('#usar_delivery').val(obj.delivery);
+                if (obj.delivery>0){
+                    $('#usar_delivery').prop('checked',true);
+                    usarDelivery();
+                }
+                else {
+                    $('#delivery-txt').hide();
+                }
+                
             }
             else {
                 
@@ -81,6 +111,213 @@ function integration() {
     
 }
 
+function usarDelivery(){
+    var estado=$('#usar_delivery').prop('checked');
+    var valor=$('#usar_delivery').val();
+    var txtdel=$('#delivery-txt').html();
+    var botonguardar='<div class="grid grid-cols-2"><div><button onclick="cambiardelivery();" class="button button-fill" style="margin:auto;width: 60%;">Cambiar delivery</button></div><div><button onclick="guardadelivery();" class="button button-fill" style="margin:auto;width: 60%;">Guardar delivery</button></div><br>';
+    $('#delivery-txt').show();
+    if (estado && valor>0) {
+        var server=servidor+'admin/includes/delivery.php';
+        $.ajax({
+            type: "POST",
+            data: {id:valor},
+            url: server,
+            dataType:"json",
+            success: function(data){
+                var obj=Object(data);
+                if (obj.valid==true){
+                    
+                    delivery=valor;
+                    var txt='<div class="list block">'+
+                        '<span><img src="img/delivery/'+obj.logo[0]+'"style="float:right;width:100px;height:auto;"></span>'+
+                        '<ul>';
+                    var lineas_logica=obj.logica[0].split('**||**');
+                    
+                    //console.log(lineas_logica);
+                    for (x=0;x<lineas_logica.length;x++){
+                        var logica=(lineas_logica[x]).split("#||#");
+                        var variables=logica[0].replace(/{|}/g,'').split('|');
+                        //console.log(variables);
+                        txt+='<li class="item-content item-input">'+
+                          '<div class="item-inner">'+
+                            '<div class="item-title item-label">'+variables[1]+'</div>'+
+                            '<div class="item-input-wrap">'+
+                              '<input type="text" name="'+variables[0]+'" value="'+logica[1]+'" placeholder="'+variables[2]+'"/>'+
+                            '</div>'+
+                         ' </div>'+
+                        '</label>'+
+                        '</li>';
+                        
+                    }
+                    txt+='</ul></div>';
+                   
+                    $('#delivery-txt').html(txt+botonguardar);
+                    
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
+    if (estado && valor==0){
+        cambiardelivery();
+        
+    }
+    
+    if(!estado){
+        $('#delivery-txt').hide();
+        // guardar integracion con delivery=0
+        var server=servidor+'admin/includes/delivery.php';
+        $.ajax({
+            type: "POST",
+            data: {id:'foo'},
+            url: server,
+            dataType:"json",
+            success: function(data){
+                var obj=Object(data);
+                if (obj.valid==true){
+                    delivery=0;
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
+}
+    
+
+function cambiardelivery(){
+        
+    var server=servidor+'admin/includes/delivery.php';
+    $.ajax({
+        type: "POST",
+        data: {id:0},
+        url: server,
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                
+                var dynamicPopup = app.popup.create({
+                    content: ''+
+                      '<div class="popup">'+
+                        '<div class="block page-content">'+
+                          '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><h2>Selecionar delivery</h2>'+
+                            '<div id="empresasdelivery"></div>'+
+                        '</div>'+
+                      '</div>'  ,
+                    on: {
+                        open: function (popup) {
+                            var txt='<div class="list list-outline-ios list-strong-ios list-dividers-ios">'+
+                                '<ul>';
+                            
+                            for (x=0;x<obj.nombre.length;x++){
+                               txt+='<li>'+
+                              '<a class="item-link item-content" onclick="poneempresadelivery(this);" data-id="'+obj.id[x]+'" data-logo="'+obj.logo[x]+'" data-nombre="'+obj.nombre[x]+'" data-logica="'+obj.logica[x]+'">'+
+                                '<div class="item-media">'+
+                                  '<img src="img/delivery/'+obj.logo[x]+'" style="width:100px;height:auto; />'+
+                                '</div>'+
+                                '<div class="item-inner">'+
+                                  '<div class="item-title-row">'+
+                                    '<div class="item-title"><h3>'+obj.nombre[x]+'</h3></div>'+
+                                  '</div>'+
+                                '</div>'+
+                              '</a>'+
+                            '</li>';
+                                
+                            }
+                            txt+='</ul>'+
+                                '</div>';
+                            $('#empresasdelivery').html(txt);
+                        },
+                        opened: function (popup) {
+                        //console.log('Popup opened');
+                        },
+                    }
+                }); 
+                dynamicPopup.open(); 
+
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+}
+
+function poneempresadelivery(elem){
+    app.popup.close();
+    var txtdel=$('#delivery-txt').html();
+    var botonguardar='<div class="grid grid-cols-2"><div><button onclick="cambiardelivery();" class="button button-fill" style="margin:auto;width: 60%;">Cambiar delivery</button></div><div><button onclick="guardadelivery();" class="button button-fill" style="margin:auto;width: 60%;">Guardar delivery</button></div><br>';
+    
+    var logic=$(elem).attr('data-logica');
+    var logo=$(elem).attr('data-logo');
+    var nombre=$(elem).attr('data-nombre');
+    var id=$(elem).attr('data-id');
+    $('#usar_delivery').val(id);
+    
+    var txt='<div class="list block">'+
+        '<span><img src="img/delivery/'+logo+'"style="float:right;width:100px;height:auto;"></span>'+
+        '<ul>';
+   
+    var lineas_logica=logic.split('**||**');
+
+    
+    for (x=0;x<lineas_logica.length;x++){
+        var logica=(lineas_logica[x]).split("#||#");
+        
+        var variables=logica[0].replace(/{|}/g,'').split('|');
+        //console.log(variables);
+        txt+='<li class="item-content item-input">'+
+          '<div class="item-inner">'+
+            '<div class="item-title item-label">'+variables[1]+'</div>'+
+            '<div class="item-input-wrap">'+
+              '<input type="text" name="'+variables[0]+'" value="'+logica[1]+'" placeholder="'+variables[2]+'"/>'+
+            '</div>'+
+         ' </div>'+
+        '</label>'+
+        '</li>';
+
+    }
+    txt+='</ul></div>';
+
+    $('#delivery-txt').html(txt+botonguardar);
+}
+
+function guardadelivery() {
+    var valores=new Array();
+    $('#delivery-txt :input[type="text"]').each(function(){
+    
+        //console.log($(this).attr("name")+':'+$(this).val());
+        valores.push({'variable':$(this).attr("name"),'valor':$(this).val()});
+    });
+     //console.log(valores);   
+    var server=servidor+'admin/includes/guardadelivery.php';
+    $.ajax({
+        type: "POST",
+        data: {id:$('#usar_delivery').val(),valores:valores},
+        url: server,
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                 delivery=$('#usar_delivery').val();
+               app.dialog.alert('Delivery guardado');
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+    
+}
 function guardaRevo(){
     usuario=$('input:text[name=usuario_revo_integra]').val();
     token=$('input:text[name=token_revo_integra]').val();

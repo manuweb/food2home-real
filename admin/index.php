@@ -579,6 +579,7 @@ include "../webapp/MySQL/DataBase.class.php";
                               <tr>
                                 <th class="label-cell">Nº Pedido</th>
                                   <th class="label-cell" id="label-num-revo">Nº Revo</th>
+                                  <th class="label-cell" id="label-num-delivery"><i class="icons material-icons">delivery_dining</i></th>
                                 <th class="label-cell">Fecha</th>
                                   <th class="label-cell">Hora</th>
                                 <th class="label-cell" style="min-width: 200px;">Cliente</th>

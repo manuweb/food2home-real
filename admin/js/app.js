@@ -215,6 +215,7 @@ var in_multi=0;
 var dias_vista=1;
 var pedidominimo=0;
 var importeportesgratis=0;
+var delivery=0;
 
 leeEstaoWeb();
 
@@ -228,6 +229,7 @@ function leeEstaoWeb() {
             var obj=Object(data);
             if (obj.valid==true){
                 idRedsys=obj.idRedsys;
+                delivery=obj.delivery;
                 $('#metodo-pago-tarjeta').val(idRedsys);
                 in_mail=obj.mail;
                 in_prom=obj.promos;

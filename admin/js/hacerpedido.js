@@ -14,6 +14,7 @@ function initMap() {
 
 
 function hacerPedido(){
+    //app.dialog.alert('delivery:'+delivery);
     var d = new Date();
     //d.setMinutes(d.getMinutes()+minutos);
     //var day = d.getDay();
@@ -487,6 +488,8 @@ function hacerPedidoNuevoCliente(modo){
               '</li>'+
             '</ul>'+
           '</div>';
+        txt+='<input type="hidden" id="pedido-lat-cliente"/>'+
+            '<input type="hidden" id="pedido-lng-cliente"/>';
     }
     
     txt+='<button class="button button-outline button-round" disabled style="margin:auto;width: 25%;" id="hacer-pedido-nuevo-cliente">Continuar</button>';
@@ -619,6 +622,8 @@ window.datosdegoogle= function (datos){
                     $('#pedido-poblacion-cliente').val(datos['poblacion']);
                     $('#pedido-cod_postal-cliente').val(datos['cod_postal']);
                     $('#pedido-provincia-cliente').val(datos['provincia']);
+                    $('#pedido-lat-cliente').val(datos['coordenadas']['lat']);
+                    $('#pedido-lng-cliente').val(datos['coordenadas']['lng']);
                     $('#domicilio-cliente-pedido').show();
                     $('#boton-buscar-domicilios').hide();  
                     
@@ -710,7 +715,8 @@ function hacerPedidoCliente(modo,tipo,cliente) {
         '<input type="hidden" id="dato-nombre-cliente" value="'+cliente['nombre']+'">'+
         '<input type="hidden" id="dato-apellidos-cliente" value="'+cliente['apellidos']+'">'+
         '<input type="hidden" id="dato-telefono-cliente" value="'+cliente['telefono']+'">';
-
+    txt+='<input type="hidden" id="pedido-lat-cliente"/>'+
+            '<input type="hidden" id="pedido-lng-cliente"/>';
     txt+='<div id="domicilio-cliente-pedido"></div>';
     
     txt+='<button class="button button-outline button-round" disabled style="margin:auto;width: 25%;" id="hacer-pedido-nuevo-cliente">Continuar</button>';
@@ -746,7 +752,8 @@ function hacerPedidoCliente(modo,tipo,cliente) {
                  'direccion':$('#pedido-domicilio-cliente').val(),
                  'poblacion':$('#pedido-poblacion-cliente').val(),
                  'cod_postal':$('#pedido-cod_postal-cliente').val(),
-                 'provincia':$('#pedido-provincia-cliente').val()
+                 'provincia':$('#pedido-provincia-cliente').val(),
+                 'coordenadas':{'lat':$('#pedido-lat-cliente').val(),'lng':$('#pedido-lng-cliente').val()}
              }
             datos_cliente = {
                 'cliente':cliente,
@@ -1278,7 +1285,8 @@ function seleccionadomicilio(eldomi){
                         $('#pedido-provincia-cliente').val(provincia);
                         $('#domicilio-cliente-pedido').show();
                         $('#boton-buscar-domicilios').hide();  
-
+                        $('#pedido-lat-cliente').val(lat);
+                        $('#pedido-lng-cliente').val(lng);
                         var txt_modo='Domicilio';
                         var icono='delivery';
                       
@@ -1296,8 +1304,10 @@ function seleccionadomicilio(eldomi){
                              'direccion':$('#pedido-domicilio-cliente').val(),
                              'poblacion':$('#pedido-poblacion-cliente').val(),
                              'cod_postal':$('#pedido-cod_postal-cliente').val(),
-                             'provincia':$('#pedido-provincia-cliente').val()
+                             'provincia':$('#pedido-provincia-cliente').val(),
+                            'coordenadas':{'lat':lat,'lng':lng}
                          }
+                        //console.log(domicilio_cliente['coordenadas']);
                         datos_cliente = {
                             'cliente':cliente,
                             'domicilio':domicilio_cliente
@@ -1407,6 +1417,7 @@ function buscaproductospedido(){
 }
 
 function muestragrupospedido(){
+    //console.log(datos_cliente);
     //div-tienda-pedido
     var txt='<br><div class="searchbar-backdrop"></div>'+
         '<form class="searchbar no-outline" id="searchbar-autocomplete">'+
@@ -1659,11 +1670,15 @@ function muestraelproductopedido(id){
                 on: {
                     open: function (popup) {
                         $('#detalleproducto').html(txt);
-                        if (typeof producto['modifierCategories']){
-                            ponemodificadorespedido(producto['modifierCategories']);
+                        if (producto['esmenu']==1){
+                            poneMenuCategoriespedido(producto['MenuCategories']);
                         }
-                        
-                        
+                        else {
+                            if (typeof producto['modifierCategories']){
+                                ponemodificadorespedido(producto['modifierCategories']);
+                            }
+                        }
+
                     },
                     opened: function (popup) {
                     //console.log('Popup opened');
@@ -1760,6 +1775,401 @@ function ponemodificadorespedido(modificadores){
         }
         $('#modificadores-producto-pedido').html(txt);
     }
+}
+
+function poneMenuCategoriespedido(MenuCategories){
+    //console.log(MenuCategories);
+    // 0  Seleccionar 1 no obl
+    // 1  varias opciones
+    // 2  seleccion 1 obligatorio
+    // 3  seleccionar por defecto (min - max)
+    // 4  personalizado (min - max) oblig
+    var obligatorio=0
+    var txt='';
+    var txt_forzoso='';
+    for (x=0;x<MenuCategories.length;x++){
+        txt_forzoso='Opcional';
+        if (MenuCategories[x]['eleMulti']==1){
+            obligatorio++;
+            txt_forzoso='Obligatorio';
+        }
+        if (MenuCategories[x]['eleMulti']==2){
+            obligatorio++;
+            txt_forzoso='Obligatorio';
+        }
+        if (MenuCategories[x]['eleMulti']==3){
+            if (MenuCategories[x]['min']>0){
+                obligatorio++;
+                txt_forzoso='Obligatorio';
+            }
+        }
+        if (MenuCategories[x]['eleMulti']==4){
+            if (MenuCategories[x]['min']>0){
+                obligatorio++;
+                txt_forzoso='Obligatorio';
+            }
+        }
+        txt+='<div class="grid grid-cols-2 grid-gap" style="margin:-15px;padding: 5px;border: white 2px solid;border-radius: 5px;">'+
+            '<div class="" style="font-size:18px;font-weight: bold;">'+MenuCategories[x]['nombre']+'</div>'+
+            '<div class="" style="float: right;"><span id="but-mod-'+MenuCategories[x]['id']+'" data-forzoso="'+MenuCategories[x]['eleMulti']+'"><button class="col button button-small button-fill" style="font-size: 14px;height: 20px;text-transform: initial;width: auto;float: right;margin-top: 3px;">'+txt_forzoso+'</button></span></div>'+
+        '</div>';
+        txt+='<div class="list media-list">'+
+            '<ul>';
+        var tipo='checkbox';
+
+        for (j=0;j<MenuCategories[x]['opcionesMenu'].length;j++){
+            // 0  Seleccionar 1 no obl
+            // 1  varias opciones
+            // 2  seleccion 1 obligatorio
+            // 3  seleccionar por defecto (min - max)
+            // 4  personalizado (min - max) oblig
+            /*
+                $devuelve[]=[
+                    'id'=>$grupo->id,
+                    'nombre'=>$grupo->nombre,
+                    'orden'=>$grupo->orden,
+                    'eleMulti'=>$grupo->eleMulti,
+                    'min'=>$grupo->minimo,
+                    'max'=>$grupo->maximo,
+                    'opcionesMenu'=>$this->leeMenuItems($grupo->id,$tienda)
+                ];
+                
+                opcionesMenu
+            'id'=>$grupo->id,
+                    'orden'=>$grupo->orden,
+                    'nombre'=>$grupo->nombre,
+                    'producto'=>$grupo->producto,
+                    'precio'=>$grupo->precio,
+                    'modifier_group_id'=>$grupo->modifier_group_id,
+                    'addPrecioMod'=>$grupo->addPrecioMod,
+                    'imagen'=>$grupo->imagen,
+                    'imagen_app'=>$grupo->imagen_app1,
+                    'alergias'=>$grupo->alergias,
+                    'info'=>$grupo->alergias,
+                    'alergias'=>$grupo->alergias     
+            */
+            if (MenuCategories[x]['eleMulti']==1){
+               tipo='radio'; 
+            }
+            var imagen=servidor+'webapp/img/no-imagen.png';
+            if (MenuCategories[x]['opcionesMenu'][j]['imagen_app']!=''){
+                    imagen=servidor+'webapp/img/productos/'+MenuCategories[x]['opcionesMenu'][j]['imagen_app'];
+            }
+            else {
+                if (MenuCategories[x]['opcionesMenu'][j]['imagen']!=''){
+                     imagen=servidor+'webapp/img/revo/'+MenuCategories[x]['opcionesMenu'][j]['imagen'];
+                }
+                    
+            }
+            
+            txt+='<li>'+
+                '<div class="item-content" style="padding: 0">'+
+                    '<div class="item-media">'+
+                        '<img style="border-radius: 15px" src="'+imagen+'" width="50" />'+
+                    '</div>'+
+                        
+                    '<div class="item-inner">' +
+                
+                        '<div class="item-title-row">'+
+                
+                            '<div class="item-title">'+MenuCategories[x]['opcionesMenu'][j]['nombre']+'</div>'+
+                
+                        '</div>'+
+                
+                        '<div class="item-title" style="float: right;margin-right: -20px;">'+poneOpcionSelMenu(MenuCategories[x]['id'],MenuCategories[x]['eleMulti'],MenuCategories[x]['min'],MenuCategories[x]['max'],MenuCategories[x]['opcionesMenu'][j]['precio'],MenuCategories[x]['opcionesMenu'][j]['producto'],MenuCategories[x]['opcionesMenu'][j]['nombre'],imagen)+
+                        ' </div>'+
+                
+                        '<div class="item-subtitle">(+'+MenuCategories[x]['opcionesMenu'][j]['precio']+' €)</div>'+
+
+                        '<div class="item-text">'+MenuCategories[x]['opcionesMenu'][j]['info']+'</div>'+
+            
+                    '</div>'+
+                '</div> '+
+            '</li>';
+        }
+        txt+='</ul>'+
+            '</div>';
+    }
+    txt+='</ul>'+
+        '</div>';
+    if (obligatorio>0){
+        $('#modificadores-obligatorios').val(obligatorio);
+        $('#add-producto-pedido').attr('disable',true);
+        $('#add-producto-pedido').removeClass('button-fill');
+        $('#stepper-producto-pedido').hide();
+    }
+    $('#modificadores-producto-pedido').html(txt);
+    
+}
+
+function poneOpcionSelMenu(id,tipo, min, max, precio,producto,nombre,img){
+    var pasa=id+'#'+tipo+'#'+min+'#'+max+'#'+precio+'#'+producto+'#'+nombre+'#'+img;
+    var txt='';
+    if (tipo==1 || tipo==3){
+        pasa==id+'#'+tipo+'#0#9999#'+precio+'#'+producto+'#'+nombre+'#'+img;
+    }
+    if (tipo==0){
+        //seleccionar 1
+        txt='<label class="checkbox"><input type="checkbox" name="chk-ele-multi-'+id+'" value="'+pasa+'" class="elem-menu-opc elem-menu-opc-'+id+' elem-menu-opc-'+id+'-'+producto+'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-checkbox"></i></label>';
+        
+    }
+    if (tipo==2){
+        //seleccionar 1
+        txt='<label class="radio"><input type="radio" name="chk-ele-multi-'+id+'" value="'+pasa+'" class="elem-menu-opc elem-menu-opc-'+id+' elem-menu-opc-'+id+'-'+producto+'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-radio icon-radio-menus"></i></label>';
+        
+    }
+    if (tipo==1 || tipo==3){
+        $txt='<label class="checkbox"><input type="checkbox" name="chk-ele-multi-'+id+'" value="'+pasa+'" class="elem-menu-opc elem-menu-opc-'+id+' elem-menu-opc-'+id+'-'+producto+'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-checkbox"></i></label>';
+        
+    }
+    if (tipo==4){
+        txt='<div class="stepper stepper-raised stepper-small stepper-round stepper-fill stepper-init" data-min="'+min+'" data-max="'+max+'" >'+
+            '<div class="stepper-button-minus" onclick="resta1Menu(\''+pasa+'\')"></div>'+
+            '<div class="stepper-input-wrap">'+
+                '<input type="text" name="chk-ele-multi-'+id+'" value="0" class="elem-menu-opc menu-stepper-'+id+' elem-menu-opc-'+id+' elem-menu-opc-'+id+'-'+producto+'" step="1" data-contenido="'+pasa+'" readonly />'+
+            '</div>'+
+            '<div class="stepper-button-plus" onclick="suma1Menu(\''+pasa+'\')"></div>'+
+        '</div>';
+    }
+    return txt;
+    
+}
+
+function cambiaSeleccionOpcionMenu(elem){
+    var forz=0;
+    var datos=elem.value.split("#");
+    //pasa=id+'#'+tipo+'#'+min+'#'+max+'#'+precio;
+    
+    var su_precio=parseFloat($('#add-producto-pedido').attr('data-sin'));
+    var hay=0;
+    
+    //console.log(datos);
+    //console.log('su_precio:'+su_precio);
+    
+    var hay=0;
+    var elemForzoso=$('#but-mod-'+datos[0]);
+    var forzoso=parseInt(elemForzoso.attr('data-forzoso'));
+    // 0  Seleccionar 1 no obl
+    // 1  varias opciones
+    // 2  seleccion 1 obligatorio
+    // 3  seleccionar por defecto (min - max)
+    // 4  personalizado (min - max) oblig
+   var suma=0;
+    $('.elem-menu-opc-'+datos[0]).each(function(){
+        if ($(this).prop('checked')){
+            hay++;
+            
+        }
+    });
+     $('.elem-menu-opc').each(function(){
+         if ($(this).prop('checked')){
+            var arr=$(this).val().split("#");
+            suma+=parseFloat(arr[4]);
+         }
+     });
+    
+    
+    //console.log('A sumar:'+suma);
+    //console.log('forzoso:'+forzoso);
+    //console.log('hay:'+hay);
+    var elem=$('.elem-menu-opc-'+datos[0]+'-'+datos[5]);
+    
+    var chekeado=elem.prop('checked');
+   
+    var eleMulti=parseInt(datos[1]);
+    
+    var precio=parseFloat(datos[4]);
+    
+    //console.log('precio:'+datos[4]);
+    
+    var min=parseInt(datos[2]);
+    var max=parseInt(datos[3]);
+    //if (chekeado){
+        $('#add-producto-pedido').attr('data-precio',(su_precio+suma).toFixed(2));
+        $('#precio-producto').html($('#add-producto-pedido').attr('data-precio')+' €');
+    //}
+    /*
+    else {
+        $('#add-producto-pedido').attr('data-precio',(su_precio-precio).toFixed(2));
+        $('#precio-producto').html($('#add-producto-pedido').attr('data-precio')+' €');
+    }
+    */
+    if (hay>max){
+        elem.prop('checked',false);
+        return;
+    }
+    var forzosos =parseInt($('input:hidden[name=forzoso]').val());
+    if (hay>=min) {
+        elemForzoso.html('<i class="icon f7-icons text-color-green icon_menu" style="float: right">checkmark_circle_fill</i>');
+        
+        
+    }
+    else {
+        
+        elemForzoso.html('<i class="icon f7-icons text-color-red icon_menu" style="float: right">xmark</i>');
+       
+    }
+
+    verificaCuantosPuestos();
+}
+
+function verificaCuantosPuestos() {
+    var suma=0;
+    var chk=0;
+    $('.icon_menu').each(function(){
+        suma++;
+        if ($(this).hasClass('text-color-green')){
+            chk++;
+        }
+            
+    });
+
+    if(suma==chk){
+
+        $('#add-producto-pedido').removeClass('disabled');
+        $('#add-producto-pedido').addClass('button-fill');
+        //addCarritoMenu(this);"
+        document.getElementById('add-producto-pedido').setAttribute('onclick','addCarritoMenu(this)');
+    }
+    else {
+        $('#add-producto-pedido').addClass('disabled');
+        $('#add-producto-pedido').removeClass('button-fill');
+    }
+}
+
+function suma1Menu(elem){
+    var forz=0;
+    var datos=elem.split("#");
+    //console.log(elem);
+    
+    var su_precio=parseFloat($('#add-producto-pedido').attr('data-sin'));
+    // but-mod-153
+    var elemForzoso=$('#but-mod-'+datos[0]);
+    var forzoso=elemForzoso.attr('data-forzoso');
+    
+    // $x.'#'.$id.'#'.$nombre.'#'.$eleMulti.'#'.$min.'#'.$max.'#'.$precio.'#'.$imagen.'#'.$impuesto;
+    
+    var elem=$('.elem-menu-opc-'+datos[0]+'-'+datos[5]);
+    //console.log('.elem-menu-opc-'+datos[0]+'-'+datos[5])
+    var hay=parseInt(elem.val());
+    var precio=parseFloat(datos[4]);
+    var suma=0;
+    var min=parseInt(datos[2]);
+    var max=parseInt(datos[3]);
+    $('.menu-stepper-'+datos[0]).each(function(){
+        suma+=parseInt($(this).val());   
+    });
+    //console.log('hay:'+elem.val());
+    if (suma<max){
+        elem.val(hay+1);
+        //hay++;
+        suma++;
+        $('#add-producto-pedido').attr('data-precio',(su_precio+precio).toFixed(2));
+        $('#precio-producto').html($('#add-producto-pedido').attr('data-precio')+' €');
+        
+    }
+    
+    if (suma>=min) {
+        elemForzoso.html('<i class="icon f7-icons text-color-green icon_menu" style="float: right">checkmark_circle_fill</i>');
+        
+    }
+    else {
+        elemForzoso.html('<i class="icon f7-icons text-color-red icon_menu" style="float: right">xmark</i>');
+    }
+    
+    verificaCuantosPuestos();
+    //console.log(datos[2]);
+    
+}
+
+function resta1Menu(elem){
+    var forz=0;
+    var datos=elem.split("#");
+    console.log(elem);
+    
+    var su_precio=parseFloat($('#add-producto-pedido').attr('data-sin'));
+    // but-mod-153
+    var elemForzoso=$('#but-mod-'+datos[0]);
+    var forzoso=elemForzoso.attr('data-forzoso');
+    
+    // $x.'#'.$id.'#'.$nombre.'#'.$eleMulti.'#'.$min.'#'.$max.'#'.$precio.'#'.$imagen.'#'.$impuesto;
+    
+    var elem=$('.elem-menu-opc-'+datos[0]+'-'+datos[5]);
+    console.log('.elem-menu-opc-'+datos[0]+'-'+datos[5])
+    var hay=parseInt(elem.val());
+    var precio=parseFloat(datos[4]);
+    var suma=0;
+    var min=parseInt(datos[2]);
+    var max=parseInt(datos[3]);
+    $('.menu-stepper-'+datos[0]).each(function(){
+        suma+=parseInt($(this).val());   
+    });
+    console.log('hay:'+elem.val());
+    if (hay>0){
+        elem.val(hay-1);
+        //hay--;
+        suma--;
+        $('##add-producto-pedido').attr('data-precio',(su_precio-precio).toFixed(2));
+        $('#precio-producto').html($('#add-producto-pedido').attr('data-precio')+' €');
+    }
+
+    if (suma>=min) {
+        elemForzoso.html('<i class="icon f7-icons text-color-green icon_menu" style="float: right">checkmark_circle_fill</i>')
+    }
+    else {
+        elemForzoso.html('<i class="icon f7-icons text-color-red icon_menu" style="float: right">xmark</i>');
+       
+    }
+    
+    verificaCuantosPuestos();
+    //console.log(datos[2]);
+    
+}
+
+function addCarritoMenu(e){
+    var id=e.getAttribute('data-id');
+    var nombre=e.getAttribute('data-nombre');
+    var precio=e.getAttribute('data-precio');
+    var precio_sin=e.getAttribute('data-sin');
+    
+    var img=e.getAttribute('data-img');
+    var mod=e.getAttribute('data-modificadores');
+    var comentario=$('#comentario-prod-pedido').val();
+    var contenido='';
+    var elmentosMenu=Array();
+    $('.elem-menu-opc').each(function(){
+        if ($(this).attr('type')=='text'){
+            if (parseInt($(this).val())>0){
+                contenido=$(this).attr('data-contenido');
+                //console.log(contenido);
+                var datos=contenido.split("#");
+               //141#2#0#1#0.00#3510 
+               //alert(datos[6]+'-'+$(this).val()) ;
+                elmentosMenu.push({id:datos[5],nombre:datos[6],precio:datos[4] ,cantidad:parseInt($(this).val()) ,img:datos[7] ,mod:null});
+
+            }
+            
+        }
+        else {
+            if ($(this).prop('checked')){
+                contenido=$(this).val();
+                //console.log(contenido);
+                var datos=contenido.split("#"); elmentosMenu.push({id:datos[5],nombre:datos[6],precio:datos[4] ,cantidad:1 ,img:datos[7] ,mod:null});
+                
+            }
+        }
+
+    });
+    //console.log(elmentosMenu);
+    carrito.push({id:$('#add-producto-pedido').attr('data-id'),nombre:nombre ,precio:precio,  precio_sin:precio_sin, cantidad:1,img:img,mod:null, comentario:comentario,menu:1,elmentosMenu:elmentosMenu});
+    //console.log(elmentosMenu) ;   
+   app.popup.close();
+        
+    calcularTotalCarrito();
+    renderizarCarrito();
+            
+    
+    
 }
 
 function addCarritoPedido(e){  
@@ -2279,11 +2689,15 @@ function hacerelpedido() {
     var cod_postal='';
     var poblacion='';
     var provincia='';
+    var lat=0;
+    var lng=0
     if (modo==1){
         direccion=datoscliente['domicilio']['direccion'];
         cod_postal=datoscliente['domicilio']['cod_postal'];
         poblacion=datoscliente['domicilio']['poblacion'];
         provincia=datoscliente['domicilio']['provincia'];
+        lat=datoscliente['domicilio']['coordenadas']['lat'];
+        lng=datoscliente['domicilio']['coordenadas']['lng'];
     }
     //app.dialog.alert(datoscliente['cliente']['nombre']+' '+datoscliente['cliente']['apellidos']+' ('+datoscliente['cliente']['telefono']+')');
     //console.log(datos_cliente);
@@ -2298,7 +2712,7 @@ function hacerelpedido() {
     
     $.ajax({
         url: server,
-        data:{idcliente:idcliente, nombre:nombre, apellidos:apellidos, telefono:telefono , email:email, direccion:direccion, cod_postal:cod_postal, poblacion:poblacion, provincia:provincia, modo:modo, carrito:carrito, portes:envio, fecha_pedido:fecha_pedido, hora_pedido:hora_pedido, subtotal:carritoSubtotal.toFixed(2),comentario:comentario},
+        data:{idcliente:idcliente, nombre:nombre, apellidos:apellidos, telefono:telefono , email:email, direccion:direccion, cod_postal:cod_postal, poblacion:poblacion, lat:lat,lng:lng, provincia:provincia, modo:modo, carrito:carrito, portes:envio, fecha_pedido:fecha_pedido, hora_pedido:hora_pedido, subtotal:carritoSubtotal.toFixed(2),comentario:comentario},
         method: "post",
         dataType:"json",
         success: function(data){ 

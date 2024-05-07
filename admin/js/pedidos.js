@@ -28,6 +28,9 @@ function leepedidos(pagina=1,fecha='') {
     $('#boton-hacer-pedido').css('height','40px');
     $('#pedidos-titulo').html('Pedidos');
     $('#boton-hacer-pedido').attr('onclick', 'hacerPedido()');
+    if (delivery==0){
+        $('#label-num-delivery').hide();
+    }
     var txt='';
     app.popup.destroy();
     var server=servidor+'admin/includes/leepedidos.php';             $.ajax({
@@ -68,6 +71,9 @@ function leepedidos(pagina=1,fecha='') {
                 var paginas=numReg/12;
                 var resto=numReg%12;
                 var pagina_actual=pagina;
+                var num_delivery=obj.num_delivery;
+                
+                
                 if (pagina_actual==0){
                     //pagina_actual=1;
                 }
@@ -81,8 +87,11 @@ function leepedidos(pagina=1,fecha='') {
                 txt_foot='<tr style="border-top: 1px solid #ababab;font-style: italic;font-size:16px;">'+
                     '<th class="label-cell"></th>'+
                     '<th class="label-cell"></th>'+
-                    '<th class="label-cell"></th>'+
-                    '<th class="label-cell"></th>'+
+                    '<th class="label-cell"></th>';
+                if (delivery>0){
+                    txt_foot+='<th class="label-cell"></th>';
+                }
+                txt_foot+='<th class="label-cell"></th>'+
                     '<th class="label-cell"><br><b>Sumas</b></th>'+
                     '<th class="numeric-cell"><br>'+obj.sumaSubtotal+'</th>'+
                     //'<th class="numeric-cell">'+impuestos[x]+'</th>'+
@@ -159,8 +168,33 @@ function leepedidos(pagina=1,fecha='') {
                     txt+=
                         '<tr '+color+'>'+
                             '<th class="label-cell"'+link+'>'+numero[x]+'</th>'+
-                            '<th class="label-cell"'+linkRevo+'>'+numeroRevo[x]+'</th>'+
-                            '<th class="label-cell"'+link+'>'+dia[x]+'</th>'+
+                            '<th class="label-cell"'+linkRevo+'>'+numeroRevo[x]+'</th>';
+                        if (delivery>0){
+                            //console.log(numeroRevo[x] +'-'+num_delivery[x]);
+                            if (envio[x]=='1'){
+                                //console.log(num_delivery[x]);
+                                if (num_delivery[x]!=null) {
+                                    if (num_delivery[x]!='error') {
+                                        txt+='<th class="label-cell"><i class="icons material-icons">delivery_dining</i></th>';
+                                    }
+                                    else {
+                                        txt+='<th class="label-cell"><i class="icons material-icons" style="color:red;">delivery_dining</i></th>';
+                                    }
+                                    
+                                }
+                                else {
+                                    txt+='<th class="label-cell"></th>';
+                                }
+                        
+                            }
+                            else {
+                                
+                                txt+='<th class="label-cell"></th>';
+                            }
+                            
+                            
+                        }
+                        txt+='<th class="label-cell"'+link+'>'+dia[x]+'</th>'+
                             '<th class="label-cell"'+link+'>'+hora[x]+'</th>'+
                             '<th class="label-cell"'+link+'>'+nom_cliente+'</th>'+
                             '<th class="numeric-cell"'+link+'>'+subtotal[x]+'</th>'+

@@ -20,7 +20,11 @@ $domicilio=[
     'direccion'=>$array['direccion'],
     'cod_postal'=>$array['cod_postal'],
     'poblacion'=>$array['poblacion'],
-    'provincia'=>$array['provincia'] 
+    'provincia'=>$array['provincia'],
+    'coordenadas'=>[
+        'lat'=>$array['lat'],
+        'lng'=>$array['lng']
+    ] 
 ];
 
 $cliente=$array['idcliente'];
@@ -78,7 +82,6 @@ for ($x=0;$x<count($carrito);$x++){
 $order['carrito']=$carrito;
 
 //file_put_contents('zz-pedido_detalle.txt', print_r($order, true));
-
 
 
 //$file = fopen("zz-pedido.txt", "w");
@@ -147,7 +150,15 @@ if (isset($idPedido)) {
             
             //fwrite($file, "sql: ". $sql . PHP_EOL);
             //fwrite($file, "idLineaPedido: ". $idLineaPedido . PHP_EOL);
-            
+            if (isset($carrito[$x]['elmentosMenu'])) {
+                for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                    $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."',0);";
+                    
+                    $database->setQuery($sql);
+                    $resulmod = $database->execute();
+                    
+                }
+            }
             if (isset($carrito[$x]['modificadores'])) {
                 for($j=0;$j<count($carrito[$x]['modificadores']);$j++){            
                     $sql="INSERT INTO pedidos_lineas_modificadores (idLineaPedido,idModificador,descripcion,precio) VALUES (".$idLineaPedido.",'".$carrito[$x]['modificadores'][$j]['id']."','".$carrito[$x]['modificadores'][$j]['nombre']."','".$carrito[$x]['modificadores'][$j]['precio']."');"; 
@@ -167,7 +178,7 @@ if (isset($idPedido)) {
 
     if ($order['metodo']==1){
         //add domicilio
-        $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia) VALUES (".$idPedido.",'".$order['domicilio']['direccion']."','','".$order['domicilio']['cod_postal']."','".$order['domicilio']['poblacion']."','".$order['domicilio']['provincia']."');"; 
+        $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia,lat,lng) VALUES (".$idPedido.",'".$order['domicilio']['direccion']."','','".$order['domicilio']['cod_postal']."','".$order['domicilio']['poblacion']."','".$order['domicilio']['provincia']."',".$order['domicilio']['coordenadas']['lat'].",".$order['domicilio']['coordenadas']['lng'].");"; 
         $database->setQuery($sql);
         $result = $database->execute();
         if ($result) { 
