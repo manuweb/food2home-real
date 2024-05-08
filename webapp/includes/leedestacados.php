@@ -39,6 +39,16 @@ $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
 
+$id=[];
+$producto=[];
+$nombre=[];
+$inicio=[];
+$catalogo=[];
+$cat=[];
+$gru=[];
+$idcat=[];
+$idgru=[];
+$imagen=[];
 if ($result) {    
     $checking=true;
     while ($destacados = $result->fetch_object()) {
