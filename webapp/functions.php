@@ -2330,8 +2330,8 @@ class Delivery
             $fecha=substr($NuevaFecha,0,10);;
             
             $scheduledDate=$fecha."T".$hora.":00.000Z";
-            $apykey=$variables['apykey'];
-            $sign=$variables['sign'];
+            $apykey='o1EiT/kYIOvASs0+5AOaNOTyMuqWJgwVsRsGvEJOZmE=';
+            $sign='zuXvfJEycOmgNI6XbVbLu/Q/zjIUc/8hACXFulnZeWo=';
             $branch=$variables['branch'];
             $paymentMethod='5c3fba2beb7ccb177b747a91';
             $isPaid=true;
