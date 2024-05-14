@@ -387,7 +387,7 @@ if (count($grupo)>0) {
                  }
 
                  $texto.='<div id="opciones-producto" style="margin: 10px;/*margin-top:25px;"*/>';
-                    $texto.='<form id="from-producto" >';
+                    $texto.='<form id="from-producto" style="clear: both;">';
                 if (count($modifierCategories)>0){
                        $texto.=llenaOpciones($modifierCategories,$modificadores,$precio,$array['id']);
                 }
