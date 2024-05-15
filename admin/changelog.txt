@@ -1,3 +1,7 @@
+<p><i class="f7-icons size-16">calendar</i> 15/05/2024 MEJORAS:<br><span style='display: flex;'><b>Promociones</b> &nbsp;<i class="icons f7-icons size-18">tickets_fill</i></span>
+Añadido nuevos tipos de promociones. Ahora se puede hacer 3x2, 2x1, etc, en productos o categorías.</p>
+<span style='display: flex;'><b>Carrito</b> &nbsp;<i class="icons f7-icons size-18">cart_fill</i></span>
+Ahora se puede establecer un máximo de determinados productos o categorías para el carrito de compra.</p>
 <p><i class="f7-icons size-16">calendar</i> 07/05/2024 MEJORAS:<br><span style='display: flex;'><b>Delivery</b> &nbsp;<i class="icons material-icons size-18">delivery_dining</i></span>
 Añadida posibilidad de integrar empresa de delivery.<br>
 En Ajustes->Integración, se puede configurar y añadir empresa de delivery. Se iran añadiendo las empresas que permitan integración con <b>Food2Home</b>.</p>
@@ -13,6 +17,8 @@ Solamente para pago en efectivo.
 <p><i class="f7-icons size-16">calendar</i> 08/04/2024 MEJORAS:<br><b>Pedidos</b><br>
 Ya se puede realizar pedidos a x días vista, por defecto está a 1 día (hoy).
 </p>
+<p id='change-log-link'><a href='#' onclick='$("#change-log-more").show();$("#change-log-link").hide();'>Mostrar más</a>
+<div id='change-log-more' style='display:none;'>
 <p><i class="f7-icons size-16">calendar</i> 07/03/2024 MEJORAS:<br><b>Informes</b><br>
 Ya se puede exportar los informes a Excel.<br>
 Añadido informe de modificadores.
@@ -20,8 +26,7 @@ Añadido informe de modificadores.
 <p><i class="f7-icons size-16">calendar</i> 03/03/2024 MEJORAS:<br><b>Imágenes</b><br>
 Mejora en la carga de imagenes al usar imagenes WEBP en lugar de PNG o JPG.
 </p>
-<p id='change-log-link'><a href='#' onclick='$("#change-log-more").show();$("#change-log-link").hide();'>Mostrar más</a>
-<div id='change-log-more' style='display:none;'>
+
 <p><i class="f7-icons size-16">calendar</i> 25/02/2024 MEJORAS:<br><b>Checkout</b><br>
 Las horas de las citas se pueden mostrar en un selector o en una vista en cuadrícula.<br>
 También se puede optar por no usar horarios.
