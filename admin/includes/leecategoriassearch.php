@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Archivo: leeproductossearch.php
+ * Archivo: leecategoriassearch.php
  *
  * Version: 1.0.0
  * Fecha  : 25/11/2022
@@ -37,7 +37,7 @@ $checking=false;
 
 
 
-$sql="SELECT productos.id, productos.nombre FROM productos WHERE productos.activo_web=1 ORDER BY productos.nombre";
+$sql="SELECT categorias.id, categorias.nombre FROM categorias WHERE categorias.activo_web=1 ORDER BY categorias.nombre";
 
 
 $database = DataBase::getInstance();
