@@ -125,7 +125,57 @@ if ($result->num_rows>0) {
 else {
     $checking=true;
 }
+$txt='';
 
+
+$fecha2=date_create(substr($lafecha,6,4)."-".substr($lafecha,3,2)."-".substr($lafecha,0,2));
+$eshoy= date("Y-m-d");  
+$txt='NO Hoy';
+$fechabusco=date_format($fecha2,"Y-m-d");
+/*
+$fechabusco=date_format($fecha2,"Y-m-d");
+if ($fechabusco==$eshoy){
+    $txt='Hoy';
+    if ($hora<=date("H:i")){
+        $txt='Hoy en hora:'.date("H:i");
+    }
+    else {
+        $txt='Hoy pasado de hora:'.date("H:i");
+    }
+}
+*/
+$disponiblereparto=$array['disponiblereparto'];
+$disponiblecocina=$array['disponiblecocina'];
+//$disponiblecocina=['19:30'];
+if ($fechabusco==$eshoy){
+    $txt='ES Hoy';
+    if ($envio==1){
+
+        if(is_array($disponiblereparto) ){
+            $checking=false;
+            $txt='ES Hoy';
+            for ($x=0;$x<count($disponiblereparto);$x++){
+                
+                if (date("H:i")<=$disponiblereparto[$x]){
+                    $checking=true;
+                }
+            }
+        }   
+    }
+    else {
+        if(is_array($disponiblecocina) ){
+            $checking=false;
+            $txt='ES Hoy '.date("H:i");
+            for ($x=0;$x<count($disponiblecocina);$x++){
+                
+                if (date("H:i")<=$disponiblecocina[$x]){
+                    $checking=true;
+                    $txt='ES Hoy '.date("H:i").'<='.$disponiblecocina[$x];
+                }
+            }
+        } 
+    }
+}
 
 
 
@@ -137,6 +187,7 @@ $json=array("valid"=>$checking);
 ob_end_clean();
 echo json_encode($json);
 
+
 /*
 
 $file = fopen("zz-verificahoras.txt", "w");
@@ -147,6 +198,7 @@ fwrite($file, "maximo_pedidosportramoenvio: ". $maximo_pedidosportramoenvio . PH
 fwrite($file, "Envio: ". $envio . PHP_EOL);
 fwrite($file, "hora: ". $hora . PHP_EOL);
 fwrite($file, "Contados: ". $contado . PHP_EOL);
+fwrite($file, "TXT: ". $txt . PHP_EOL);
 fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
 
 fclose($file);

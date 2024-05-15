@@ -55,7 +55,7 @@ if ($result) {
 
 
     for ($n=0;$n<count($carrito);$n++){
-        $sql1="SELECT productos.id, productos.nombre,productos.imagen, productos.imagen_app1, productos.".$precio." as precio FROM productos WHERE productos.id=".$carrito[$n]['id'].";";
+        $sql1="SELECT productos.id,productos.categoria, productos.nombre,productos.imagen, productos.imagen_app1, productos.".$precio." as precio FROM productos WHERE productos.id=".$carrito[$n]['id'].";";
 
                  
         $database = DataBase::getInstance();
@@ -63,6 +63,7 @@ if ($result) {
         $result = $database->execute(); 
         $producto = $result->fetch_object();
         $carrito[$n]['precio_sin']=$producto->precio;
+        $carrito[$n]['categoria']=$producto->categoria;
         $carrito[$n]['precio']=$carrito[$n]['precio_sin'];
 
         if (isset($carrito[$n]['modificadores'])){

@@ -326,7 +326,7 @@ for ($x=0;$x<count($carrito);$x++){
 
 $order['fecha']=date('Y-m-d H:i:s');
 
-$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon, monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", 0, ".$canal.", '".$comentario."', 0);";
+$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon,codigoCupon,monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', '".$order['codigocupon']."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", 0, ".$canal.", '".$comentario."', 0);";
 
 //$order['fecha']=date('Y-m-d H:i:s');
 
