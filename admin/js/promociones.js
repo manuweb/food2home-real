@@ -89,11 +89,21 @@ function promociones() {
                     if (tipo[x]==2){
                         tip='% Descuento en producto';       
                     }
+                    if (tipo[x]==7){
+                        tip='% Descuento en categoría';       
+                    }
                     if (tipo[x]==3){
                         tip='Envío Gratis';       
                     }
                     if (tipo[x]==4){
                         tip='x € de regalo';       
+                    }
+                    
+                    if (tipo[x]==5){
+                        tip='H x J en producto';       
+                    }
+                    if (tipo[x]==6){
+                        tip='H x J en categoría';       
                     }
                 
                     iconTooltip2[x] = app.tooltip.create({
@@ -235,8 +245,11 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                                 '<select placeholder="Escoja un tipo ..." id="tipopromo" onchange="cambiatipopromo(this);">'+
                                     '<option value="1">% Dto. Global</option>'+
                                     '<option value="2">% Dto. Producto</option>'+
+        '<option value="7">% Dto. Categoria</option>'+
                                     '<option value="3">Envío Gratis</option>'+
                                     '<option value="4">Importe descuento</option>'+
+        '<option value="5">H x J en productos</option>'+
+        '<option value="6">H x J en categoría</option>'+
                                 ' </select>'+
                             '</div>'+
                           '</div>'+
@@ -252,6 +265,16 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                           '</div>'+
                         '</div>'+
                       '</li>'+ 
+
+                    '<li id="producto-array">'+
+                    '<a class="item-link item-content" onclick="addproductotoarray();" id="addproductotoarray">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title">Lista de productos </div>'+
+                        '<div class="item-after" id="div-producto-array">Sin</div>'+
+                        
+                      '</div>'+
+                    '</a>'+
+                  '</li>'+
                       '<li id="producto">'+
                         '<div class="item-content item-input">'+
                             '<div class="item-media busca-producto-promo">'+
@@ -262,6 +285,20 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                             '<div class="item-title item-label">Producto</div>'+
                             '<div class="item-input-wrap" >'+
                               '<input type="text" name="productopromo" disabled/>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>'+
+                      '</li>'+
+                        '<li id="categoria">'+
+                        '<div class="item-content item-input">'+
+                            '<div class="item-media busca-categoria-promo">'+
+                                '<i class="icon f7-icons">search</i>'+
+                            '</div>'+
+                          '<div class="item-inner">'+
+
+                            '<div class="item-title item-label">Categoría</div>'+
+                            '<div class="item-input-wrap" >'+
+                              '<input type="text" name="categoriapromo" disabled/>'+
                             '</div>'+
                           '</div>'+
                         '</div>'+
@@ -286,11 +323,22 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                           '</div>'+
                         '</div>'+
                       '</li>'+
+                    '<li id="H-promo">'+
+                        '<div class="item-content item-input">'+
+                          '<div class="item-inner">'+
+                            '<div class="item-title item-label">H x J</div>'+
+                            '<div class="item-input-wrap" style="display: flex;" >'+
+                              '<input type="text" name="h_promo" maxlength="2" style="width: 30%;"/> &nbsp; <i class="icons f7-icons size-16" style="margin-top: 10px;">xmark</i> &nbsp; '+
+        '<input type="text" name="j_promo" maxlength="2" style="width: 30%;"/>&nbsp;&nbsp;<label class="checkbox" style="display: flex;margin-top: 7px;"><input type="checkbox" name="precio_promo" checked/><i class="icon-checkbox"></i>&nbsp; Precio más bajo</label>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>'+
+                      '</li>'+
                       
                       // desde, hasta tipo
                     '</ul>'+   
                 '</div>'+
-
+                '<input type="hidden" name="lista_poroductos_descuento" />'+
 
          
                 '</form>'+
@@ -319,6 +367,7 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                     $('#promos-form input[name*="nombre"]').prop('disabled',true);
                 }
                 else {
+                    
                     $('#promos-form input[name*="dias"]').prop('disabled',true);
                     $('#dias').hide();
                     if (hasta==''){
@@ -358,6 +407,16 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                         closeOnSelect:true,
                         dateFormat: 'dd/mm/yyyy HH::mm'
                     });
+                    if (id==5){
+                        $('#producto-array').show();
+                        
+                        
+                        $('#categoria').hide();
+                    }
+                    if (id==6){
+                        $('#producto').hide();
+                        $('#categoria').show();
+                    }
                 }
 
                 if (id!=0){
@@ -380,11 +439,12 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                                 var hasta=obj.hasta;
                                 var logica=obj.logica;
                                 var producto=obj.producto;
+                                var categoria=obj.categoria;
                                 var usuario=obj.usuario;
                                 var usuario=obj.usuario;
                                 var grupo=obj.grupo;
                                 var maximo=obj.maximo;
-
+//console.log(producto);
                                 $('#promos-form input[name*="maximo"]').val(maximo);
                                 
                                 if (usuario<3){
@@ -395,17 +455,27 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                                 }
                                 $('#destino-cupon option[value="'+ usuario +'"]').attr("selected",true);
                                 $('#envio-recoger option[value="'+ envio_recoger+'"]').attr("selected",true);
-                                
+                                if (tipo==2){
                                 if (producto!=''){
                                     $('#promos-form input[name*="productopromo"]').val(producto);
+                                    porciones=producto.split("-");
+                                    $('#promos-form input[name*="idpromo"]').val(porciones[0]);
+                                }
+                                }
+                                if (categoria!=''){
+                                    $('#promos-form input[name*="categoriapromo"]').val(categoria);
                                     porciones=producto.split("-");
                                     $('#promos-form input[name*="idpromo"]').val(porciones[0]);
                                 }
                                 $("#tipopromo").val(tipo);
                                 $('#porcentaje').hide();
                                 $('#producto').hide();
+                                $('#categoria').hide();
                                 $('#importe').hide();
                                 $('#minimo').hide();
+                                $('#H-promo').hide();
+                                $('#producto-array').hide();
+                                
                                 /*
                                 '<option value="1">% Dto. Global</option>'+
                                 '<option value="2">% Dto. Producto</option>'+
@@ -428,6 +498,13 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                                     $('#porcentaje').show();
                                     $('#producto').show();
                                 }
+                                if (tipo=='7') {
+                                    partes=logica.split('##')
+                                    $('input[name=porcentaje]').val(partes[0]);
+                                    $('input[name=categoria]').val(partes[1]);
+                                    $('#porcentaje').show();
+                                    $('#categoria').show();
+                                }
                                 if (tipo=='3') {
                                     $('#minimo').show();
                                     $('input[name=minimo]').val(logica);
@@ -438,6 +515,33 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                                     $('input[name=importe]').val(partes[0]);
                                     $('#minimo').show();
                                     $('input[name=minimo]').val(partes[1]);
+                                }
+                                if (tipo=='5') {
+                                   $('#H-promo').show();
+                                    partes=logica.split('##')
+                                    $('#producto-array').show();
+                                   $('#div-producto-array').html('Editar');
+                                    $('#categoria').hide(); 
+                                    $('input[name=h_promo]').val(partes[0]);
+                                    $('input[name=j_promo]').val(partes[1]);
+                                    if (partes[2]==0){
+                                      $('input[name=precio_promo]').prop('checked',false); 
+                                    }
+                                    
+                                   
+                                   $('input[name=lista_poroductos_descuento]').val(JSON.stringify(producto)); 
+                                    //console.log(producto);
+                                    
+                                }
+                                if (tipo=='6') {
+                                   $('#H-promo').show(); partes=logica.split('##')
+                                    $('#producto').hide();
+                                    $('#producto-array').hide();
+                                   $('#categoria').show(); $('input[name=h_promo]').val(partes[1]);
+                                    $('input[name=j_promo]').val(partes[2]);
+                                    if (partes[3]==0){
+                                      $('input[name=precio_promo]').prop('checked',false); 
+                                    }
                                 }
 
                             }
@@ -454,10 +558,14 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                 else {
                     $('input[name=codigo]').val(makeid(12));
                     $('#porcentaje').show();
+                    $('#categoria').hide();
+                    $('#categoria').hide();
+                    $('#H-promo').hide();
                     $('#producto').hide();
                     $('#importe').hide();
                     $('#minimo').show();
                     $('#grupos').hide();
+                    $('#producto-array').hide();
                 }
             }
         }
@@ -534,6 +642,88 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
                               }
                             }
                         });
+                        
+                    }
+                });
+  
+          },
+                },
+            }); 
+        dynamicPopup.open();
+        
+        
+    });
+    
+    $('.busca-categoria-promo').on('click', function () {
+    
+        var dynamicPopup = app.popup.create({
+        content: ''+
+          '<div class="popup">'+
+            '<div class="block page-content">'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+        
+            '<form class="searchbar">'+
+                '<div class="searchbar-inner">'+
+                    '<div class="searchbar-input-wrap">'+
+                        '<input type="search" placeholder="Buscar categoria">'+
+                        '<i class="searchbar-icon"></i>'+
+                        '<span class="input-clear-button"></span>'+
+                    '</div>'+
+                    '<span class="searchbar-disable-button">Cancelar</span>'+
+                '</div>'+
+            '</form>  '   +  
+
+            '<div class="block">' +  
+                '<div class="searchbar-backdrop"></div>'+
+                '<div class="list searchbar-found lista-productos" id="lista-categoria">'+
+                '</div>'+
+
+               ' <div class="block searchbar-not-found">'+
+                   ' <div class="block-inner">Categoría no encontrada</div>'+
+                '</div>'+
+             '</div>' + 
+
+            '</div>'+
+          '</div>'
+         ,
+            on: {
+          open: function (popup) {
+
+                var server=servidor+'admin/includes/leecategoriassearch.php';
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    data: {id:id,tienda:tienda},
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        if (obj.valid==true){
+                            var txt='<ul>';
+                            for (x=0;x<obj.id.length;x++){
+                                 txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'" data-nombre="'+obj.nombre[x]+'" onclick="muestracatbuscadopromo(this);">'+
+                                    '<div class="item-inner">'+
+                                        '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
+                                    '</div>'+
+                                    '</li>';
+                            }
+                            txt+='</ul>';
+                            $('#lista-categoria').html(txt);  
+                        }
+                        else{
+                            $('#lista-categoria').html('');
+                        }
+                    
+                        var searchbar = app.searchbar.create({
+                            el: '.searchbar',
+                            searchContainer: '#lista-categoria',
+                            searchIn: '.item-buscado',
+                            on: {
+                              search(sb, query, previousQuery) {
+                                //console.log(query, previousQuery);
+                              }
+                            }
+                        });
+                        
                     }
                 });
   
@@ -546,6 +736,235 @@ function editapromoespecial(id=0, nombre='',tipo=1, codigo='', envio_recoger=0,u
     });
 }
 
+
+function addproductotoarray(){
+    var temp= $('input[name=lista_poroductos_descuento]').val();
+    
+    
+    var lista=new Array();
+    if (temp!=''){
+        lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+    }
+    //console.log(lista);
+    var dynamicPopup = app.popup.create({
+        content: ''+
+        '<div class="popup">'+
+            '<div class="block page-content">'+
+                '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+                '<div class="block-title">Productos</div>'+
+                '<div class="card data-table" id="div-lista-productos"></div>'+
+                
+            '</div>'+
+        '</div>'
+         ,
+        // Events
+        on: {
+          open: function (popup) {
+            //console.log('Popup open');
+            var txt='<table>'+
+              '<thead>'+
+                '<tr>'+
+                '<th class="label-cell">Producto</th>'+
+                '<th class="label-cell">Borrar</th>'+
+                '</tr>'+
+                '</thead>'+
+                '<tbody>';
+
+              for (x=0;x<lista.length;x++){
+                  
+                  var arr=lista[x].split('||');
+                  txt+='<tr>'+
+                    '<th class="label-cell">'+arr[1]+'</th>'+
+                    '<th onclick="BorrEsteelemento('+x+');$(this).closest(\'tr\').remove();" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+                    '</tr>';
+              }
+
+              txt+='</tbody>'+
+                  '</table>'
+              txt+='<div class="data-table-footer ">'+
+                  '<button class="button button-fill" onclick="button_add_prod();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+                  '</div>';
+              
+              $('#div-lista-productos').html(txt);
+              
+          },
+          opened: function (popup) {
+            //console.log('Popup opened');
+              
+          },
+        }
+    });  
+    dynamicPopup.on('close', function (popup) {
+        //console.log('Popup close');
+        var lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+        if (lista.length==0){
+            $('#div-producto-array').html('Sin');
+        }
+        
+      });
+    dynamicPopup.open();
+
+    
+
+    
+}
+
+function button_add_prod() {
+    
+        var dynamicPopup = app.popup.create({
+        content: ''+
+          '<div class="popup">'+
+            '<div class="block page-content">'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+        
+            '<form class="searchbar">'+
+                '<div class="searchbar-inner">'+
+                    '<div class="searchbar-input-wrap">'+
+                        '<input type="search" placeholder="Buscar producto">'+
+                        '<i class="searchbar-icon"></i>'+
+                        '<span class="input-clear-button"></span>'+
+                    '</div>'+
+                    '<span class="searchbar-disable-button">Cancelar</span>'+
+                '</div>'+
+            '</form>  '   +  
+
+            '<div class="block">' +  
+                '<div class="searchbar-backdrop"></div>'+
+                '<div class="list searchbar-found lista-productos" id="lista-productos">'+
+                '</div>'+
+
+               ' <div class="block searchbar-not-found">'+
+                   ' <div class="block-inner">Producto no encontrado</div>'+
+                '</div>'+
+             '</div>' + 
+
+            '</div>'+
+          '</div>'
+         ,
+            on: {
+          open: function (popup) {
+
+                var server=servidor+'admin/includes/leeproductossearch.php';
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    data: {tienda:tienda},
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        if (obj.valid==true){
+                            var txt='<ul>';
+                            for (x=0;x<obj.id.length;x++){
+                                 txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'" data-nombre="'+obj.nombre[x]+'" onclick="muestraprodbuscadopromoAdd(this);">'+
+                                    '<div class="item-inner">'+
+                                        '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
+                                    '</div>'+
+                                    '</li>';
+                            }
+                            txt+='</ul>';
+                            $('#lista-productos').html(txt);  
+                        }
+                        else{
+                            $('#lista-productos').html('');
+                        }
+                    
+                        var searchbar = app.searchbar.create({
+                            el: '.searchbar',
+                            searchContainer: '#lista-productos',
+                            searchIn: '.item-buscado',
+                            on: {
+                              search(sb, query, previousQuery) {
+                                //console.log(query, previousQuery);
+                              }
+                            }
+                        });
+                        
+                    }
+                });
+  
+          },
+                },
+            }); 
+        dynamicPopup.open();
+        
+        
+        
+        
+}
+
+function BorrEsteelemento(x){
+    var lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+    lista.splice(x, 1);
+   //redibujar
+   var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Producto</th>'+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+        '</thead>'+
+        '<tbody>';
+
+  for (x=0;x<lista.length;x++){
+
+      var arr=lista[x].split('||');
+      txt+='<tr>'+
+        '<th class="label-cell">'+arr[1]+'</th>'+
+        '<th onclick="BorrEsteelemento('+x+');$(this).closest(\'tr\').remove();" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+  }
+
+  txt+='</tbody>'+
+      '</table>'
+  txt+='<div class="data-table-footer ">'+
+                  '<button class="button button-fill" onclick="button_add_prod();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+                  '</div>';
+
+  $('#div-lista-productos').html(txt); $('input[name=lista_poroductos_descuento]').val(JSON.stringify(lista));
+
+}
+
+function muestraprodbuscadopromoAdd(e){
+
+    var temp= $('input[name=lista_poroductos_descuento]').val();
+    
+    
+    var lista=new Array();
+    if (temp!=''){
+        lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+    }
+    lista.splice(0,0, e.dataset.id+'||'+e.dataset.nombre);
+    //elem.dataset.id+'||'+elem.dataset.nombre
+    $('input[name=lista_poroductos_descuento]').val(JSON.stringify(lista));
+    app.popup.close();
+    var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Producto</th>'+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+        '</thead>'+
+        '<tbody>';
+
+  for (x=0;x<lista.length;x++){
+
+      var arr=lista[x].split('||');
+      txt+='<tr>'+
+        '<th class="label-cell">'+arr[1]+'</th>'+
+        '<th onclick="BorrEsteelemento('+x+');$(this).closest(\'tr\').remove();" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+  }
+
+  txt+='</tbody>'+
+      '</table>'
+  txt+='<div class="data-table-footer ">'+
+                  '<button class="button button-fill" onclick="button_add_prod();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+                  '</div>';
+
+  $('#div-lista-productos').html(txt); 
+    
+}
+    
 function rellenagruposbeneficiarios(grupo){
     //var grupos=grupo.split('-');
     var server=servidor+'admin/includes/leegruposfidelizacion.php';
@@ -600,8 +1019,10 @@ function cambiatipopromo(e){
     var tipo=e.value;
    $('#porcentaje').hide();
     $('#producto').hide();
+    $('#categoria').hide();
     $('#importe').hide();
     $('#minimo').hide();
+    $('#H-promo').hide();
     /*
 '<option value="1">% Dto. Global</option>'+
 '<option value="2">% Dto. Producto</option>'+
@@ -616,12 +1037,27 @@ function cambiatipopromo(e){
         $('#porcentaje').show();
         $('#producto').show();
     }
+    if (tipo=='7') {
+        $('#porcentaje').show();
+        $('#categoria').show();
+    }
     if (tipo=='3') {
         $('#minimo').show();
     }   
     if (tipo=='4') {
         $('#importe').show();
         $('#minimo').show();
+    }
+    if (tipo=='5') {
+        //$('#producto').show();
+        $('#producto-array').show();
+        
+        $('#H-promo').show();
+    }
+    if (tipo=='6') {
+        $('#categoria').show();
+        $('#H-promo').show();
+        $('#producto-array').hide();
     }
 }
 
@@ -632,6 +1068,8 @@ function guardapromoespecial(e){
     var usuario=$('#destino-cupon').val();
     var dias=0;
     var grupo='';
+    var h=0;
+    var j=0;
     if (usuario==3){
     // si grupo == 3 ver si hay alguno vacío
         var grupos = new Array();
@@ -660,6 +1098,7 @@ function guardapromoespecial(e){
             errores+='Fecha desde, ';
         }
     }
+    
 
      /*
 '<option value="1">% Dto. Global</option>'+
@@ -677,14 +1116,27 @@ function guardapromoespecial(e){
         logica=$('input[name=porcentaje]').val()+'##'+$('input[name=minimo]').val();
     }
     if (tipo=='2') {
+        var porciones=$('input[name=productopromo]').val().split('-');
         if ($('input[name=porcentaje]').val()==""){
             errores+='porcentaje, ';
         }
-        if ($('input[name=producto]').val()==""){
+        if ($('input[name=producto]').val()=="" || porciones[0]==''){
             errores+='producto, ';
         }
-         var porciones=$('input[name=productopromo]').val().split('-');
-             logica=$('input[name=porcentaje]').val()+'##'+porciones[0];
+        logica=$('input[name=porcentaje]').val()+'##'+porciones[0];
+    }
+    if (tipo=='7') {
+        var porciones=$('input[name=categoriapromo]').val().split('-');
+        
+        if ($('input[name=porcentaje]').val()=="" ){
+            errores+='porcentaje, ';
+        }
+        if ($('input[name=categoria]').val()=="" || porciones[0]==''){
+            errores+='categoria, ';
+        }
+         
+        
+        logica=$('input[name=porcentaje]').val()+'##'+porciones[0];
     }
     if (tipo=='3') {
         logica=$('input[name=minimo]').val();
@@ -697,9 +1149,55 @@ function guardapromoespecial(e){
     }
     
     // si grupo == 3 ver si hay alguno vacío
+    //var lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+    if (tipo==5){
+        var precio=0;
+        if ($('input[name=precio_promo]').prop('checked')){
+            precio=1;
+        } 
+        h=$('input[name=h_promo]').val();
+        j=$('input[name=j_promo]').val();
+
+        if (h=='' || j=='' || j>h){
+            errores+='H y J, ';
+        }
+        var lista=JSON.parse($('input[name=lista_poroductos_descuento]').val());
+        if (lista.length==0){
+            errores+='Productos, ';
+        }
+        var prod=new Array();
+        for(x=0;x<lista.length;x++){
+            var ids=lista[x].split('||');
+            prod.push(ids[0]);
+        }
+        logica=h+'##'+j+'##'+precio+'##'+prod;
+        console.log(logica);
+        
+    }
+    if (tipo==6){
+        var precio=0;
+        if ($('input[name=precio_promo]').prop('checked')){
+            precio=1;
+        } 
+        h=$('input[name=h_promo]').val();
+        j=$('input[name=j_promo]').val();
+
+        if (h=='' || j=='' || j>h){
+            errores+='H y J, ';
+        }
+        
+        
+        
+        if ($('input[name=categoria]').val()==""){
+            errores+='categoria, ';
+        }
+        var porciones=$('input[name=categoriapromo]').val().split('-');
+        
+        logica=porciones[0]+'##'+h+'##'+j+'##'+precio;
+    }
     
-    
-    
+
+
     if (errores!='') {
         app.dialog.alert('Errores: '+errores);
     }
@@ -734,10 +1232,19 @@ function guardapromoespecial(e){
     }
     
 }
-   
+
 function muestraprodbuscadopromo(e) {
     var elem=e;
     $('#promos-form input[name*="productopromo"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
+    $('#promos-form input[name*="idpromo"]').val(elem.dataset.id);
+    app.popup.close();
+
+    
+}
+
+function muestracatbuscadopromo(e) {
+    var elem=e;
+    $('#promos-form input[name*="categoriapromo"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
     $('#promos-form input[name*="idpromo"]').val(elem.dataset.id);
     app.popup.close();
 

@@ -1,3 +1,5 @@
+
+
 function ajustesrepartos(){
     $('#titulo-repartos').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Ajustes de repartos');
     var txt="";
@@ -10,10 +12,23 @@ function ajustesrepartos(){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                //console.log(obj.maximoproducto);
+                 var reglamaximo=JSON.parse(obj.maximoproducto);
+
                 txt+=''+
                 '<form class="list" id="ajustes-reparto-form" enctype="multipart/form-data">'+
                      '<input type="hidden" name="idportes"  value=""/>'+
                 '<ul>'+
+                    '<li>'+
+                    '<div class="item-content item-input">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title item-label">Tipos reartos</div>'+
+                        '<div class="item-input-wrap" style="display:flex;">'+
+                          '<label class="radio"><input type="radio" name="tipo_repartos" value="0"/><i class="icon-radio"></i></label>&nbsp;Ambos &nbsp;&nbsp;<label class="radio"><input type="radio" name="tipo_repartos" value="1"/><i class="icon-radio"></i></label> &nbsp;Domicilio&nbsp;&nbsp; <label class="radio"><input type="radio" name="tipo_repartos" value="2"/><i class="icon-radio"></i></label>&nbsp; Recoger '+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</li>'+
                     '<li>'+
                     '<div class="item-content item-input">'+
                       '<div class="item-inner">'+
@@ -23,6 +38,16 @@ function ajustesrepartos(){
                         '</div>'+
                       '</div>'+
                     '</div>'+
+                  '</li>'+
+                    
+                    '<li>'+
+                    '<a class="item-link item-content" onclick="cambiareglamaximo();">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title">Reglas máximos </div>'+
+                        '<div class="item-after" id="div-rega-maximo">Sin</div>'+
+                        
+                      '</div>'+
+                    '</a>'+
                   '</li>'+
                     '<li>'+
                     '<div class="item-content item-input">'+
@@ -161,13 +186,18 @@ function ajustesrepartos(){
                     
                   '</ul>'+
                     '<p><label class="toggle toggle-init"><input type="checkbox" name="toggle-tarifa" id="toggle-tarifa" value="yes" /><i class="toggle-icon"></i></label> Distinta tarifa para envío</p>'+
+                    '<input type="hidden" name="reglamaximo" value=\''+JSON. stringify(reglamaximo)+'\'/>'+
                 '</form>';
                 txt=txt+'<div class="text-align-center"><span id="button-guardar" class="button button-fill" onclick="guardaajustesreparto();" style="width: 50%;margin: auto;">Guardar</span></div>';
               
             }
             $('#repartos-page').html(txt);
             $("#cortesia").val(obj.cortesia);
-
+            if (reglamaximo.length>0){
+                $('#div-rega-maximo').html('Hay reglas');
+            }
+            
+            $("input[name=tipo_repartos][value=" + obj.tipo_repartos + "]").prop('checked', true);
             
             $(".cortesia-after").html($("#cortesia option:selected").text());
             if (obj.tarifa==1){
@@ -355,8 +385,409 @@ function ajustesrepartos(){
     });
 }
 
+function cambiareglamaximo(){
+    console.log($('input[name=reglamaximo]').val());
+    var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+    
+    var dynamicPopup = app.popup.create({
+        content: ''+
+        '<div class="popup">'+
+            '<div class="block page-content">'+
+                '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+                '<div class="block-title">Reglas máximo carrito</div>'+
+                '<div class="card data-table" id="div-lista-productos"></div>'+
+            '</div>'+
+        '</div>'
+         ,
+        // Events
+        on: {
+          open: function (popup) {
+            //console.log('Popup open');
+              var txt='<table>'+
+              '<thead>'+
+                '<tr>'+
+                '<th class="label-cell">Tipo</th>'+
+                '<th class="label-cell">Nombre</th>'+
+                  '<th class="label-cell">Máximo</th>'+
+                
+                '<th class="label-cell">Borrar</th>'+
+                '</tr>'+
+                
+                '</thead>'+
+                '<tbody>';
+
+              for (x=0;x<reglamaximo.length;x++){
+                  var tipo='C';
+                  if (reglamaximo[x]['tipo']==1){
+                      tipo='P';
+                  }
+                  txt+='<tr>'+
+                    '<th class="label-cell">'+tipo+'</th>'+
+                    '<th class="label-cell">'+reglamaximo[x]['nombre']+'</th>'+
+                      '<th class="label-cell">'+
+                      '<div class="stepper stepper-small stepper-round stepper-fill stepper-init">'+
+              '<div class="stepper-button-minus" onclick="restaunareglamaximo('+x+');"></div>'+
+              '<div class="stepper-input-wrap">'+
+                '<input type="text" value="'+reglamaximo[x]['max']+'" min="1" max="100" step="1" readonly />'+
+              '</div>'+
+              '<div class="stepper-button-plus" onclick="sumaunareglamaximo('+x+');"></div>'+
+                      
+                    '</th>'+
+                    '<th onclick="Borrareglamaximo('+x+');" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+                    '</tr>';
+              }
+
+              txt+='</tbody>'+
+                  '</table>'
+              txt+='<div class="data-table-footer ">'+
+                  '<button class="button button-fill" onclick="button_add_regla();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+                  '</div>';
+              
+              $('#div-lista-productos').html(txt);
+              
+              
+          },
+          opened: function (popup) {
+            //console.log('Popup opened');
+          },
+        }
+    });  
+    dynamicPopup.on('close', function (popup) {
+        //console.log('Popup close');
+        var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+        if (reglamaximo.length>0){
+                $('#div-rega-maximo').html('Hay reglas');
+        }
+        else {
+            $('#div-rega-maximo').html('Sin');
+        }
+        
+        
+      });
+    dynamicPopup.open();
+    
+    
+}
+
+function button_add_regla2(tipo){
+    var tipo_txt='producto';
+    if (tipo==2){
+        tipo_txt='categoría';
+    }
+    var dynamicPopup = app.popup.create({
+        content: ''+
+          '<div class="popup">'+
+            '<div class="block page-content">'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br>'+
+            '<H2>Buscar '+tipo_txt+'</h2>'+
+            '<form class="searchbar">'+
+                '<div class="searchbar-inner">'+
+                    '<div class="searchbar-input-wrap">'+
+                        '<input type="search" placeholder="Buscar">'+
+                        '<i class="searchbar-icon"></i>'+
+                        '<span class="input-clear-button"></span>'+
+                    '</div>'+
+                    '<span class="searchbar-disable-button">Cancelar</span>'+
+                '</div>'+
+            '</form>  '   +  
+
+            '<div class="block">' +  
+                '<div class="searchbar-backdrop"></div>'+
+                '<div class="list searchbar-found lista-productos" id="lista-productos">'+
+                '</div>'+
+
+               ' <div class="block searchbar-not-found">'+
+                   ' <div class="block-inner">Producto no encontrado</div>'+
+                '</div>'+
+             '</div>' + 
+
+            '</div>'+
+          '</div>'
+         ,
+            on: {
+          open: function (popup) {
+
+                var server=servidor+'admin/includes/leeproductossearch.php';
+                if (tipo==2){
+                    server=servidor+'admin/includes/leecategoriassearch.php';
+                }
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    data: {tienda:tienda},
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        if (obj.valid==true){
+                            var txt='<ul>';
+                            for (x=0;x<obj.id.length;x++){
+                                 txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'" data-tipo="'+tipo+'" data-nombre="'+obj.nombre[x]+'" onclick="muestraprodbuscadoMaximo(this);">'+
+                                    '<div class="item-inner">'+
+                                        '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
+                                    '</div>'+
+                                    '</li>';
+                            }
+                            txt+='</ul>';
+                            $('#lista-productos').html(txt);  
+                        }
+                        else{
+                            $('#lista-productos').html('');
+                        }
+                    
+                        var searchbar = app.searchbar.create({
+                            el: '.searchbar',
+                            searchContainer: '#lista-productos',
+                            searchIn: '.item-buscado',
+                            on: {
+                              search(sb, query, previousQuery) {
+                                //console.log(query, previousQuery);
+                              }
+                            }
+                        });
+                        
+                    }
+                });
+  
+          },
+                },
+            }); 
+        dynamicPopup.open();
+}
+
+function muestraprodbuscadoMaximo(e){
+    var elem=e;
+    $('#promos-form input[name*="categoriapromo"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
+    $('#promos-form input[name*="idpromo"]').val(elem.dataset.id);
+    
+    var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+    //"id":"908","nombre":"Coca-Cola","max":"5"
+    reglamaximo.push({"tipo":elem.dataset.tipo,"id":elem.dataset.id,"nombre":elem.dataset.nombre,"max":1});
+    
+  
+    $('input[name=reglamaximo]').val(JSON. stringify(reglamaximo));
+    app.popup.close();
+    var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Tipo</th>'+
+        '<th class="label-cell">Nombre</th>'+
+          '<th class="label-cell">Máximo</th>'+
+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+
+        '</thead>'+
+        '<tbody>';
+    for (x=0;x<reglamaximo.length;x++){
+      var tipo='C';
+      if (reglamaximo[x]['tipo']==1){
+          tipo='P';
+      }
+      txt+='<tr>'+
+        '<th class="label-cell">'+tipo+'</th>'+
+        '<th class="label-cell">'+reglamaximo[x]['nombre']+'</th>'+
+          '<th class="label-cell">'+
+          '<div class="stepper stepper-small stepper-round stepper-fill stepper-init">'+
+  '<div class="stepper-button-minus" onclick="restaunareglamaximo('+x+');"></div>'+
+  '<div class="stepper-input-wrap">'+
+    '<input type="text" value="'+reglamaximo[x]['max']+'" min="1" max="100" step="1" readonly />'+
+  '</div>'+
+  '<div class="stepper-button-plus" onclick="sumaunareglamaximo('+x+');"></div>'+
+
+        '</th>'+
+        '<th onclick="Borrareglamaximo('+x+');" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+    }
+
+    txt+='</tbody>'+
+      '</table>'
+    txt+='<div class="data-table-footer ">'+
+      '<button class="button button-fill" onclick="button_add_regla();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+      '</div>';
+
+    $('#div-lista-productos').html(txt);
+    
+}
+
+function button_add_regla(){
+    
+    app.dialog.create({
+        title: 'Tipo de regla',
+        buttons: [
+          {
+            text: 'Producto',
+            onClick:	function(dialog, e){
+              button_add_regla2(1);
+            }
+          },
+          {
+            text: 'Categoría',
+            onClick:	function(dialog, e){
+              button_add_regla2(2);
+            }
+          },
+
+        ],
+        verticalButtons: true,
+    }).open();
+}
+
+
+function sumaunareglamaximo(x){
+
+    var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+    if (reglamaximo[x]['max']>99){
+        return;
+    }
+    reglamaximo[x]['max']++;
+    $('input[name=reglamaximo]').val(JSON. stringify(reglamaximo));
+    var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Tipo</th>'+
+        '<th class="label-cell">Nombre</th>'+
+          '<th class="label-cell">Máximo</th>'+
+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+
+        '</thead>'+
+        '<tbody>';
+    for (x=0;x<reglamaximo.length;x++){
+      var tipo='C';
+      if (reglamaximo[x]['tipo']==1){
+          tipo='P';
+      }
+      txt+='<tr>'+
+        '<th class="label-cell">'+tipo+'</th>'+
+        '<th class="label-cell">'+reglamaximo[x]['nombre']+'</th>'+
+          '<th class="label-cell">'+
+          '<div class="stepper stepper-small stepper-round stepper-fill stepper-init">'+
+  '<div class="stepper-button-minus" onclick="restaunareglamaximo('+x+');"></div>'+
+  '<div class="stepper-input-wrap">'+
+    '<input type="text" value="'+reglamaximo[x]['max']+'" min="1" max="100" step="1" readonly />'+
+  '</div>'+
+  '<div class="stepper-button-plus" onclick="sumaunareglamaximo('+x+');"></div>'+
+
+        '</th>'+
+        '<th onclick="Borrareglamaximo('+x+');" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+    }
+
+    txt+='</tbody>'+
+      '</table>'
+    txt+='<div class="data-table-footer ">'+
+      '<button class="button button-fill" onclick="button_add_regla();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+      '</div>';
+
+    $('#div-lista-productos').html(txt);
+    
+}
+
+function restaunareglamaximo(x){
+    var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+    if (reglamaximo[x]['max']==1){
+        return;
+    }
+    reglamaximo[x]['max']--;
+    $('input[name=reglamaximo]').val(JSON. stringify(reglamaximo));
+    var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Tipo</th>'+
+        '<th class="label-cell">Nombre</th>'+
+          '<th class="label-cell">Máximo</th>'+
+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+
+        '</thead>'+
+        '<tbody>';
+
+    for (x=0;x<reglamaximo.length;x++){
+      var tipo='C';
+      if (reglamaximo[x]['tipo']==1){
+          tipo='P';
+      }
+      txt+='<tr>'+
+        '<th class="label-cell">'+tipo+'</th>'+
+        '<th class="label-cell">'+reglamaximo[x]['nombre']+'</th>'+
+          '<th class="label-cell">'+
+          '<div class="stepper stepper-small stepper-round stepper-fill stepper-init">'+
+  '<div class="stepper-button-minus" onclick="restaunareglamaximo('+x+');"></div>'+
+  '<div class="stepper-input-wrap">'+
+    '<input type="text" value="'+reglamaximo[x]['max']+'" min="1" max="100" step="1" readonly />'+
+  '</div>'+
+  '<div class="stepper-button-plus" onclick="sumaunareglamaximo('+x+');"></div>'+
+
+        '</th>'+
+        '<th onclick="Borrareglamaximo('+x+');" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+    }
+
+    txt+='</tbody>'+
+      '</table>'
+    txt+='<div class="data-table-footer ">'+
+      '<button class="button button-fill" onclick="button_add_regla();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+      '</div>';
+
+    $('#div-lista-productos').html(txt);
+}
+
+function Borrareglamaximo(x){
+    var reglamaximo=JSON.parse($('input[name=reglamaximo]').val());
+    
+    reglamaximo.splice(x, 1);
+        $('input[name=reglamaximo]').val(JSON. stringify(reglamaximo));
+    var txt='<table>'+
+      '<thead>'+
+        '<tr>'+
+        '<th class="label-cell">Tipo</th>'+
+        '<th class="label-cell">Nombre</th>'+
+          '<th class="label-cell">Máximo</th>'+
+
+        '<th class="label-cell">Borrar</th>'+
+        '</tr>'+
+
+        '</thead>'+
+        '<tbody>';
+
+    for (x=0;x<reglamaximo.length;x++){
+      var tipo='C';
+      if (reglamaximo[x]['tipo']==1){
+          tipo='P';
+      }
+      txt+='<tr>'+
+        '<th class="label-cell">'+tipo+'</th>'+
+        '<th class="label-cell">'+reglamaximo[x]['nombre']+'</th>'+
+          '<th class="label-cell">'+
+          '<div class="stepper stepper-small stepper-round stepper-fill stepper-init">'+
+  '<div class="stepper-button-minus" onclick="restaunareglamaximo('+x+');"></div>'+
+  '<div class="stepper-input-wrap">'+
+    '<input type="text" value="'+reglamaximo[x]['max']+'" min="1" max="100" step="1" readonly />'+
+  '</div>'+
+  '<div class="stepper-button-plus" onclick="sumaunareglamaximo('+x+');"></div>'+
+
+        '</th>'+
+        '<th onclick="Borrareglamaximo('+x+');" class="label-cell"><i class="icon f7-icons color-red size-26">trash</i></th>'+
+        '</tr>';
+    }
+
+    txt+='</tbody>'+
+      '</table>'
+    txt+='<div class="data-table-footer ">'+
+      '<button class="button button-fill" onclick="button_add_regla();" style="width: 25%;margin: auto;" ><i class="icon f7-icons size-26">plus_circle</i></button>'
+      '</div>';
+
+    $('#div-lista-productos').html(txt);
+    
+}
+
 function guardaajustesreparto() {
     var portesgratis=0;
+    var maximoproducto=$('input[name=reglamaximo]').val();
+    //var tipo_repartos=0;
+    
     var portesgratismensaje=0;
     var norepartomensaje=$('#ajustes-reparto-form input[name=norepartomensaje]').val();
     var tipo_seleccion_horas=$('input[name=tipo_seleccion_horas]:checked').val();
@@ -388,13 +819,13 @@ function guardaajustesreparto() {
     }
     //console.log('portesgratis:'+portesgratis);
     //console.log('importeportesgratis:'+importeportesgratis);
+    //$("input[name=tipo_repartos][value=" + obj.tipo_repartos + "]").prop('checked', true);
     var server=servidor+'admin/includes/guardaajustesreparto.php';
     $.ajax({     
         type: "POST",
         url: server,
         dataType: "json",
-        data: //{minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:pedidosportramoenvio,pedidosportramococina:pedidosportramococina,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis  },
-        {minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,tipo_seleccion_horas:tipo_seleccion_horas,dias_vista:dias_vista  },
+        data: {tipo_repartos:$("input[name=tipo_repartos]:checked").val(),minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,maximoproducto:maximoproducto,tipo_seleccion_horas:tipo_seleccion_horas,dias_vista:dias_vista  },
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
