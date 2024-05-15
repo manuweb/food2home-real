@@ -9,7 +9,7 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
 
-$sql="UPDATE opcionescompra SET minimo='".$array['minimo']."', tiempoenvio='".$array['tiempoenvio']."', cortesia='".$array['cortesia']."', maximocarrito='".$array['maximocarrito']."', pedidosportramoenvio='".$array['pedidosportramoenvio']."', pedidosportramococina='".$array['pedidosportramococina']."', ivaEnvio='".$array['iva']."', 
+$sql="UPDATE opcionescompra SET tipo_repartos='".$array['tipo_repartos']."', minimo='".$array['minimo']."', tiempoenvio='".$array['tiempoenvio']."', cortesia='".$array['cortesia']."', maximocarrito='".$array['maximocarrito']."', maximoproducto='".$array['maximoproducto']."', pedidosportramoenvio='".$array['pedidosportramoenvio']."', pedidosportramococina='".$array['pedidosportramococina']."', ivaEnvio='".$array['iva']."', 
 idEnvio='".$array['portes']."', 
 tarifa='".$array['tarifa']."', 
 portesgratis='".$array['portesgratis']."', 

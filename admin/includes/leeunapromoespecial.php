@@ -1,4 +1,6 @@
 <?php
+
+
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
 header("Access-Control-Allow-Origin: *");
@@ -37,6 +39,8 @@ if ($result) {
     $grupo=$promos->grupo;   
     $maximo=$promos->maximo;   
     $producto='';
+    $categoria='';
+    
     if ($tipo==2){
         $porciones = explode("##", $logica);
         $sql="SELECT id, nombre FROM productos WHERE id='".$porciones[1]."'";
@@ -47,11 +51,61 @@ if ($result) {
         $prod = $result->fetch_object();
         $producto=$prod->id.'-'.$prod->nombre;
     }  
+    
+    if ($tipo==7){
+        $porciones = explode("##", $logica);
+        $sql="SELECT id, nombre FROM categorias WHERE id='".$porciones[1]."'";
+        
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $prod = $result->fetch_object();
+        $categoria=$prod->id.'-'.$prod->nombre;
+    }  
+    
+    if ($tipo==5){
+        $porciones = explode("##", $logica);
+        
+        
+        
+        
+        $sql="SELECT id, nombre FROM productos WHERE id in (".$porciones[3].")";
+        
+        
+        
+        $producto=[];
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        while ($prod = $result->fetch_object()) {
+            $producto[]=$prod->id.'||'.$prod->nombre;
+        }
+        
+        
+        
+    }
+   
+    if ($tipo==6){
+        $porciones = explode("##", $logica);
+        
+        $sql="SELECT id, nombre FROM categorias WHERE id='".$porciones[0]."'";
+ 
+        
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $prod = $result->fetch_object();
+        $categoria=$prod->id.'-'.$prod->nombre;
+        
+    }
+     
+    
 }	
 
 $database->freeResults(); 
+ob_end_clean();
 
-$json=array("valid"=>$checking,"id"=>$id,"nombre"=>$nombre,"codigo"=>$codigo,"dias"=>$dias,"desde"=>$desde,"hasta"=>$hasta,"tipo"=>$tipo,"logica"=>$logica,"producto"=>$producto,"envio_recoger"=>$envio_recoger,"usuario"=>$usuario,"grupo"=>$grupo,"maximo"=>$maximo);
+$json=array("valid"=>$checking,"id"=>$id,"nombre"=>$nombre,"codigo"=>$codigo,"dias"=>$dias,"desde"=>$desde,"hasta"=>$hasta,"tipo"=>$tipo,"logica"=>$logica,"producto"=>$producto,"categoria"=>$categoria,"envio_recoger"=>$envio_recoger,"usuario"=>$usuario,"grupo"=>$grupo,"maximo"=>$maximo);
 
 echo json_encode($json); 
 
