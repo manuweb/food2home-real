@@ -4,6 +4,7 @@ ini_set('display_errors', '1');
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
 
+include "tiempo.php";
 
 
 
@@ -61,7 +62,7 @@ while ($pedidos = $result->fetch_object()) {
 
         echo "(".$id.") nº: <b>".$numero."</b> idRevo: <b>".$numeroRevo."</b> Estado: <span ".$color."><b>".$estado."</b></span> Tiempo: <b>". round($minutos)  . "</b> minutos.<br>" ;
     if ($estadoPago==0){
-        if (round($minutos)>15){
+        if (round($minutos)>$tiempo){
             if ($numeroRevo=='0'){
                 $aquitar[]=$id;
                 $fidelizacion[]=$importe_fidelizacion;
