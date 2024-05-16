@@ -103,7 +103,9 @@ include_once('Sermepa/Tpv/Tpv.php');
                 
             }
             else {
-                
+                $sql="UPDATE pedidos SET estadoPago='1' WHERE id='".$idpedido."';";
+                $database->setQuery($sql);
+                $result2 = $database->execute(); 
                  
                 //include 'imprimeticket.php';
                 $tiket = new ImprimeTicket;
