@@ -56,7 +56,24 @@ include_once('Sermepa/Tpv/Tpv.php');
             $integra = $result->fetch_object();
             $integracion=$integra->tipo;
             $delivery=$integra->delivery;
-                   
+            
+            $Pedido = new RecomponePedido;
+            $order=$Pedido->DatosGlobalesPedido($idpedido);
+            $order['carrito']=$Pedido->LineasPedido($idpedido);
+            
+            
+            if ($order['importe_fidelizacion']>0){
+                
+                $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
+                $database = DataBase::getInstance();
+                $database->setQuery($sql);
+                $result = $database->execute();
+                
+                
+            }
+            
+            
+            
             if ($integracion==1){
                 $idRedsys=0;
                 $sql="SELECT id, idrevo FROM metodospago WHERE esRedsys=1;";
@@ -72,42 +89,28 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $Revo = new PedidosRevo;
                 $datos=$Revo->BuscaDatos();
 
-                $Pedido = new RecomponePedido;
-                $order=$Pedido->DatosGlobalesPedido($idpedido);
-                $order['carrito']=$Pedido->LineasPedido($idpedido);
 
                 $revoid= $Revo->addPedidoRevo($order,$idRedsys);
 
                 // actualiza pedido con la id de revo y lo pone como pagado
-                        
                 $sql="UPDATE pedidos SET numeroRevo='".$revoid."', estadoPago='1' WHERE id='".$idpedido."';";
                 $database->setQuery($sql);
                 $result2 = $database->execute(); 
-                        
-                if ($order['cliente']>0){
-                    $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
-                    $database->setQuery($sql);
-                    $result3 = $database->execute(); 
-                }
+                
                 if ($delivery>0){
                     enviadatosadelivery($delivery, $idpedido,$order,$integracion);
-                }
+                }   
+                
             }
             else {
-                $sql="UPDATE pedidos SET estadoPago='1' WHERE id='".$idpedido."';";
-                $database->setQuery($sql);
-                $result2 = $database->execute(); 
-                if ($order['cliente']>0){
-                    $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
-                    $database->setQuery($sql);
-                    $result3 = $database->execute(); 
-                }
+                
+                 
                 //include 'imprimeticket.php';
                 $tiket = new ImprimeTicket;
                 $resultado_tiket=$tiket->generaTicket($idpedido);
                 if ($delivery>0){
                     enviadatosadelivery($delivery, $idpedido,$order,$integracion);
-                } 
+                }  
                 
             }
             
@@ -125,11 +128,19 @@ include_once('Sermepa/Tpv/Tpv.php');
             $phpmailer->Sender = $datos['Sender'];;
             $phpmailer->SetFrom($datos['Sender'], $datos['NombreEmpresa']);
             $phpmailer->IsHTML(true);
-                   
-            if (($datos['cco_pedidos']==1)&&($cco)){
-                $phpmailer->addBCC($datos['cco']);
+            
+            $cco=false;
+            $cco_pedidos=false;
+            if ($datos['cco']!=''){
+                $cco=true;
+                if ($datos['cco_pedidos']==1){
+                        $cco_pedidos=true;
+                }
             }
-           
+            if ($cco_pedidos) {
+                $phpmailer->addBCC($datos['cco']);    
+            }
+            
             $Pedido = new RecomponePedido;
             $order=$Pedido->DatosGlobalesPedido($idpedido);
             $order['carrito']=$Pedido->LineasPedido($idpedido);
@@ -152,6 +163,8 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $msg="Error enviando mail"; 
                 //echo 'Mailer Error: ' . $mail->ErrorInfo;
             }
+            
+            
 
         }
         $database->freeResults(); 
@@ -177,14 +190,14 @@ include_once('Sermepa/Tpv/Tpv.php');
         
     } else {
 
-            $file = fopen('tpv_noti.txt', "w");
-            fwrite($file, "Pedido: ". $idpedido . PHP_EOL);
+        $file = fopen('tpv_noti.txt', "w");
+        fwrite($file, "Pedido: ". $idpedido . PHP_EOL);
         fwrite($file, "Numero: ". $numero . PHP_EOL);
-            fwrite($file, "importe: ". $importe . PHP_EOL);
-            fwrite($file, "ERROR" . PHP_EOL);
+        fwrite($file, "importe: ". $importe . PHP_EOL);
+        fwrite($file, "ERROR" . PHP_EOL);
         fwrite($file, "Nº: ". $parameters["Ds_Order"] . PHP_EOL);
         fwrite($file, "tarjeta: ". $parameters["Ds_Card_Number"] . PHP_EOL);
-            fclose($file);
+        fclose($file);
 
     }
 } catch (\Sermepa\Tpv\TpvException $e) {
