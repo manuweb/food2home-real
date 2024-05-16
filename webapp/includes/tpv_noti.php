@@ -89,11 +89,25 @@ include_once('Sermepa/Tpv/Tpv.php');
                     $database->setQuery($sql);
                     $result3 = $database->execute(); 
                 }
+                if ($delivery>0){
+                    enviadatosadelivery($delivery, $idpedido,$order,$integracion);
+                }
             }
             else {
+                $sql="UPDATE pedidos SET estadoPago='1' WHERE id='".$idpedido."';";
+                $database->setQuery($sql);
+                $result2 = $database->execute(); 
+                if ($order['cliente']>0){
+                    $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
+                    $database->setQuery($sql);
+                    $result3 = $database->execute(); 
+                }
                 //include 'imprimeticket.php';
                 $tiket = new ImprimeTicket;
                 $resultado_tiket=$tiket->generaTicket($idpedido);
+                if ($delivery>0){
+                    enviadatosadelivery($delivery, $idpedido,$order,$integracion);
+                } 
                 
             }
             
@@ -176,4 +190,30 @@ include_once('Sermepa/Tpv/Tpv.php');
 } catch (\Sermepa\Tpv\TpvException $e) {
     echo $e->getMessage();
 }
+
+function enviadatosadelivery($idDelivery, $idpedido, $order, $integracion){
+    if ($order['metodo']==1){
+    // delivery
+    
+        $delivery = new Delivery;
+        $datosD=$delivery->leeDeliverys($idDelivery);
+        $variables=$delivery->leeLogicaDeliverys($datosD['logica']);
+
+        $resultado=$delivery->enviaDeliverys($idDelivery,$variables,$order);
+
+        $sql="INSERT INTO pedidos_delivery (id, idpedido, resultado) VALUES (NULL, '".$idpedido."', '".$resultado."');";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        
+        $database->freeResults(); 
+        
+        if ($resultado=='error'){
+            // envio a revo o impresora
+        }
+        
+    }
+    
+}             
 ?>
