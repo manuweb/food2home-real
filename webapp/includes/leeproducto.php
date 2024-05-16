@@ -367,9 +367,9 @@ if (count($grupo)>0) {
 
     if ($esMenu=='1'){
         $modifierCategories=null;
-        $texto.='<div class="block" style="margin-top:5px;margin-bottom:5px;">
-             <p style="font-size:16px;font-weight: bold;margin-bottom: -5px;margin-top: -10px; color:'.$array['colorsecundario'].';"><i>Personaliza tu menú:</i></p><form id="from-producto-menu"><div id="opciones-producto-menu" style="margin: 10px;">';
-        //$texto.='<form id="from-producto-menu">'; 
+       $texto.='<div class="block" style="margin-top:5px;margin-bottom:5px;">
+             <p style="font-size:16px;font-weight: bold;margin-bottom: 25px;margin-top: 25px;color:'.$array['colorprimario'].';border: solid 2px '.$array['colorsecundario'].';border-radius: 10px; padding: 10px;"><i>Personaliza tu menú:</i></p><form id="from-producto-menu"><div id="opciones-producto-menu" style="margin: 10px;">';
+	    //$texto.='<form id="from-producto-menu">'; 
         $texto.=llenaOpcionesMenu($array['id'],$nombre,$colorprimario);
         //$texto.='</from><br></div></div>';
         $texto.='<br></div></from></div>';
@@ -382,9 +382,10 @@ if (count($grupo)>0) {
             if ((is_array($modifierCategories))||(is_array($modifierCategoriesGru))){
                 //$modificadores=[];
                  $texto.='<div class="block" style="margin-top:-25px;margin-bottom:5px;">';
-                 if (count($modifierCategories)>0||count($modifierCategories)>0){
-                    $texto.='<p style="font-size:16px;font-weight: bold;margin-bottom: 25px;margin-top: 25px;color:'.$array['colorprimario'].';"><i>Personaliza tu pedido:</i></p>';
-                 }
+                 //if (count($modifierCategories)>0||count($modifierCategories)>0){
+                if ($modifier_category_id!='' || $modifier_group_id!=''){   
+                    $texto.='<p style="font-size:16px;font-weight: bold;margin-bottom: 25px;margin-top: 25px;color:'.$array['colorprimario'].';border: solid 2px '.$array['colorsecundario'].';border-radius: 10px; padding: 10px;"><i>Personaliza tu pedido:</i></p>';
+	    	}
 
                  $texto.='<div id="opciones-producto" style="margin: 10px;/*margin-top:25px;"*/>';
                     $texto.='<form id="from-producto" style="clear: both;">';
