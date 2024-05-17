@@ -19,9 +19,9 @@ include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
 include "../../webapp/config.php";
 
-if ( $_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) ) {
-    $_POST = json_decode(file_get_contents('php://input'), true);
-}
+
+
+
 $array = json_decode(json_encode($_POST), true);
 
 
@@ -29,13 +29,14 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
 /*
-$array['tienda']=1;
+$array['tienda']=0;
 $array['idgrupo']=4;
 $array['nombregrupo']='BEBIDAS';
-$array['idcategoria']=19;
+$array['idcategoria']=89;
 $array['nombrecategoria']='CERVEZAS';
 $array['isapp']='false';
 */
+
 
 if (($array['isapp']=="")||($array['isapp']==null)||($array['isapp']=='false')) {
     $isApp="productos.activo_web='1'";
@@ -43,8 +44,6 @@ if (($array['isapp']=="")||($array['isapp']==null)||($array['isapp']=='false')) 
 else {
     $isApp="productos.activo_app='1'";;
 }
-
-
 
 
 
@@ -61,11 +60,11 @@ if (productos.modifier_category_id!='',1,
     ) as haymod FROM productos LEFT JOIN modifierCategories ON modifierCategories.id=productos.modifier_category_id LEFT JOIN categorias ON categorias.id=productos.categoria LEFT JOIN grupos ON grupos.id=categorias.grupo LEFT JOIN impuestos ON if (productos.impuesto='', if (categorias.impuesto='', grupos.impuesto, categorias.impuesto), productos.impuesto)=impuestos.id WHERE productos.categoria='".$array['idcategoria']."' AND ".$isApp." ORDER BY productos.orden;";
 */
 
-$sql="SELECT id, nombre,impuesto, imagen, precio, precio_web, precio_app, imagen_app1, modifier_category_id AS modi_cat, modifier_group_id as modi_gru, modificadores FROM productos WHERE categoria='".$array['idcategoria']."' AND ".$isApp." AND tienda='".$array['tienda']."' ORDER BY productos.orden;";
+//$sql="SELECT id, nombre,impuesto, imagen, precio, precio_web, precio_app, imagen_app1, modifier_category_id AS modi_cat, modifier_group_id as modi_gru, modificadores, esMenu FROM productos WHERE categoria='".$array['idcategoria']."' AND ".$isApp." AND tienda='".$array['tienda']."' ORDER BY productos.orden;";
 
+$sql="SELECT productos.id, productos.nombre, productos.imagen, productos.imagen_app1, productos.esMenu, productos.precio, productos.precio_web,productos.modifier_category_id AS modi_cat, productos.modifier_group_id AS modi_gru,productos.modificadores, categorias.modifier_category_id as modcatcat, categorias.modifier_group_id as modgrucat FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria  WHERE categorias.id='".$array['idcategoria']."' AND ".$isApp." AND productos.tienda='".$array['tienda']."' ORDER BY productos.orden;";
 
-
-//die ($sql);
+echo $sql;
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -91,15 +90,44 @@ if ($result->num_rows>0) {
         $modifi[]=$grupo->modificadores;
 
         $desde="";
-		if ($grupo->modi_cat!='' || $grupo->modi_gru!=''){
+        
+        
+        $modcatcat= $grupo->modcatcat;
+        if ($modcatcat!="") {
+            $modifier_category_id[]=$modcatcat;
+            $mc=$modcatcat;
+        }
+        else {
+            $modifier_category_id[]= $grupo->modi_cat;
+            $mc=$grupo->modi_cat;
+        }
+        $modgrucat= $grupo->modgrucat;
+        if ($modgrucat!="") {
+            $modifier_group_id[]=$modgrucat;
+            $mg=$modgrucat;
+        }
+        else {
+            $modifier_group_id[]= $grupo->modi_gru;
+            $mg=$grupo->modi_gru;
+        }
+        
+        
+		if ($mc!='' || $mg!=''){
             
-			
+			 $hay_precios=miramodifi($mc,$mg);
+            if ($hay_precios){
 				$desde="desde";
+            }
 			
         }
+        
         if ($grupo->modificadores==1){
 				$desde="";
-			}
+        }
+        
+        if ($grupo->esMenu==1){
+            $desde="desde";
+        }
         if ($grupo->imagen!=''){
             $imagen[]=IMGREVO.$grupo->imagen;
         }
@@ -180,6 +208,61 @@ ob_end_clean();
 
 echo json_encode($json); 
 
+function miramodifi($mc,$mg){
+    $devolver=false;
+    $database = DataBase::getInstance();
+    if ($mc!=''){
+        $sql="SELECT modificadores FROM modifierCategories WHERE id=".$mc;
+        
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $mc_res = $result->fetch_object();
+        $modif=$mc_res->modificadores;
+        $sql="SELECT precio FROM modifiers WHERE id IN (".$modif.");";
+        $database->setQuery($sql);
+        $result = $database->execute();
+        while ($modificadores = $result->fetch_object()) {
+            if ($modificadores->precio>0){
+               $devolver=true; 
+            }
+        }
+        
+    }
+    if ($mg!=''){
+        //modifierCategories_id
+
+        $sql="SELECT modifierCategories_id FROM modifierGroups WHERE id=".$mg;
+
+        $database->setQuery($sql);
+        $result = $database->execute();
+
+        while ($lismod = $result->fetch_object()) {
+            $sql="SELECT modificadores,nombre FROM modifierCategories WHERE id IN (".$lismod->modifierCategories_id.");";
+            
+            $database->setQuery($sql);
+            $result = $database->execute();
+            while ($mc_res = $result->fetch_object()) {
+                $sql1="SELECT id, precio FROM modifiers WHERE id IN (".$mc_res->modificadores.");";
+
+                $database->setQuery($sql1);
+                $result2 = $database->execute();
+                while ($modificadores = $result2->fetch_object()) {
+
+                    if ($modificadores->precio>0){
+                       $devolver=true; 
+                    }
+                }  
+            }
+                
+        }
+
+    }
+        
+    $database->freeResults(); 
+    return $devolver;
+    
+    
+}
 
 /*
 $file = fopen("productos.txt", "w");

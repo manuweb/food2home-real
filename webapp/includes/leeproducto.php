@@ -328,8 +328,6 @@ if (count($grupo)>0) {
     <p style="font-size:16px;font-weight: bold;color:var(--primario);">Descripción</p>
     <p>'.$info.'</p></div>';
     
-
-
     if (count($alergenos)<1){
         $alergi='<div style="float:left;margin:5px;" class="text-align-center"><img src="'.IMGALE.'sin.png" width="48px" height="auto"><br><span style="font-size:.8em;">Libre de alergenos</span></div>';
     }
@@ -351,7 +349,6 @@ if (count($grupo)>0) {
     $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
         <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons color-primary">info_circle_fill</i></p></div>';
     $texto.=$alergi.'<br style="clear:both;">';
-	
     /*
     if (is_array($modifierCategories)){
         if (is_array($modifierCategoriesGru)){
@@ -367,28 +364,34 @@ if (count($grupo)>0) {
 
     if ($esMenu=='1'){
         $modifierCategories=null;
-       $texto.='<div class="block" style="margin-top:5px;margin-bottom:5px;">
+        $texto.='<div class="block" style="margin-top:5px;margin-bottom:5px;">
              <p style="font-size:16px;font-weight: bold;margin-bottom: 25px;margin-top: 25px;color:'.$array['colorprimario'].';border: solid 2px '.$array['colorsecundario'].';border-radius: 10px; padding: 10px;"><i>Personaliza tu menú:</i></p><form id="from-producto-menu"><div id="opciones-producto-menu" style="margin: 10px;">';
-	    //$texto.='<form id="from-producto-menu">'; 
+        //$texto.='<form id="from-producto-menu">'; 
         $texto.=llenaOpcionesMenu($array['id'],$nombre,$colorprimario);
         //$texto.='</from><br></div></div>';
         $texto.='<br></div></from></div>';
+        
+
     }
     else {
         if($modifi=='0'){
 
-        
+                
+
 		
             if ((is_array($modifierCategories))||(is_array($modifierCategoriesGru))){
                 //$modificadores=[];
+                
                  $texto.='<div class="block" style="margin-top:-25px;margin-bottom:5px;">';
+                
                  //if (count($modifierCategories)>0||count($modifierCategories)>0){
-                if ($modifier_category_id!='' || $modifier_group_id!=''){   
+                  if ($modifier_category_id!='' || $modifier_group_id!=''){   
                     $texto.='<p style="font-size:16px;font-weight: bold;margin-bottom: 25px;margin-top: 25px;color:'.$array['colorprimario'].';border: solid 2px '.$array['colorsecundario'].';border-radius: 10px; padding: 10px;"><i>Personaliza tu pedido:</i></p>';
-	    	}
+                 }
 
                  $texto.='<div id="opciones-producto" style="margin: 10px;/*margin-top:25px;"*/>';
-                    $texto.='<form id="from-producto" style="clear: both;">';
+                
+                    $texto.='<form id="from-producto" >';
                 if (count($modifierCategories)>0){
                        $texto.=llenaOpciones($modifierCategories,$modificadores,$precio,$array['id']);
                 }
@@ -521,20 +524,24 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
         while ($MenuCategories = $result->fetch_object()){
             
             if ($MenuCategories->eleMulti==0 ){
+                // seleccionar 1, no obligatorio
                 $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="0"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Opcional &nbsp;&nbsp;<i class="icon f7-icons text-color-green icon_menu" style="font-size: 10px;">xmark</i></button></span>';
                 //$obligatorios++;
                 $txt_exp='Seleccione 1';
             }
             if ($MenuCategories->eleMulti==1 ){
+                // varias opciones
                 $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="0"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Opcional &nbsp;&nbsp;<i class="icon f7-icons text-color-green icon_menu" style="font-size: 10px;">checkmark_circle_fill</i></button></span>';
                 $txt_exp='Seleccione a su gusto';
             }
             if ($MenuCategories->eleMulti==2 ){
+                // seleccionar 1 obligatorio
                 $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="1"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Obligatorio &nbsp;&nbsp;<i class="icon f7-icons text-color-red icon_menu" style="font-size: 10px;">xmark</i></button></span>';
                 $txt_exp='Seleccione 1';
                 $obligatorios++;
             }
             if ($MenuCategories->eleMulti==3 ){
+                // por defecto
                 $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="1"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Obligatorio &nbsp;&nbsp;<i class="icon f7-icons text-color-red icon_menu" style="font-size: 10px;">xmark</i></button></span>';
                 $txt_exp='Seleccione';
                 if ($MenuCategories->min>0){
@@ -546,6 +553,7 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
                 
             }
             if ($MenuCategories->eleMulti==4 ){
+                // personalizado
                 if ($MenuCategories->min==0){
                     $forzoso='<span id="but-mod-'.$MenuCategories->id.'" data-forzoso="0"><button class="col button button-small button-fill" style="font-size: 10px;height: 15px;text-transform: initial;width: auto;float: right;margin-top: 3px;" >Opcional &nbsp;&nbsp;<i class="icon f7-icons text-color-green icon_menu" style="font-size: 10px;">checkmark_circle_fill</i></button></span>';
                 }
@@ -588,6 +596,7 @@ function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max){
     $result = $database->execute();
     
     if ($result) {
+        // 0  Selecionar 1 , no obligarorio
         // 1  varias opciones
         // 2  seleccion 1 obligatorio
         // 3  seleccionar por defecto (min - max)
@@ -645,7 +654,7 @@ function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max){
 
 
 function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,$imagen,$impuesto){
-    // 0  1 
+    // 0  1 no obligatorio
     // 1  varias opciones no obl
     // 2  seleccion 1 obligatorio
     // 3  seleccionar por defecto (min - max)
@@ -658,13 +667,13 @@ function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,
      }
     if ($eleMulti==0){
         //seleccionar 1
-        $txt='<label class="checkbox"><input type="checkbox" name="chk-ele-multi-'.$id.'" value="'.$pasa.'" class="elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-checkbox"></i></label>';
+        $txt='<label class="checkbox"><input type="checkbox" name="chk-ele-multi-'.$id.'" value="'.$pasa.'" class="elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'"  data-precio="'.$precio.'" onclick="veriOpcionMenu(this);"/><i class="icon-checkbox"></i></label>';
         
     }
     if ($eleMulti==2){
         //seleccionar 1
         $txt='<label class="radio"><input type="radio" name="chk-ele-multi-'.$id.'" value="'.$pasa.'" class=" 
-        elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'"  onclick="cambiaSeleccionOpcionMenu(this)"/><i class="icon-radio icon-radio-menus"></i></label>';
+        elem-menu-opc elem-menu-opc-'.$id.' elem-menu-opc-'.$id.'-'.$producto.'" data-precio="'.$precio.'" onclick="cambiaSeleccionOpcionMenu2(this);"/><i class="icon-radio icon-radio-menus"></i></label>';
         
     }
     if ($eleMulti==1 || $eleMulti==3){
