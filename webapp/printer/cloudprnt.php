@@ -58,7 +58,7 @@ function handleCloudPRNTGetJob() {
     
     imagedestroy($ticket);
     
-    unlink($file);
+    //unlink($file);
     
     
 
