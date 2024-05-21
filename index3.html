@@ -36,7 +36,7 @@
     
 </head>
     
-<body style="margin: auto;width: 562px;max-height: 800px;min-height: 800px;padding: 20px 0px 20px 0px;background: url(img/Fondo_Trigo.jpeg)no-repeat center center fixed;background-size: cover;">
+<body onload="listo();" style="margin: auto;width: 562px;max-height: 800px;min-height: 800px;padding: 20px 0px 20px 0px;background: url(img/Fondo_Trigo.jpeg)no-repeat center center fixed;background-size: cover;">
 
 <iframe id="safari_window" src="index.html"  border="0" scrolling="no" marginwidth="0" marginheight="0" style="height: 740px;
     border: solid 1px;
@@ -60,7 +60,9 @@
     margin-left: 58px;font-family:sans-serif;"><b>11:59</b></span>
 -->
 <script>
-
+function listo(){
+console.log(window.frames[0].app.name);
+}
 function cargarReloj(){
 
     // Haciendo uso del objeto Date() obtenemos la hora, minuto y segundo 
