@@ -528,7 +528,7 @@ function guardanosotros(e) {
         tipo=$('select[name=tipo]').val();
         FData.append("tipo", tipo);
          
-        if (tipo==1){
+        if (tipo==1 || tipo==5){
             texto=textEditor.getValue();
             FData.append("texto", texto);
         }
@@ -614,12 +614,25 @@ function guardanosotros(e) {
                     app.dialog.alert('No se pudo guardar');
                 }
                 paginanosotros();
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                
+                if (xhr.status=='200'){
+                    paginanosotros();
+                }
+                else {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                }
+                
+                
             }
+        
         });  
         
         
         app.popup.close(); 
-        paginanosotros();
+        
     }
 
     

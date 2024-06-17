@@ -609,11 +609,13 @@ function guardainicio(e) {
    
     FData.append("orden", orden);
     
+    
     if (id==0){
         tipo=$('select[name=tipo]').val();
+
         FData.append("tipo", tipo);
          
-        if (tipo=='txt' || tipo=='Txt Scroll'){
+        if (tipo==1 || tipo==5){
             texto=textEditor.getValue();
             FData.append("texto", texto);
         }
@@ -692,6 +694,7 @@ function guardainicio(e) {
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
                     //leealergenos();
+                    app.dialog.alert('Guardado ok');
                     paginainicio();
                     //document.getElementById('safari_window').contentWindow.location.reload();  
                 }
@@ -699,12 +702,24 @@ function guardainicio(e) {
                     app.dialog.alert('No se pudo guardar');
                     
                 }
-                paginainicio();
+                //paginainicio();
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                
+                if (xhr.status=='200'){
+                    paginainicio();
+                }
+                else {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                }
+                
+                
             }
         });
         
         app.popup.close(); 
-        paginainicio();
+        //paginainicio();
     }
 
     
