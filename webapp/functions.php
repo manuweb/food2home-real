@@ -1169,12 +1169,12 @@ class MisMails
             $hh=substr($hora,0,2);
             $mm=substr($hora,3,2);
             $mm+=$cortesia;
-            if ($mm>60){
+            if ($mm>=60){
                 //$mm-=$cortesia;
 		$mm-=60;  
                 $hh+=1;
             }
-            if ($hh>24){
+            if ($hh>=24){
                 $hh=0;
             }
             if ($mm<9){
