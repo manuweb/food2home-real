@@ -110,6 +110,7 @@ include_once('Sermepa/Tpv/Tpv.php');
                 //include 'imprimeticket.php';
                 $tiket = new ImprimeTicket;
                 $resultado_tiket=$tiket->generaTicket($idpedido);
+                $resultado_tiket2=$tiket->generaTicket($idpedido);
                 if ($delivery>0){
                     enviadatosadelivery($delivery, $idpedido,$order,$integracion);
                 }  
