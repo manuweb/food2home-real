@@ -1089,7 +1089,7 @@ class MisMails
                         }
                     }
                     if ($tipo==4){
-                        $textoDescuento='<li>Tienes <b>'.$porciones[0].'</b> &euro; de descuento al comprar un mínimo de <b>'.$porciones[0].'</b> &euro;.</li>';
+                        $textoDescuento='<li>Tienes <b>'.$porciones[0].'</b> &euro; de descuento al comprar un mínimo de <b>'.$porciones[1].'</b> &euro;.</li>';
                     }
                     $fechaphp=substr($fecha,6,4).'-'.substr($fecha,3,2).'-'.substr($fecha,0,2).' '.substr($fecha,11,5).':00';
 
