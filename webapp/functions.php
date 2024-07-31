@@ -970,7 +970,7 @@ class MisMails
             }
         }
         if ($tipo==4){
-            $textoDescuento='Tienes <b>'.$porciones[0].'</b> &euro; de descuento al comprar un mínimo de <b>'.$porciones[0].'</b> &euro;.';
+            $textoDescuento='Tienes <b>'.$porciones[0].'</b> &euro; de descuento al comprar un mínimo de <b>'.$porciones[1].'</b> &euro;.';
         }
         $database->freeResults();
             //0123-56-89 12:45
