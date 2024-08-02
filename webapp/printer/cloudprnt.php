@@ -246,7 +246,7 @@ function handleCloudPRNTPoll() {
 */
 function setCompleteJob($mac,$token) {
     // establecer Printing a 0, no hay trabajos pendientes
-    $sql="UPDATE tickets SET impreso = 1 WHERE ticket = '".$token."';";
+    $sql="UPDATE tickets SET impreso = 1 WHERE ticket = '".$token."' and impreso=0 limit 1;";
     //$sql="UPDATE integracion SET imprimiendo = 0 WHERE impresora = '".$mac."';";
     $mysqli=conecta();
     if ($resultado = $mysqli->query($sql)) {
