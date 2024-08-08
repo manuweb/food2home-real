@@ -8,7 +8,7 @@ $('#filtro-clientes-button').on('click', function(){
 
 
 function clientes(pagina=1,filtro='', orden=0) {
-    
+
     var txt='';
     var server=servidor+'admin/includes/leeclientes.php';             $.ajax({
         type: "POST",
@@ -91,7 +91,7 @@ function clientes(pagina=1,filtro='', orden=0) {
                     var filtro=$('#filtro-cliente').val();
                     if (pagina>1){
 
-                        txt_pie+='<a href="#" onclick="clientes('+(pagina-1)+',\''+filtro+'\');"class="link"><i class="icon icon-prev color-gray"></i></a>';
+                        txt_pie+='<a href="#" onclick="clientes('+(pagina-1)+',\''+filtro+'\','+orden+');"class="link"><i class="icon icon-prev color-gray"></i></a>';
                     }
                     else {
                         txt_pie+='<a href="#" class="link disabled"><i class="icon icon-prev color-gray"></i></a>';
@@ -99,7 +99,7 @@ function clientes(pagina=1,filtro='', orden=0) {
 
                     if (pagina<(paginas)){
 
-                        txt_pie+='<a href="#" onclick="clientes('+(pagina+1)+',\''+filtro+'\');"class="link"><i class="icon icon-next color-gray"></i></a>';
+                        txt_pie+='<a href="#" onclick="clientes('+(pagina+1)+',\''+filtro+'\','+orden+');"class="link"><i class="icon icon-next color-gray"></i></a>';
                     }
                     else {
                         txt_pie+='<a href="#" class="link disabled"><i class="icon icon-next color-gray"></i></a>';
