@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Zona 4</name>
+    <Style id="poly-000000-2000-77-nodesc-normal">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d000000</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="poly-000000-2000-77-nodesc-highlight">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>3</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d000000</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="poly-000000-2000-77-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-000000-2000-77-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-000000-2000-77-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>mapa Fiti</name>
+      <styleUrl>#poly-000000-2000-77-nodesc</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              -4.509429,36.599672,0
+              -4.530343,36.606972,0
+              -4.5323389,36.610615,0
+              -4.5370812,36.6098573,0
+              -4.5395489,36.6089614,0
+              -4.5416732,36.607566,0
+              -4.5461364,36.6060504,0
+              -4.5500847,36.6060504,0
+              -4.557723,36.606533,0
+              -4.558624,36.603398,0
+              -4.552144,36.596748,0
+              -4.531459,36.587548,0
+              -4.513821,36.591097,0
+              -4.509429,36.599672,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+  </Document>
+</kml>
