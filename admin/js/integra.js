@@ -11,6 +11,27 @@ function integration() {
                 var txt_delivery=''+
                     '<div class="list block" >'+
                           '<ul>'+
+                    '<li class="item-content item-input" id="li-copias-tickets">'+
+                                  '<div class="item-inner">'+
+                                    '<div class="item-title item-label">Copias tickets</div>'+
+                                    '<div class="item-input-wrap">'+
+                                      '<input type="text" name="copias_tickets" value="'+obj.copias_tickets+'" placeholder="Copias"/>'+
+                                    '</div>'+
+                                 ' </div>'+
+                                '</label>'+
+                                '</li>'+
+                    '<li class="">'+
+                                '<label class="item-content">'+
+                                  '<div class="item-inner">'+
+                                    '<div class="item-title">¿Quiosco?</div>'+
+                                    '<div class="item-after">'+
+                                    '<div class="toggle toggle-init">'+
+                                      '<input type="checkbox"  id="usar_modo_quiosco">'+
+                                      '<span class="toggle-icon"></span>'+
+                                    '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</li>'+
                             '<li class="">'+
                                 '<label class="item-content">'+
                                   '<div class="item-inner">'+
@@ -36,7 +57,8 @@ function integration() {
                     '<div class="block" style="font-size: 1.3em;"><h4>Configuración impresora</h4>'+
                     '<div id="deviceListIntegra">Buscando . . . </div>'+
                     '<p>Para conectar un nuevo dispositivo, configure su URL de CloudPRNT en:</p><br/>'+
-                    '<div style="background-color: whitesmoke; font-weight: bold;border-color: black;border-style: solid;border-width: 1px;border-radius: 4px;padding: 4px;display: inline-block;"><span id="cpurl-integra">...</span></div></div>';
+                    '<div style="background-color: whitesmoke; font-weight: bold;border-color: black;border-style: solid;border-width: 1px;border-radius: 4px;padding: 4px;display: inline-block;"><span id="cpurl-integra">...</span></div></div>'+
+                        '<div class="row"><button onclick="guardaStar();" class="button button-fill" style="margin:auto;width: 60%;">Guardar</button></div>';
                     $('#integra-page').html(txt+txt_delivery);
                     var url=window.location.href.replace("admin/", "webapp/printer/cloudprnt.php");
                     url=url.replace("index.php", "");
@@ -77,13 +99,18 @@ function integration() {
                                     '</div>'+
                                   '</div>'+
                                 '</li>'+
+                            
                            ' </ul>'+
                         '</div>'+txt_delivery+
-                        '<div class="row"><button onclick="guardaRevo();" class="button button-fill" style="margin:auto;width: 60%;">Guardar</button></div>'
+                        '<div class="row"><button onclick="guardaRevo();" class="button button-fill" style="margin:auto;width: 60%;">Guardar</button></div>';
                     
                     $('#integra-page').html(txt);
+                    $('#li-copias-tickets').hide();
                     if (obj.usar_numero_revo==1){
                         $('#usar_numero_revo').prop('checked',true);
+                    }
+                    if (obj.usar_modo_quiosco==1){
+                        $('#usar_modo_quiosco').prop('checked',true);
                     }
                     
 
@@ -318,12 +345,17 @@ function guardadelivery() {
     });
     
 }
+
 function guardaRevo(){
     usuario=$('input:text[name=usuario_revo_integra]').val();
     token=$('input:text[name=token_revo_integra]').val();
     var usar_numero_revo=0;
     if ($('#usar_numero_revo').prop('checked')){
         usar_numero_revo=1;
+    }
+    var usar_modo_quiosco=0;
+    if ($('#usar_modo_quiosco').prop('checked')){
+        usar_modo_quiosco=1;
     }
     if (usuario=='' || token==''){
         app.dialog.alert('Usuario o Token erroneo');
@@ -332,7 +364,32 @@ function guardaRevo(){
     var server=servidor+'admin/includes/integracion.php';
     $.ajax({
         type: "POST",
-        data: {id:1,usuario:usuario,token:token, usar_numero_revo:usar_numero_revo},
+        data: {id:1,usuario:usuario,token:token, usar_numero_revo:usar_numero_revo,usar_modo_quiosco:usar_modo_quiosco},
+        url: server,
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+}
+
+function guardaStar(){
+    var copias=$('input:text[name=copias_tickets]').val();
+    var usar_modo_quiosco=0;
+    if ($('#usar_modo_quiosco').prop('checked')){
+        usar_modo_quiosco=1;
+    }
+    
+    var server=servidor+'admin/includes/integracion.php';
+    $.ajax({
+        type: "POST",
+        data: {id:'star',usar_modo_quiosco:usar_modo_quiosco,copias:copias},
         url: server,
         dataType:"json",
         success: function(data){
@@ -405,3 +462,83 @@ function UpdateDeviceTableIntegra() {
         });               
 }
 
+function settingTR() {
+    var dynamicPopup = app.popup.create({
+        content: ''+
+          '<div class="popup">'+
+            '<div class="block page-content">'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><h2>Ajustes Tarjetas Regalo</h2>'+
+                '<div id="tarjeta-regalo-ajuste"></div>'+
+            '</div>'+
+          '</div>'  ,
+        on: {
+            open: function (popup) {
+                var txt='<div class="list list-outline-ios list-strong-ios list-dividers-ios">'+
+                    '<ul>'+
+                    '<li class="">'+
+                    '<label class="item-content">'+
+                      '<div class="item-inner">'+
+                        '<div class="item-title">Poner precio</div>'+
+                        '<div class="item-after">'+
+                        '<div class="toggle toggle-init">'+
+                          '<input type="checkbox"  id="precio_en_tarjeta_regalo" onclick="cambiaprevioenTR();">'+
+                          '<span class="toggle-icon"></span>'+
+                        '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</li>'+
+                    '</ul>'+
+                    '</div>';
+                $('#tarjeta-regalo-ajuste').html(txt);
+                var server=servidor+'admin/includes/integracion.php';
+                $.ajax({
+                    type: "POST",
+                    data: {id:'foo'},
+                    url: server,
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        if (obj.valid==true){
+                            if (obj.precio_en_tr==1){
+                            $('#precio_en_tarjeta_regalo').prop('checked',true);
+                            }
+                        }
+                    }
+                });
+                
+            },
+            opened: function (popup) {
+            //console.log('Popup opened');
+            },
+        }
+    }); 
+    dynamicPopup.open(); 
+    
+    
+    
+}
+function cambiaprevioenTR(){
+    var precio_en_tarjeta_regalo=0;
+    if ($('#precio_en_tarjeta_regalo').prop('checked')){
+        precio_en_tarjeta_regalo=1;
+    }
+        
+    var server=servidor+'admin/includes/guardapreciotr.php';
+    $.ajax({
+        type: "POST",
+        data: {precio_en_tr:precio_en_tarjeta_regalo},
+        url: server,
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                app.popup.close();
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+    
+}

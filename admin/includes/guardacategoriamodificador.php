@@ -68,6 +68,7 @@ echo json_encode($json);
 
 
 //$file = fopen("leecategoriamodificadores.txt", "w");
+/*
 $file = fopen("texto.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql2: ". $sql2 . PHP_EOL);
@@ -75,6 +76,6 @@ fwrite($file, "sql3: ". $sql3 . PHP_EOL);
 
 fwrite($file, "JSON: ". json_encode($json) . PHP_EOL); 
 fclose($file);
-
+*/
 
 ?>

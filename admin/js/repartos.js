@@ -18,6 +18,7 @@ function ajustesrepartos(){
                 txt+=''+
                 '<form class="list" id="ajustes-reparto-form" enctype="multipart/form-data">'+
                      '<input type="hidden" name="idportes"  value=""/>'+
+                    '<input type="hidden" name="idbolsa"  value=""/>'+
                 '<ul>'+
                     '<li>'+
                     '<div class="item-content item-input">'+
@@ -172,20 +173,20 @@ function ajustesrepartos(){
                   '</li>'+ 
                     '<li>'+
                     '<div class="item-content item-input">'+
-                        '<div class="item-media busca-iva-portes">'+
+                        '<div class="item-media busca-producto-bolsa">'+
                             '<i class="icon f7-icons">search</i>'+
                         '</div>'+
                       '<div class="item-inner">'+
-                        '<div class="item-title item-label">Iva Portes</div>'+
-                        '<div class="item-input-wrap">'+
-                          '<input type="text" name="iva" placeholder="Iva" value="'+obj.iva+'" disabled/>'+
+                        '<div class="item-title item-label">Producto bolsa</div>'+
+                        '<div class="item-input-wrap" style="display: flex;">'+
+                          '<input type="text" name="productobolsa" placeholder="Poroducto bolsa" value="'+obj.idBolsa+'-'+obj.bolsa+'" disabled/><span class="" id="clear-productobolsa"><i class="icon f7-icons">xmark_circle_fill</i></span>'+
                         '</div>'+
                       '</div>'+
                     '</div>'+
                   '</li>'+ 
                     
                   '</ul>'+
-                    '<p><label class="toggle toggle-init"><input type="checkbox" name="toggle-tarifa" id="toggle-tarifa" value="yes" /><i class="toggle-icon"></i></label> Distinta tarifa para envío</p>'+
+                   // '<p><label class="toggle toggle-init"><input type="checkbox" name="toggle-tarifa" id="toggle-tarifa" value="yes" /><i class="toggle-icon"></i></label> Distinta tarifa para envío</p>'+
                     '<input type="hidden" name="reglamaximo" value=\''+JSON. stringify(reglamaximo)+'\'/>'+
                 '</form>';
                 txt=txt+'<div class="text-align-center"><span id="button-guardar" class="button button-fill" onclick="guardaajustesreparto();" style="width: 50%;margin: auto;">Guardar</span></div>';
@@ -232,98 +233,184 @@ function ajustesrepartos(){
             
             
             $('#ajustes-reparto-form input[name*="idportes"]').val(obj.idenvio);
+            $('#ajustes-reparto-form input[name*="idbolsa"]').val(obj.idBolsa);
+            $('#clear-productobolsa').on('click', function () {
+                //productobolsa
+                $('#ajustes-reparto-form input[name*="idbolsa"]').val('0');
+                $('#ajustes-reparto-form input[name*="productobolsa"]').val('0');
+            });
             
             $('.busca-producto-portes').on('click', function () {
-        var dynamicPopup = app.popup.create({
-        content: ''+
-          '<div class="popup">'+
-            '<div class="block page-content">'+
-              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+                var dynamicPopup = app.popup.create({
+                content: ''+
+                  '<div class="popup">'+
+                    '<div class="block page-content">'+
+                      '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
 
-            '<form class="searchbar">'+
-                '<div class="searchbar-inner">'+
-                    '<div class="searchbar-input-wrap">'+
-                        '<input type="search" placeholder="Buscar producto">'+
-                        '<i class="searchbar-icon"></i>'+
-                        '<span class="input-clear-button"></span>'+
+                    '<form class="searchbar">'+
+                        '<div class="searchbar-inner">'+
+                            '<div class="searchbar-input-wrap">'+
+                                '<input type="search" placeholder="Buscar producto">'+
+                                '<i class="searchbar-icon"></i>'+
+                                '<span class="input-clear-button"></span>'+
+                            '</div>'+
+                            '<span class="searchbar-disable-button">Cancelar</span>'+
+                        '</div>'+
+                    '</form>  '   +  
+
+                    '<div class="block">' +  
+                        '<div class="searchbar-backdrop"></div>'+
+                        '<div class="list searchbar-found lista-productos" id="lista-productos">'+
+                        '</div>'+
+
+                       ' <div class="block searchbar-not-found">'+
+                           ' <div class="block-inner">Producto no encontrado</div>'+
+                        '</div>'+
+                     '</div>' + 
+
                     '</div>'+
-                    '<span class="searchbar-disable-button">Cancelar</span>'+
-                '</div>'+
-            '</form>  '   +  
+                  '</div>'
+                 ,
+                    on: {
+                  open: function (popup) {
 
-            '<div class="block">' +  
-                '<div class="searchbar-backdrop"></div>'+
-                '<div class="list searchbar-found lista-productos" id="lista-productos">'+
-                '</div>'+
+                        var server=servidor+'admin/includes/leeproductossearch.php';
+                        $.ajax({     
+                            type: "POST",
+                            url: server,
+                            dataType: "json",
+                            data: {foo:'foo'},
+                            success: function(data){
+                                var obj=Object(data);
+                               var obj=Object(data);
+                                if (obj.valid==true){
+                                    var txt='<ul>';
+                                    for (x=0;x<obj.id.length;x++){
+                                         txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'"data-nombre="'+obj.nombre[x]+'" data-tipo="portes" onclick="muestraprodbuscado(this);">'+
+                                            '<div class="item-inner">'+
+                                                '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
+                                            '</div>'+
+                                            '</li>';
+                                    }
+                                    txt+='</ul>';
+                                    $('#lista-productos').html(txt);  
+                                }
+                                else{
+                                    $('#lista-productos').html('');
+                                }
 
-               ' <div class="block searchbar-not-found">'+
-                   ' <div class="block-inner">Producto no encontrado</div>'+
-                '</div>'+
-             '</div>' + 
-
-            '</div>'+
-          '</div>'
-         ,
-            on: {
-          open: function (popup) {
-
-                var server=servidor+'admin/includes/leeproductossearch.php';
-                $.ajax({     
-                    type: "POST",
-                    url: server,
-                    dataType: "json",
-                    data: {foo:'foo'},
-                    success: function(data){
-                        var obj=Object(data);
-                       var obj=Object(data);
-                        if (obj.valid==true){
-                            var txt='<ul>';
-                            for (x=0;x<obj.id.length;x++){
-                                 txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'"data-nombre="'+obj.nombre[x]+'" onclick="muestraprodbuscado(this);">'+
-                                    '<div class="item-inner">'+
-                                        '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
-                                    '</div>'+
-                                    '</li>';
-                            }
-                            txt+='</ul>';
-                            $('#lista-productos').html(txt);  
-                        }
-                        else{
-                            $('#lista-productos').html('');
-                        }
-
-                        var searchbar = app.searchbar.create({
-                            el: '.searchbar',
-                            searchContainer: '#lista-productos',
-                            searchIn: '.item-buscado',
-                            on: {
-                              search(sb, query, previousQuery) {
-                                //console.log(query, previousQuery);
-                              }
+                                var searchbar = app.searchbar.create({
+                                    el: '.searchbar',
+                                    searchContainer: '#lista-productos',
+                                    searchIn: '.item-buscado',
+                                    on: {
+                                      search(sb, query, previousQuery) {
+                                        //console.log(query, previousQuery);
+                                      }
+                                    }
+                                });
                             }
                         });
-                    }
-                });
- 
-          },
-                },
-            }); 
-        dynamicPopup.open();
+
+                  },
+                        },
+                    }); 
+                dynamicPopup.open();
 
 
-    });
+            });
+            
+            $('.busca-producto-bolsa').on('click', function () {
+                var dynamicPopup = app.popup.create({
+                content: ''+
+                  '<div class="popup">'+
+                    '<div class="block page-content">'+
+                      '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
 
-    $('#toggle-envio-gratis').on('change', function () {
-        if($('#toggle-envio-gratis').prop("checked")=='1') {
-            $('#li-portes-gratis').show();
-           
-        }
-        else {
-            $('#li-portes-gratis').hide();
+                    '<form class="searchbar">'+
+                        '<div class="searchbar-inner">'+
+                            '<div class="searchbar-input-wrap">'+
+                                '<input type="search" placeholder="Buscar producto">'+
+                                '<i class="searchbar-icon"></i>'+
+                                '<span class="input-clear-button"></span>'+
+                            '</div>'+
+                            '<span class="searchbar-disable-button">Cancelar</span>'+
+                        '</div>'+
+                    '</form>  '   +  
 
-        }
-        //console.log($(this).attr('name'));
-    });
+                    '<div class="block">' +  
+                        '<div class="searchbar-backdrop"></div>'+
+                        '<div class="list searchbar-found lista-productos" id="lista-productos">'+
+                        '</div>'+
+
+                       ' <div class="block searchbar-not-found">'+
+                           ' <div class="block-inner">Producto no encontrado</div>'+
+                        '</div>'+
+                     '</div>' + 
+
+                    '</div>'+
+                  '</div>'
+                 ,
+                    on: {
+                  open: function (popup) {
+
+                        var server=servidor+'admin/includes/leeproductossearch.php';
+                        $.ajax({     
+                            type: "POST",
+                            url: server,
+                            dataType: "json",
+                            data: {foo:'foo'},
+                            success: function(data){
+                                var obj=Object(data);
+                               var obj=Object(data);
+                                if (obj.valid==true){
+                                    var txt='<ul>';
+                                    for (x=0;x<obj.id.length;x++){
+                                         txt+='<li class="item-content style="cursor:pointer;" data-id="'+obj.id[x]+'"data-nombre="'+obj.nombre[x]+'" data-tipo="bolsas"  onclick="muestraprodbuscado(this);">'+
+                                            '<div class="item-inner">'+
+                                                '<div class="item-title item-buscado"">'+obj.nombre[x]+'</div>'+
+                                            '</div>'+
+                                            '</li>';
+                                    }
+                                    txt+='</ul>';
+                                    $('#lista-productos').html(txt);  
+                                }
+                                else{
+                                    $('#lista-productos').html('');
+                                }
+
+                                var searchbar = app.searchbar.create({
+                                    el: '.searchbar',
+                                    searchContainer: '#lista-productos',
+                                    searchIn: '.item-buscado',
+                                    on: {
+                                      search(sb, query, previousQuery) {
+                                        //console.log(query, previousQuery);
+                                      }
+                                    }
+                                });
+                            }
+                        });
+
+                  },
+                        },
+                    }); 
+                dynamicPopup.open();
+
+
+            });
+
+            $('#toggle-envio-gratis').on('change', function () {
+                if($('#toggle-envio-gratis').prop("checked")=='1') {
+                    $('#li-portes-gratis').show();
+
+                }
+                else {
+                    $('#li-portes-gratis').hide();
+
+                }
+                //console.log($(this).attr('name'));
+            });
 
             $('.busca-iva-portes').on('click', function () {
     var dynamicPopup = app.popup.create({
@@ -783,6 +870,8 @@ function Borrareglamaximo(x){
     
 }
 
+
+
 function guardaajustesreparto() {
     var portesgratis=0;
     var maximoproducto=$('input[name=reglamaximo]').val();
@@ -810,7 +899,7 @@ function guardaajustesreparto() {
     var pedidosportramococina=$('#ajustes-reparto-form input[name=pedidosportramococina]').val();
     */
     var portes=$('#ajustes-reparto-form input[name=idportes]').val();
-    var iva=$('#ajustes-reparto-form input[name=iva]').val();
+    var bolsa=$('#ajustes-reparto-form input[name=idbolsa]').val();
     
     var tarifa=0;
     if ($('input[name=toggle-tarifa]').is(':checked')){
@@ -825,7 +914,7 @@ function guardaajustesreparto() {
         type: "POST",
         url: server,
         dataType: "json",
-        data: {tipo_repartos:$("input[name=tipo_repartos]:checked").val(),minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,iva:iva,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,maximoproducto:maximoproducto,tipo_seleccion_horas:tipo_seleccion_horas,dias_vista:dias_vista  },
+        data: {tipo_repartos:$("input[name=tipo_repartos]:checked").val(),minimo:minimoenvio,tiempoenvio:tiempoenvio,pedidosportramoenvio:0,pedidosportramococina:0,portes:portes,bolsa:bolsa,tarifa:tarifa,portesgratis:portesgratis,importeportesgratis:importeportesgratis, portesgratismensaje:portesgratismensaje,norepartomensaje:norepartomensaje,cortesia:cortesia,maximocarrito:maximocarrito,maximoproducto:maximoproducto,tipo_seleccion_horas:tipo_seleccion_horas,dias_vista:dias_vista  },
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
@@ -840,8 +929,16 @@ function guardaajustesreparto() {
     
 function muestraprodbuscado(e) {
     var elem=e;
-    $('#ajustes-reparto-form input[name*="productoportes"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
-    $('#ajustes-reparto-form input[name*="idportes"]').val(elem.dataset.id);
+    var tipo=elem.dataset.tipo;
+    if (tipo=='portes'){
+        $('#ajustes-reparto-form input[name*="productoportes"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
+        $('#ajustes-reparto-form input[name*="idportes"]').val(elem.dataset.id);
+    }
+    else {
+        $('#ajustes-reparto-form input[name*="productobolsa"]').val(elem.dataset.id+'-'+elem.dataset.nombre);
+        $('#ajustes-reparto-form input[name*="idbolsa"]').val(elem.dataset.id);
+    }
+    
     app.popup.close();
 
     

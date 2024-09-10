@@ -37,7 +37,7 @@ $checking=false;
 
 
 
-$sql="SELECT productos.id, productos.nombre FROM productos WHERE productos.activo_web=1 ORDER BY productos.nombre";
+$sql="SELECT productos.id, productos.nombre FROM productos WHERE 1 ORDER BY productos.nombre";
 
 
 $database = DataBase::getInstance();

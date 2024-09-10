@@ -1,32 +1,31 @@
-<?php
+<?php 
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
-include "../../webapp/config.php";
 header('Access-Control-Allow-Origin: *');
-
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) ) {
     $_POST = json_decode(file_get_contents('php://input'), true);
 }
 $array = json_decode(json_encode($_POST), true);
+
+
 $checking=false;
 
-$sql="SELECT CONVERT(textomail USING utf8) AS texto FROM tiposcorreos WHERE id=4";
+$sql="UPDATE integracion SET precio_en_tr='".$array['precio_en_tr']."'WHERE id=1";
 
+    
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
-
-if ($result) { 
-    $camp = $result->fetch_object();
-    $checking=true;
-    $texto=$camp->texto;
-}	
-
+if ($result) {    
+    $checking=true; 
+}
 $database->freeResults();
 
-$json=array("valid"=>$checking,"texto"=>$texto);
+$json=array("valid"=>$checking);
+    
+ob_end_clean();
+echo json_encode($json);  
 
-echo json_encode($json); 
 
 
 ?>

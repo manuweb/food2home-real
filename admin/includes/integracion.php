@@ -11,7 +11,13 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 if ($array['id']!='foo'){
     //guardar
-    $sql="UPDATE integracion SET usuario='".$array['usuario']."', token='".$array['token']."', usar_numero_revo='".$array['usar_numero_revo']."' WHERE id=1";
+    if($array['id']==1){
+        $sql="UPDATE integracion SET usuario='".$array['usuario']."', token='".$array['token']."', usar_numero_revo='".$array['usar_numero_revo']."',usar_modo_quiosco='".$array['usar_modo_quiosco']."' WHERE id=1";
+    }
+    else {
+        $sql="UPDATE integracion SET usar_modo_quiosco='".$array['usar_modo_quiosco']."',copias='".$array['copias']."' WHERE id=1";
+    }
+    
     $database = DataBase::getInstance();
     $database->setQuery($sql);
     $result = $database->execute();
@@ -22,7 +28,7 @@ if ($array['id']!='foo'){
     $database->freeResults();
 }
 else {
-    $sql="SELECT tipo, usuario, token,usar_numero_revo, delivery, impresora, ClientType  FROM integracion WHERE id=1";
+    $sql="SELECT tipo, usuario, token,usar_numero_revo,usar_modo_quiosco, delivery,copias, precio_en_tr, impresora, ClientType  FROM integracion WHERE id=1";
     $database = DataBase::getInstance();
     $database->setQuery($sql);
     $result = $database->execute();
@@ -34,9 +40,12 @@ else {
         $token=$integra ->token;
         $impresora=$integra ->impresora;
         $usar_numero_revo=$integra ->usar_numero_revo;
+        $usar_modo_quiosco=$integra->usar_modo_quiosco;
         $delivery=$integra ->delivery;
+        $copias_tickets=$integra ->copias;
+        $precio_en_tr=$integra ->precio_en_tr;
         $ClientType=$integra ->ClientType;
-        $json=array("valid"=>$checking,"integracion"=>$integracion,"usuario"=>$usuario,"token"=>$token,"usar_numero_revo"=>$usar_numero_revo,"delivery"=>$delivery,"impresora"=>$impresora,"ClientType"=>$ClientType);
+        $json=array("valid"=>$checking,"integracion"=>$integracion,"usuario"=>$usuario,"token"=>$token,"usar_numero_revo"=>$usar_numero_revo,"usar_modo_quiosco"=>$usar_modo_quiosco,"delivery"=>$delivery,"copias_tickets"=>$copias_tickets,"precio_en_tr"=>$precio_en_tr,"impresora"=>$impresora,"ClientType"=>$ClientType);
     }
     $database->freeResults();
     

@@ -76,13 +76,13 @@ $json=array("valid"=>$checking,"id"=>$id,"nombre"=>$nombre,"modificadores"=>$mod
 
 echo json_encode($json); 
 
-
+/*
 $file = fopen("zzZZgM.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql2: ". $sql2 . PHP_EOL);
 fwrite($file, "id: ". $array['id'] . PHP_EOL); 
  
 fclose($file);
-
+*/
 
 ?>

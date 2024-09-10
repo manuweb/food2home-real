@@ -23,7 +23,7 @@ if ($result) {
     
         $nombre=$grupo->nombre;
         if ($grupo->imagen!=''){
-            $imagen[]=IMGREVO.$grupo->imagen;
+            $imagen[]=$grupo->imagen;
         }
         else {
             $imagen[]="";

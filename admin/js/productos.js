@@ -44,7 +44,7 @@ function muestragrupos(){
                     }
                     else {
                         // imagen revo img2='img/productos/'+imagen[x];
-                        img2='img/revo/'+imagen[x];
+                        img2='../webapp/img/revo/'+imagen[x];
                         
                     }
                     if(img_app[x]!=''){
@@ -530,7 +530,7 @@ function muestracategorias(grupo,nombregrupo){
                         img2='../webapp/img/revo/'+imagen[x];
                         
                     }
-                    if(img_app[x]!=''){
+                    if(img_app[x]!=null){
                         img2='../webapp/img/productos/'+img_app[x];
                     }
                     
@@ -726,6 +726,9 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                             var activo_app=obj.activo_app;
                             if (imagen==""){
                                 imagen=servidor+'admin/img/no-imagen.png';
+                            }
+                            else {
+                                imagen=servidor+'webapp/img/revo/'+imagen;
                             }
                             
                             $('input[name=nombre]').val(nombre);

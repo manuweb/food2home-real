@@ -758,6 +758,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
+                                <li>
+                                      <a href="javascript:settingTR();" class="item-link item-content">  
+                                          <div class="item-media"><i class="icon f7-icons">giftcard</i></div>
+                                          <div class="item-inner">
+                                            <div class="item-title">Tarjetas Regalo</div>
+                                          </div>
+                                      </a>
+                                  </li>
 
                                   <li>
                                       <a href="javascript:navegar('#view-setting-alergenos');" class="item-link item-content">  
@@ -822,7 +830,7 @@ include "../webapp/MySQL/DataBase.class.php";
                             <div class="list" style="margin-top:0;">
                                 <ul>  
                                   <li id="li-sincronizacion">
-                                      <a href="javascript:navegar('#view-setting-sync');" class="item-link item-content">  
+                                      <a href="javascript:navegar('#view-setting-sync');sincronizacion();" class="item-link item-content">  
                                           <div class="item-media"><i class="icon f7-icons if-not-md">arrow_2_circlepath_circle_fill</i><i class="icon material-icons if-md">autorenew</i></div>
                                           <div class="item-inner">
                                             <div class="item-title">Sincronización</div>
@@ -1213,100 +1221,8 @@ include "../webapp/MySQL/DataBase.class.php";
                     <div class="page-content">  
                         <div class="block-title block-title-medium"><a href="javascript:navegar('#view-setting');" class="link">Ajustes</a> -> Sincronizar</div> 
                         <div id="sync-page" class="block block-strong inset">   
-                            <div class="list simple-list">
-                                  <ul>
-                                    <li>
-                                      <span>Grupos</span>
-                                      <label class="toggle toggle-init">
-                                        <input id="chk-grupos" type="checkbox" checked />
-                                        <span class="toggle-icon"></span>
-                                      </label>
-
-                                    </li>
-                                    <li id="li-grupos-progressbar" style="display:none;">
-                                        <div style="width: 100%;">
-                                            <div class="progressbar-infinite color-green" data-progress="0" id="grupos-progressbar"></div>
-
-                                            <div id="grupos-progressbar-txt"></div>
-                                        </div>
-                                      </li>
-
-                                    <li>
-                                      <span>Categorías</span>
-                                      <label class="toggle toggle-init">
-                                        <input id="chk-categorias" type="checkbox" checked />
-                                        <span class="toggle-icon"></span>
-                                      </label>
-                                    </li>
-                                      <li id="li-categorias-progressbar" style="display:none;">
-                                          <div style="width: 100%;">
-                                            <div class="progressbar-infinite color-green" data-progress="0" id="categorias-progressbar"></div>
-
-                                            <div id="categorias-progressbar-txt"></div>
-                                        </div>
-                                      </li>
-                                     
-                                     <li>
-                                      <span>Productos</span>
-                                      <label class="toggle toggle-init">
-                                        <input id="chk-productos" type="checkbox" checked />
-                                        <span class="toggle-icon"></span>
-                                      </label>
-                                    </li>
-                                    <li id="li-productos-progressbar" style="display:none;">
-                                        <div style="width: 100%;">
-                                            <div class="progressbar-infinite color-green" data-progress="0" id="productos-progressbar"></div>
-
-                                            <div id="productos-progressbar-txt"></div>
-                                        </div>
-
-                                    </li>
-
-                                    <li>
-                                      <span>Modificadores</span>
-                                      <label class="toggle toggle-init">
-                                        <input id="chk-modificadores" type="checkbox" checked />
-                                        <span class="toggle-icon"></span>
-                                      </label>
-                                    </li>
-                                    <li id="li-modificadores-progressbar" style="display:none;"><span class="progressbar-infinite" id="modificadores-progressbar"></span></li>
-                                      <li id="li-modificadores-progress" style="display:none;"></li>
-                                    <li>
-
-                                    <label class="item-checkbox item-content">
-                                      <input type="checkbox" id="chk-imagenes" value="chk-imagenes" />
-                                      <i class="icon icon-checkbox"></i>
-                                      <div class="item-inner">
-                                        <div class="item-title">Sincronizar imagenes</div>
-                                      </div>
-                                    </label>
-                                  </li> 
-                                      <li>
-
-                                    <label class="item-checkbox item-content" style="margin-left: 30px;">
-                                      <input type="checkbox" id="chk-imagenes-png" value="chk-imagenes-png" />
-                                      <i class="icon icon-checkbox"></i>
-                                      <div class="item-inner">
-                                        <div class="item-title">Convertir a WEBP</div>
-                                      </div>
-                                    </label>
-                                  </li> 
-                                  <li>
-
-                                    <label class="item-checkbox item-content">
-                                      <input type="checkbox" id="chk-precios" value="chk-precios" />
-                                      <i class="icon icon-checkbox"></i>
-                                      <div class="item-inner">
-                                        <div class="item-title">Sincronizar precios</div>
-                                      </div>
-                                    </label>
-                                  </li>  
-
-                                </ul>
-                            </div>
-                            <div class="text-align-center">
-                                <button class="button button-fill sync-button" style="width:50%;margin: auto;"><i class="icon f7-icons if-not-md">arrow_2_circlepath_circle</i><i class="icon material-icons if-md">autorenew</i> Sincronizar</button>
-                            </div>    
+                            
+                                
                         </div>
                         
                     </div> 
@@ -1748,6 +1664,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                           <div class="item-media"><i class="icon f7-icons">person_crop_circle_badge_checkmark</i></div>
                                           <div class="item-inner">
                                             <div class="item-title">Correo de Cumpleaños</div>
+                                          </div>
+                                      </a>
+                                  </li>
+                                    <li id="in_mail_gift">
+                                      <a href="javascript:correoGiftCard();" class="item-link item-content">  
+                                          <div class="item-media"><i class="icon f7-icons">giftcard</i></div>
+                                          <div class="item-inner">
+                                            <div class="item-title">Correo Tarjeta Regalos</div>
                                           </div>
                                       </a>
                                   </li>

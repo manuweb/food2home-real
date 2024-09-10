@@ -35,7 +35,7 @@ if ($result) {
         $result = $database->execute();
         
         if($array['MerchantKey']!='') {
-            $sql="UPDATE redsys SET MerchantCode='".$array['MerchantCode']."', MerchantKey='".$array['MerchantKey']."', terminal='".$array['terminal']."' WHERE id=1";
+            $sql="UPDATE redsys SET MerchantCode='".$array['MerchantCode']."', MerchantKey='".$array['MerchantKey']."', terminal='".$array['terminal']."', bizum='".$array['bizum']."' WHERE id=1";
 
             $database = DataBase::getInstance();
             $database->setQuery($sql);

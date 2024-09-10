@@ -12,7 +12,7 @@ $array = json_decode(json_encode($_POST), true);
 
 $checking=false;
 
-$sql="SELECT MerchantCode, MerchantKey, terminal FROM redsys WHERE id=1;";
+$sql="SELECT MerchantCode, MerchantKey, terminal, bizum FROM redsys WHERE id=1;";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -24,10 +24,11 @@ if ($result) {
     $MerchantCode=$redsys->MerchantCode;
     $MerchantKey=$redsys->MerchantKey;
     $terminal=$redsys->terminal;
+    $bizum=$redsys->bizum;
 }	
 $database->freeResults();
 
-$json=array("valid"=>$checking,"MerchantKey"=>$MerchantKey,"MerchantCode"=>$MerchantCode,"terminal"=>$terminal);
+$json=array("valid"=>$checking,"MerchantKey"=>$MerchantKey,"MerchantCode"=>$MerchantCode,"terminal"=>$terminal,"bizum"=>$bizum);
 
 ob_end_clean();
 echo json_encode($json); 

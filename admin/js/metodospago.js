@@ -190,6 +190,18 @@ function editametodo(id,nombre, activo,idrevo,esRedsys){
                           '</div>'+
                         '</div>'+
                       '</li>'+ 
+                    '<li class="">'+
+                        '<label class="item-content">'+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Bizun</div>'+
+                            '<div class="item-after">'+
+                            '<div class="toggle toggle-init">'+
+                              '<input type="checkbox"  id="usar_bizum" >'+
+                              '<span class="toggle-icon"></span>'+
+                            '</div>'+
+                            '</div>'+
+                          '</div>'+
+                        '</li>'+
                     '</ul>'+   
                 '</div>'+
                 '</div>'+
@@ -224,6 +236,9 @@ function editametodo(id,nombre, activo,idrevo,esRedsys){
                             $('input[name=MerchantKey]').val(obj.MerchantKey);
                             $('input[name=MerchantCode]').val(obj.MerchantCode);
                             $('input[name=terminal]').val(obj.terminal);
+                            if (obj.bizum==1){
+                                $('#usar_bizum').prop('checked',true);
+                            }
                         }   
                     },
                     
@@ -280,6 +295,7 @@ function guardametodo(e) {
     var MerchantKey=$('input[name=MerchantKey]').val();
     var MerchantCode=$('input[name=MerchantCode]').val();
     var terminal=$('input[name=terminal]').val();
+    var bizum=0;
     var metodoactivo=0;
     if($('#metodoactivo').prop('checked')){
         metodoactivo=1;
@@ -287,6 +303,9 @@ function guardametodo(e) {
     var esRedsys=0;
     if($('#lanzaredsys').prop('checked')){
         esRedsys=1;
+        if ($('#usar_bizum').prop('checked')){
+            bizum=1;
+        }
     }
     var server=servidor+'admin/includes/guardametodo.php';   
     $.ajax({
@@ -294,7 +313,7 @@ function guardametodo(e) {
         type: "POST",
         url: server,
         dataType: "json",
-        data: {id:id, nombre:nombre, idrevo:idrevo, activo:metodoactivo, esRedsys:esRedsys, MerchantKey:MerchantKey, MerchantCode:MerchantCode, terminal:terminal},
+        data: {id:id, nombre:nombre, idrevo:idrevo, activo:metodoactivo, esRedsys:esRedsys, MerchantKey:MerchantKey, MerchantCode:MerchantCode, terminal:terminal,bizum:bizum},
         success: function(data){
             var obj=Object(data);
             //console.log(obj);
