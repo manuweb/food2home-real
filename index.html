@@ -128,8 +128,9 @@
                     </div>
             
                     <div class="page-content" id="login-inicio" style="display:none;">  
-
+                        
                         <div class="login-screen-content" id="my-login-screen" style="background: var(--f7-login-screen-content-bg-color) transparent;">
+                            
                             <div class="login-screen-title">Acceso</div>
                             <div class="list login-screen-content">
                                 <ul>
@@ -145,7 +146,7 @@
                                         <div class="item-inner">
                                             <div class="item-title item-label">Contraseña</div>
                                             <div class="item-input-wrap">
-                                                <input type="password" name="password" id="campo-clave1" placeholder="Contraseña" style="margin-bottom: 6px;"/>
+                                                <input type="password" name="password" autocomplete="on" id="campo-clave1" placeholder="Contraseña" style="margin-bottom: 6px;"/>
                                                <i class="f7-icons size-22 campo-clave1" onclick="muestraOcultaClave('campo-clave1');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
 
                                             </div>
@@ -163,7 +164,9 @@
                             <div class="block-footer text-color-red" id="error-login" style="display:none;">Error en usuario y contraseña</div>
                             <div class="block-footer"><a href="javascript:RecuperarClave();">¿Olvidó su contraseña?</a><br/>Clic en <b>Acceder</b> para iniciar sesión.<br></div>
                             <div class="block-footer"><a href="#" id="crear-usuario">No tengo cuenta, crearme una.</a></div>
+                       
                         </div>
+                        
                     </div>   
 
 
@@ -258,12 +261,29 @@
                                     </div>
                                   </div>     
                                 </li>
+                                <li id="mi-qr" style="display:none;" onclick="muestramiqr();">
+                               
+                                    
+                                <div class="item-content item-input">
+                                   
+                                    <div class="item-inner">
+                                      <div class="item-title-row">
+                                        <div class="item-title"><div class="item-header">Mi QR</div><span >Ver mi QR</span></div>
+
+                                      </div>
+                                         <div class="item-after">
+                                             <i class="f7-icons" style="width: 32px;height: auto;margin-top: -32px;">qrcode</i>
+                                      
+                                    </div>
+                                    </div>
+                                  </div>     
+                                </li>
                                 <li id="id-clave1" style="display:none;">
                                 <div class="item-content item-input">
                                 <div class="item-inner">
                                 <div class="item-title item-label">Contraseña</div>
                                 <div class="item-input-wrap">
-                                <input type="password" name="pass" placeholder="Contraseña" id="campo-clave3"  validate/>
+                                <input type="password" name="pass" autocomplete="on" placeholder="Contraseña" id="campo-clave3"  validate/>
                                 <i class="f7-icons size-22 campo-clave3" onclick="muestraOcultaClave('campo-clave3');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
                                 </div>  
                                 </div>     
@@ -274,7 +294,7 @@
                                 <div class="item-inner">
                                 <div class="item-title item-label">Contraseña</div>
                                 <div class="item-input-wrap">
-                                <input type="password" name="pass2" placeholder="Contraseña" id="campo-clave4" validate/>
+                                <input type="password" name="pass2" autocomplete="on" placeholder="Contraseña" id="campo-clave4" validate/>
                                 <i class="f7-icons size-22 campo-clave4" onclick="muestraOcultaClave('campo-clave4');" style="float: right;position: absolute;top: 10px;right: 5px;">eye_slash</i>
                                 </div>  
                                 </div>     
@@ -385,7 +405,7 @@
                                         <div class="item-inner">
                                             <div class="item-title item-label">Contraseña</div>
                                             <div class="item-input-wrap" style="margin-bottom: -30px;">
-                                                <input type="password" name="pass" placeholder="Contraseña" id="campo-clave2"required validate/>
+                                            <input type="password" name="pass" autocomplete="on"placeholder="Contraseña" id="campo-clave2"required validate/>
                                                 <div style="float:right;position: relative;top:-34px;right:10px;;"><i class="f7-icons size-22 campo-clave2" onclick="muestraOcultaClave('campo-clave2');">eye_slash</i></div>
                                             </div>  
                                         </div>     
@@ -451,7 +471,7 @@
                                       <span class="searchbar-disable-button if-not-aurora">Cancelar</span>
                                     </div>
                                   </form>
-                              </div>                          
+                              </div>                       
 
 
 
@@ -598,7 +618,7 @@
                                     </a>
                                   </li>
                                   <li>
-                                    <a href="#" class="item-link item-content text-color-primary">
+                                      <a href="#" class="item-link item-content text-color-primary">
                                     
                                       <div class="item-media" onclick="mirapushnouser();"><i class="icon f7-icons"><span class="badge badage-noti-nousu" style="display:none;"></span>bell</i></div>
                                       <div class="item-inner">
@@ -786,7 +806,9 @@
     </div>
     <!-- FIN app -->
 
-    
+    <div id="miqrcode-window" style="width:290px;height:350px;display:none;position:absolute;left:0;top:0;z-index: 999999;background-color: white;
+    border: solid 2px gray;
+    border-radius: 15px;"><div><span style="float:right;"><i class="icon f7-icons" style="font-size: 36px;" onclick="cierramiqr();">xmark</i></span></div><br><div id="miqrcode" style="margin-left: 20px;margin-top:25px;"></div><br><div style="text-align: center;font-size: 22px;">Escanéame</div></div>
 
 
 
@@ -796,14 +818,26 @@
 
     <!-- Framework7 library -->
     <script src="framework7/framework7-bundle.min.js"></script>
+    <!-- 
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-messaging.js"></script>
+    <script>
 
-    
+        if('serviceWorker' in navigator){
+            window.addEventListener('load',()=>{
+                navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            });
+        }
+
+    </script>
+    -->
     <script>
         var scriptsjs = [
             "js/cnfg.min.js?" + Math.random(),
             "js/app.min.js?" + Math.random(),
             "js/masdatos.min.js?" + Math.random(),
             "js/usuario.min.js?" + Math.random(),
+            "js/qrcode.min.js?" + Math.random(),
             "js/contacto.min.js?" + Math.random(),
             //"js/push.min.js?" + Math.random(),
             "js/tienda.min.js?" + Math.random(),
