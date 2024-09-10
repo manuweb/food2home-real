@@ -33,6 +33,7 @@ $array = json_decode(json_encode($_GET), true);
 $numero=$array['order'];
 $importe=$array['importe'];
 $idpedido=$array['idpedido'];
+$esbizum=$array['esbizum'];
 //$mm=$array['mm'];
 //$aa=$array['aa'];
 //$csv=$array['csv'];
@@ -92,7 +93,13 @@ try{
     $redsys->setCurrency('978');
     $redsys->setTransactiontype('0');
     $redsys->setTerminal('00'.$terminal);
-    $redsys->setMethod('C'); //Solo pago con tarjeta, no mostramos iupay
+    if ($esbizum=='bizum'){
+        $redsys->setMethod('z');
+    }
+    else {
+        $redsys->setMethod('C'); //Solo pago con tarjeta, no mostramos iupay
+    }
+    
     $redsys->setNotification($url.'tpv_noti.php'.$url2); //Url de notificacion
     //$redsys->setPan($tarjeta); 
     //$redsys->setExpiryDate($aa.$mm);

@@ -69,6 +69,8 @@ $comentario=eliminaComillas($array['comentario']);
 $comentario=eliminaIntros($comentario);
 $checking=false;
 
+$llevabolsa=$array['llevabolsa'];
+
 $OrderId=generate_string(8);
 //$order['numero']=$OrderId;
 //$order['numero']=$OrderId;
@@ -142,7 +144,8 @@ for ($n=0;$n<count($impuestosGenerales);$n++){
     $ivaImpuesto[$n]=0;
 }    
 
-
+$tarjetasRegalo=[];
+$j=0;
 for ($x=0;$x<count($carrito);$x++){
     $carrito[$x]['descuento']=0;
     $suma_mod=0;
@@ -160,9 +163,45 @@ for ($x=0;$x<count($carrito);$x++){
     
     $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*$carrito[$x]['precio_sin'];
     
-    
+    if($carrito[$x]['menu']==5){
+        $nombreT=$carrito[$x]['nombreT'];
+        $emailT=$carrito[$x]['emailT'];
+        if ($emailT==''){
+            $emailT=$order['email'];
+        }
+        if ($nombreT==''){
+            $nombreT=$order['nombre']. ' '.$order['apellidos'];
+        }
+
+        for ($h=0;$h<$carrito[$x]['cantidad'];$h++){
+            $tarjetasRegalo[]=[
+                'uuid'=> generate_string(6)."-".generate_string(6),
+                'idPedido'=>0,
+                'idRevo'=>0,
+                'idProducto'=>$carrito[$x]['id'],
+                'nombre'=>$nombreT,
+                'email'=>$emailT,
+                'precio'=>$carrito[$x]['precio']   
+            ];
+        }
+    }
+    $j=$x;
 }
 
+
+if ($llevabolsa=='si'){
+    $x=$j+1;
+    $carrito[$x]['descuento']=0;
+    $carrito[$x]['id']=$array['idBolsa'];
+    $carrito[$x]['nombre']=$array['productoBolsa'];
+    $carrito[$x]['precio']=$array['precioBolsa'];
+    $carrito[$x]['precio_sin']=$array['precioBolsa'];
+    $carrito[$x]['subtotal']=$array['precioBolsa'];
+    $carrito[$x]['cantidad']=1;
+    $carrito[$x]['iva']=0;
+    $carrito[$x]['menu']=0;
+    $carrito[$x]['comentario']=''; 
+}
 
 //file_put_contents('carrito_detalle.txt', print_r($carrito, true));
 
@@ -305,6 +344,7 @@ for ($x=0;$x<count($carrito);$x++){
 
 $order['carrito']=$carrito;
 
+file_put_contents('zz-pedido.txt', print_r($order, true));
 
 
 $suma_subtotal=0;
@@ -349,6 +389,21 @@ if ($db->alter()){
     $idPedido=$pedido[0]->id;
 }
 //$db->freeResults();
+for ($h=0;$h<count($tarjetasRegalo);$h++){
+    $tarjetasRegalo[$h]['idPedido']=$idPedido;
+    
+    $sql="INSERT INTO tarjetas_regalo (uuid,idPedido,idRevo,idProducto,nombre,precio,email) VALUES ('".$tarjetasRegalo[$h]['uuid']."','".$idPedido."','0','".$tarjetasRegalo[$h]['idProducto']."','".$tarjetasRegalo[$h]['nombre']."','".$tarjetasRegalo[$h]['precio']."','".$tarjetasRegalo[$h]['email']."');";
+$file = fopen("zz-pedido-tr.txt", "w");
+fwrite($file, "sql: ". $sql . PHP_EOL);
+
+fclose($file);
+    $db = DataBase::getInstance();  
+    $db->setQuery($sql);   
+    if ($db->alter()){}
+    else {}
+}
+
+//file_put_contents('zz-pedido-tr.txt', print_r($tarjetasRegalo, true));
 
 if ($cliente!=0){
     //fwrite($file, "Cliente ". PHP_EOL);

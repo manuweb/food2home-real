@@ -15,6 +15,7 @@ include_once "../config.php";
 include_once "../config.mail.php";
 include_once "../PHPMailer/class.phpmailer.php";
 include_once "../PHPMailer/class.smtp.php";
+include (__DIR__.'/includes/phpqrcode/qrlib.php'); 
 
 function logicacupon($cupon){
     $sql="SELECT desde, hasta, tipo,logica FROM promos WHERE codigo='".$cupon."'";
@@ -759,7 +760,7 @@ class PedidosRevo
         $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
-        $delivery['channel']=24;
+        //$delivery['channel']=22;
 
         if ($order['metodo']==1) { //1=enviar, 2=recoger
             $delivery['address']=$order['domicilio']['direccion'];
@@ -832,6 +833,49 @@ class PedidosRevo
         
     }
     
+    function addTarjetasRegalo($tarjetasRegalo){
+
+        $userytoken=$this->BuscaDatos(0);
+        $user=$userytoken['usuario'];
+        $token=$userytoken['token']; 
+        $clienttoken=$this->clienttoken;
+        $url="https://revoxef.works/api/external/v2/giftCards";
+        $header=array(
+            'tenant: ' . $user,
+            "Authorization: Bearer ". $token, 
+            "client-token: ".$clienttoken
+        );
+
+
+        
+        for ($x=0;$x<count($tarjetasRegalo);$x++){
+            $giftCard= array(
+                'balance'  => $tarjetasRegalo[$x]['precio'],
+                'uuid'  => $tarjetasRegalo[$x]['uuid']
+            );
+            $topost="giftCard=".json_encode($giftCard);
+            $opts = array('http' =>
+                array(
+                    'method'  => 'POST',
+                    'header'  => $header,
+                    'content' => $giftCard
+                )
+            );
+            
+            $params_string = http_build_query($giftCard);
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, TRUE);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $params_string);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+            $data = curl_exec($curl);     
+            curl_close($curl);
+            
+            
+        }
+        return true;
+    }
 }
 
 class MisMails 
@@ -1018,6 +1062,33 @@ class MisMails
         return $devuelve;     
     }
     
+    public function CreaBodyTextoTarjetaRegalo($latarjeta){
+        $sql="SELECT textomail FROM tiposcorreos WHERE id=3;";
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $elmail = $result->fetch_object();
+        $texto=$elmail->textomail;
+        
+        $subject='Su tarjeta regalo';
+        
+        $txtTarjeta="<br><img src='".$this->url."/webapp/includes/tarjetas/tr-".$latarjeta['uuid'].".png' style='max-width:90%;height:auto;'><br>";
+        
+        $texto=str_replace('[GiftCard]',$txtTarjeta,$texto);
+        $textomail=$texto;
+        $textomail=str_replace('[usuarioNombre]',$latarjeta['nom_remite'],$textomail);
+        $textomail=str_replace('[usuarioApellidos]',$latarjeta['ape_remite'],$textomail);
+        $textomail=str_replace('[logo]',"<img src='".$this->url."/webapp/img/empresa/".LOGOEMPRESA."' style='width:250px;max-width:80%;height:auto;border:none;text-decoration:none;color:#ffffff;'>",$textomail);
+
+        $textomail.='</td></tr></table>';
+        $devuelve=[
+            'textomail'=>$textomail,
+            'subject'=>$subject
+        ]; 
+        return $devuelve;
+        
+    }
+    
     public function CreaBodyTextoNuevoUsuario($email){
         $devuelve=[];
         $textomail='';
@@ -1169,12 +1240,12 @@ class MisMails
             $hh=substr($hora,0,2);
             $mm=substr($hora,3,2);
             $mm+=$cortesia;
-            if ($mm>=60){
+            if ($mm>60){
                 //$mm-=$cortesia;
-		$mm-=60;  
+                $mm-=60;
                 $hh+=1;
             }
-            if ($hh>=24){
+            if ($hh>24){
                 $hh=0;
             }
             if ($mm<9){
@@ -2315,7 +2386,7 @@ class Delivery
         $devuelve='';
         
         if ($id==1){
-            // Jelp Delivery (Jerez)
+            // Help Delivery (Jerez)
             $url='https://api.torredecontrol.io/dev/v3/order';
             $mifecha= date($order['dia']." ". $order['hora'].":00"); 
             $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
@@ -2333,6 +2404,282 @@ class Delivery
             $scheduledDate=$fecha."T".$hora.":00.000Z";
             $apykey='o1EiT/kYIOvASs0+5AOaNOTyMuqWJgwVsRsGvEJOZmE=';
             $sign='zuXvfJEycOmgNI6XbVbLu/Q/zjIUc/8hACXFulnZeWo=';
+            $branch=$variables['branch'];
+            $paymentMethod='5c3fba2beb7ccb177b747a91';
+            $isPaid=true;
+            if ($order['tarjeta']==2){
+                $isPaid=false;
+                $paymentMethod='5c3fb8dcf894321699bcce55';
+            }
+            $isCellPhone=esuntelefonomovil($order['telefono']);
+            
+            $postfield=[
+                "total" =>$order['total'],
+                "subtotal" =>$order['total'],
+                "branch" =>$branch,
+                "isPaid" =>$isPaid,
+                "publicId" =>$numero,
+                "paidWith" =>$order['total'],
+                "currency" =>"EUR",
+                "phone" => [
+                        "isCellPhone" =>$isCellPhone,
+                        "countryCode"=>"+34",
+                        "phone" =>$order['telefono']
+                    ],
+                "customer" =>[
+                        "firstName" =>$order['nombre'],
+                        "firstLastName" =>$order['apellidos'],
+                        "fullName" => $order['nombre']." ".$order['apellidos']
+                    ],
+                "address"=> [
+                        "latitude" =>$order['domicilio']['lat'],
+                        "longitude" =>$order['domicilio']['lng'],
+                        "fullAddress" =>$order['domicilio']['direccion']." ".$order['domicilio']['poblacion'],
+                        "street" =>$order['domicilio']['direccion']. " - ". $order['domicilio']['complementario'],
+                        "neighborhood" =>null,
+                        "interiorNumber" =>null,
+                        "exteriorNumber" =>null,
+                        "references" =>null,
+                        "betweenStreet1" =>null,
+                        "betweenStreet2" =>null,
+                        "zipCode" => $order['domicilio']['cod_postal'],
+                        "city" => $order['domicilio']['poblacion'],
+                        "state" => $order['domicilio']['provincia'],
+                        "country" => "España"
+                    ],
+                "paymentMethod" =>$paymentMethod,
+                "collectionBranches" => [$branch],
+                "scheduledDate" => $scheduledDate,
+                "comment"=>$order['comentario'],
+                "orderType" =>"DELIVERY",
+                "files"=>[]
+            ];
+            
+            
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => json_encode($postfield, JSON_UNESCAPED_UNICODE),
+              CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'api-key: '.$apykey,
+                'sign: '.$sign
+              ),
+            ));
+
+            $response = curl_exec($curl);
+            
+            
+            if(curl_errno($curl)){
+                $devuelve='error';
+            }
+            else {
+                $resultado=json_decode($response,true);
+                $devuelve=$resultado['requestId'];
+            }
+            curl_close($curl);
+
+            
+        
+            //$revoid=$resultado->{'order_id'};
+            
+        }
+        if ($id==2){
+            // Gryc Delivery (Cádiz)
+            $url='https://api.shipday.com/orders';
+            $mifecha= date($order['dia']." ". $order['hora'].":00"); 
+            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
+            
+            $numero=$order['pedido'];
+            if (TIPOINTEGRACION==1){
+                if (USARNUMEROREVO==1){
+                    $numero=$order['numeroRevo'];
+                }
+            }
+            $hora=substr($NuevaFecha,11,5).":00";
+            $fecha=substr($NuevaFecha,0,10);;
+
+            $paymentMethod='credit_card';
+            $isPaid=true;
+            if ($order['tarjeta']==2){
+                $isPaid=false;
+                $paymentMethod='cash';
+                
+            }
+            
+            $postfield=[
+                "orderNumber" =>$numero,
+                "customerName" =>$order['nombre']." ".$order['apellidos'],
+                "customerAddress" =>$order['domicilio']['direccion'].", ".$order['domicilio']['poblacion'].", ".$order['domicilio']['provincia'],
+                "customerEmail" =>$order['email'],
+                "customerPhoneNumber" =>"+34".$order['telefono'],
+                "restaurantName" =>$variables['restaurante'],
+                "restaurantAddress" =>$variables['domicilio'],
+                "restaurantPhoneNumber" =>$variables['telefono'],
+                "expectedDeliveryDate" =>$fecha,
+                "expectedDeliveryTime" =>$hora,
+                "pickupLatitude" =>$variables['lat'],
+                "pickupLongitude" =>$variables['lng'],
+                "deliveryLatitude" =>$order['domicilio']['lat'],
+                "deliveryLongitude" =>$order['domicilio']['lng'],
+                "totalOrderCost" =>$order['total'],
+                "deliveryInstruction" =>$order['comentario'],
+                "paymentMethod" =>$paymentMethod
+            ];
+            
+            if ($isPaid){
+                $postfield["creditCardType"]="visa";
+                $postfield["creditCardId"]="1234";
+            }
+
+            $apykey='GyFwfquQQN.iyAboMvrVvf31OowYOUj';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => json_encode($postfield, JSON_UNESCAPED_UNICODE),
+              CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Basic '.$apykey,
+                'x-api-key: null'
+              ),
+            ));
+            
+            $response = curl_exec($curl);
+            
+            //
+            
+            if(curl_errno($curl)){
+                $devuelve='error';
+            }
+            else {
+                $resultado=json_decode($response,true);
+                $devuelve=$resultado['orderId'];
+            }
+            curl_close($curl);
+            
+        }
+        
+        if ($id==3){
+            // Shipday
+            $url='https://api.shipday.com/orders';
+            $mifecha= date($order['dia']." ". $order['hora'].":00"); 
+            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
+            
+            $numero=$order['pedido'];
+            if (TIPOINTEGRACION==1){
+                if (USARNUMEROREVO==1){
+                    $numero=$order['numeroRevo'];
+                }
+            }
+            $hora=substr($NuevaFecha,11,5).":00";
+            $fecha=substr($NuevaFecha,0,10);;
+
+            $paymentMethod='credit_card';
+            $isPaid=true;
+            if ($order['tarjeta']==2){
+                $isPaid=false;
+                $paymentMethod='cash';
+                
+            }
+            
+            $postfield=[
+                "orderNumber" =>$numero,
+                "customerName" =>$order['nombre']." ".$order['apellidos'],
+                "customerAddress" =>$order['domicilio']['direccion'].", ".$order['domicilio']['poblacion'].", ".$order['domicilio']['provincia'],
+                "customerEmail" =>$order['email'],
+                "customerPhoneNumber" =>"+34".$order['telefono'],
+                "restaurantName" =>$variables['restaurante'],
+                "restaurantAddress" =>$variables['domicilio'],
+                "restaurantPhoneNumber" =>$variables['telefono'],
+                "expectedDeliveryDate" =>$fecha,
+                "expectedDeliveryTime" =>$hora,
+                "pickupLatitude" =>$variables['lat'],
+                "pickupLongitude" =>$variables['lng'],
+                "deliveryLatitude" =>$order['domicilio']['lat'],
+                "deliveryLongitude" =>$order['domicilio']['lng'],
+                "totalOrderCost" =>$order['total'],
+                "deliveryInstruction" =>$order['comentario'],
+                "paymentMethod" =>$paymentMethod
+            ];
+            
+            if ($isPaid){
+                $postfield["creditCardType"]="visa";
+                $postfield["creditCardId"]="1234";
+            }
+
+            $apykey=$variables['apikey'];
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => json_encode($postfield, JSON_UNESCAPED_UNICODE),
+              CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Basic '.$apykey,
+                'x-api-key: null'
+              ),
+            ));
+            
+            $response = curl_exec($curl);
+            
+            //
+            
+            if(curl_errno($curl)){
+                $devuelve='error';
+            }
+            else {
+                $resultado=json_decode($response,true);
+                $devuelve=$resultado['orderId'];
+                
+                
+            }
+            curl_close($curl);
+            
+        }
+        
+        if ($id==4){
+            // Jelp Delivery (demo)
+            $url='https://api.torredecontrol.io/dev/v3/order';
+            $mifecha= date($order['dia']." ". $order['hora'].":00"); 
+            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
+            
+            $numero=$order['pedido'];
+            if (TIPOINTEGRACION==1){
+                if (USARNUMEROREVO==1){
+                    $numero=$order['numeroRevo'];
+                }
+            }
+            $hora=substr($NuevaFecha,11,5);
+            $fecha=substr($NuevaFecha,0,10);;
+            
+            $scheduledDate=$fecha."T".$hora.":00.000Z";
+            $apykey=$variables['apikey'];
+            $sign=$variables['sign'];
             $branch=$variables['branch'];
             $paymentMethod='5c3fba2beb7ccb177b747a91';
             $isPaid=true;
@@ -2405,6 +2752,11 @@ class Delivery
 
             $response = curl_exec($curl);
             
+            echo "<pre>";
+print_r(json_decode($response,true));
+echo "</pre>";
+            
+            
             if(curl_errno($curl)){
                 $devuelve='error';
             }
@@ -2422,4 +2774,122 @@ class Delivery
         return $devuelve;
     }
 }
+
+class TarjetaRegalo 
+{
+    //public $ctrUsuRevo;
+    public $http;
+    public $url;
+    public $primario;
+    public $secundario;
+    public $precio_en_tr;
+    
+
+    
+    public function __construct(){
+        $this->http=(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $this->url=$this->http.'://' . $_SERVER["HTTP_HOST"] ;  
+        $sql="SELECT estilo.primario, estilo.secundario, integracion.precio_en_tr FROM estilo LEFT JOIN integracion on integracion.id=estilo.id WHERE estilo.id=1;;";
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $datos = $result->fetch_object();
+        $this->primario=$datos->primario;
+        $this->secundario=$datos->secundario;
+        $this->precio_en_tr=$datos->precio_en_tr;
+        $database->freeResults();  
+        
+    }
+    
+    public function creaTarjeta($tarjeta){
+        $font_path = __DIR__.'/includes/fonts/Arial.ttf';
+        $font_path_b = __DIR__.'/includes/fonts/Arial_Bold.ttf';
+        $font_path_i = __DIR__.'/includes/fonts/ariali.ttf';
+        $font_path_bi = __DIR__.'/includes/fonts/Arial_Bold_Italic.ttf';
+        
+        $fondo_src=__DIR__.'/includes/tr/fondo.png';
+        $recuadro_src=__DIR__.'/includes/tr/recuadro.png';
+        $logo_src=__DIR__.'/img/empresa/logo.png';
+        $cPrimario=$this->primario;
+        $cSecundario=$this->secundario;
+        $cGris="#d3d3d3";
+        $codigo = $tarjeta['uuid'];
+        $importe=$tarjeta['precio'];
+        $gc="TARJETA REGALO";
+        $titular=$tarjeta['nombre']; 
+    
+        $codeFile = __DIR__.'/includes/tarjetas/'.$codigo.'.png';
+        QRcode::png($codigo, $codeFile, 'H', 10,1);
+        $rgbGris=hexToRgb($cGris);
+        $rgbPrimario=hexToRgb($cPrimario);
+        $rgbSecundario=hexToRgb($cSecundario);
+
+
+        $logo=imagecreatefrompng($logo_src);
+        $fondo=imagecreatefrompng($fondo_src);
+        $recuadro=imagecreatefrompng($recuadro_src);
+        $qrC=imagecreatefrompng($codeFile);
+
+        imagecolorset($fondo,0, $rgbSecundario['r'], $rgbSecundario['g'], $rgbSecundario['b']); // 1200 x 436
+        list($logo_w, $logo_h, $type, $attr) = getimagesize($logo_src);
+        $pos_logo=
+        $ancho=1200;
+        $alto=800;
+        $pos_logo=($ancho-$logo_w)/2;
+        $porcentaje_redu=0.7;
+        $tr = imagecreate($ancho, $alto);
+        $blanco = imagecolorallocate($tr, 255, 255, 255);// blanco
+        $negro = imagecolorallocate($tr, 0, 0, 0);// 
+        $gris = imagecolorallocate($tr, $rgbGris['r'], $rgbGris['g'], $rgbGris['b']);// gris
+        $primario = imagecolorallocate($tr, $rgbPrimario['r'], $rgbPrimario['g'], $rgbPrimario['b']);
+        $secundario = imagecolorallocate($tr, $rgbSecundario['r'], $rgbSecundario['g'], $rgbSecundario['b']);
+
+
+        imagefill($tr, 0, 0, $gris);
+        imagecopy($tr, $logo, $pos_logo, 50, 0, 0, $logo_w, $logo_h);
+        imagecopy($tr, $fondo, 0, 364, 0, 0, 1200, 436);
+
+
+        imagecopy($tr, $recuadro, 360, 455, 0, 0, 690, 85);
+        imagecopy($tr, $qrC, 40, 455, 0, 0, 270, 270);
+
+        $dimensions = imagettfbbox(50, 0, $font_path_bi, $gc);
+        $textWidth = abs($dimensions[4] - $dimensions[0]);
+        $x = round(($ancho-$textWidth)/2); //centrado
+
+        imagettftext($tr, 50, 0, $x, 360, $secundario, $font_path_bi, $gc);
+
+        imagettftext($tr, 30, 0, 385, 510, $primario, $font_path_b, $titular);
+
+        imagettftext($tr, 26, 0, 40, 765, $blanco, $font_path_b, $codigo);
+        if ($this->precio_en_tr==1){
+            imagettftext($tr, 80, 0, 730, 720, $blanco, $font_path_bi, $importe);
+            imagettftext($tr, 80, 0, 1010, 720, $blanco, $font_path_i, "€");
+        }
+        imagepng($tr, __DIR__.'/includes/tarjetas/tr-'.$codigo.'.png',9);
+
+        imagedestroy($tr);
+        imagedestroy($logo); 
+        imagedestroy($fondo); 
+        imagedestroy($qrC); 
+        imagedestroy($recuadro); 
+        unlink($codeFile);
+        
+    }
+    
+}
+
+
+function hexToRgb($hex, $alpha = false) {
+   $hex      = str_replace('#', '', $hex);
+   $length   = strlen($hex);
+   $rgb['r'] = hexdec($length == 6 ? substr($hex, 0, 2) : ($length == 3 ? str_repeat(substr($hex, 0, 1), 2) : 0));
+   $rgb['g'] = hexdec($length == 6 ? substr($hex, 2, 2) : ($length == 3 ? str_repeat(substr($hex, 1, 1), 2) : 0));
+   $rgb['b'] = hexdec($length == 6 ? substr($hex, 4, 2) : ($length == 3 ? str_repeat(substr($hex, 2, 1), 2) : 0));
+   if ( $alpha ) {
+      $rgb['a'] = $alpha;
+   }
+   return $rgb;
+}
+
 ?>

@@ -306,27 +306,38 @@ if (count($grupo)>0) {
     
     
     $texto='<div id="img-producto"><img src="'.$imagen.'" width="100%" height="auto" id="img-prod"></div>';
-    /*
-    $texto.=
-'<div class="navbar" style="position:fixed;background-color: rgba(255, 255, 255, 0.3);">
-    <div class="navbar-inner">
-      <div class="left"  onclick="javascript:app.tab.show(\'#view-catalog\');muestraproductos(\''.$array['idgrupo'].'\',\''.$array['nombregrupo'].'\',\''.$array['idcategoria'].'\',\''.$array['nombrecategoria'].'\');">
-              <i class="icon icon-back color-white"></i>
-                          
-        </div>
-        <div class="title"><img src="img/logo-white.png" height="40" width="auto"></div>
-          <div class="right">
-                              
+    
+    $textoesRegalo='';
+    if ($esMenu==5){
+        $textoesRegalo='
+        <div class="list list-strong-ios list-dividers-ios inset-ios" style="margin-top: 15px;">
+
+      <ul>
+        <li class="item-content" style="background-color: transparent;border: gray solid 1px;border-radius: 5px;  ">
+          <div class="item-inner">
+            <div class="item-input-wrap">
+              <input type="text" placeholder="Nombre para tarjeta" name="nombre-para-tarjeta" id="nombre-para-tarjeta">
+              <span class="input-clear-button"></span>
+            </div>
           </div>
-    </div>
-</div>';
-*/
+        </li>
+        <li class="item-content" style="background-color: transparent;border: gray solid 1px;border-radius: 5px;margin-top:10px; ">
+          <div class="item-inner">
+            <div class="item-input-wrap">
+              <input type="email" name="email-para-tarjeta" id="email-para-tarjeta" placeholder="Email para enviar">
+              <span class="input-clear-button"></span>
+            </div>
+          </div>
+        </li>
+        </ul></div>';
+    }
+
     $texto.='<div class="block" id="bloque-producto" style="margin-bottom:10px;margin-top:-20px;" >
     <br>
                     
     <p><span style="font-size:20px;">'.$nombre.' </span><span style="float:right;font-size:20px;font-weight: bold;">'.$decimales[0].'<span style="font-size:16px">,'.$decimales[1].'</span> €</span></p>
-    <p style="font-size:16px;font-weight: bold;color:var(--primario);">Descripción</p>
-    <p>'.$info.'</p></div>';
+    <p style="font-size:16px;font-weight: bold;color:var(--primario);"><span id="texto-descripcion-producto">Descripción</span></p>
+    <p>'.$info.'</p></div>'.$textoesRegalo;
     
     if (count($alergenos)<1){
         $alergi='<div style="float:left;margin:5px;" class="text-align-center"><img src="'.IMGALE.'sin.png" width="48px" height="auto"><br><span style="font-size:.8em;">Libre de alergenos</span></div>';
@@ -467,7 +478,7 @@ $texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;fo
         $class_forsoso='disabled ';
     }
     $txt_add='
-          <div class="button button-outline button-round '.$class_forsoso.'" id="add-to-cart"  data-id="'.$array['id'].'"data-nombre="'.$nombre.'" data-precio="'.$precio.'" data-sin="'.$precio.'" data-iva="'.$impuesto.'" data-img="'.$imagen.'" onclick="addCarritodesdeproducto(this);" style="width: 95%; margin: auto;display: block;height: 40px;line-height: 35px;margin-top: 12px;"><span style="float:left;">Añadir al pedido</span> <span id="precio-producto" style="font-size:22px;font-weight: bold;float:right;">'.$precio.' €</span><span ></span></div>
+          <div class="button button-outline button-round '.$class_forsoso.'" id="add-to-cart"  data-id="'.$array['id'].'"data-nombre="'.$nombre.'" data-esMenu="'.$esMenu.'" data-precio="'.$precio.'" data-sin="'.$precio.'" data-iva="'.$impuesto.'" data-img="'.$imagen.'" onclick="addCarritodesdeproducto(this);" style="width: 95%; margin: auto;display: block;height: 40px;line-height: 35px;margin-top: 12px;"><span style="float:left;">Añadir al pedido</span> <span id="precio-producto" style="font-size:22px;font-weight: bold;float:right;">'.$precio.' €</span><span ></span></div>
         ';
     $texto.='<div class="block-outline" style="position: fixed;bottom: 0;z-index: 5;
     padding-bottom: 15px;background-color:rgba(255, 255, 255, 1); width:100%;">'.$txt_cantidad.$txt_add.'</div>';

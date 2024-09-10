@@ -25,7 +25,9 @@ $array = json_decode(json_encode($_POST), true);
 
 
 $tiket = new ImprimeTicket;
-$resultado=$tiket->generaTicket($array['idpedido']);
+for ($x=0;$x<$array['copias'];$x++){
+    $resultado=$tiket->generaTicket($array['idpedido']);
+}
 
 $json=array("valid"=>$resultado);
 ob_end_clean();

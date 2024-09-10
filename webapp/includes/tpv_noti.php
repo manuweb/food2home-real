@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
@@ -21,7 +24,8 @@ $sql="SELECT empresa.nombre_comercial,  redsys.MerchantCode, redsys.MerchantKey,
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
-           
+
+            
 $empresa = $result->fetch_object();
 $MerchantKey=$empresa->MerchantKey;
 
@@ -35,7 +39,7 @@ $idpedido=$_GET['idpedido'];
 
 $tipo='pedido';
 //$url2='?numero='.$numero.'&importe='.$importe.'&idpedido='.$idpedido;
- 
+
 include_once('Sermepa/Tpv/Tpv.php');
   try{
     $redsys = new Sermepa\Tpv\Tpv();
@@ -46,8 +50,11 @@ include_once('Sermepa/Tpv/Tpv.php');
     $parameters = $redsys->getMerchantParameters($_POST["Ds_MerchantParameters"]);
     $DsResponse = $parameters["Ds_Response"];
     $DsResponse += 0;
+      
+      
     if ($redsys->check($key, $_POST) && $DsResponse <= 99) {
-        $sql="SELECT tipo, delivery FROM integracion WHERE id=1";
+     
+        $sql="SELECT tipo, delivery,copias FROM integracion WHERE id=1";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
@@ -56,7 +63,7 @@ include_once('Sermepa/Tpv/Tpv.php');
             $integra = $result->fetch_object();
             $integracion=$integra->tipo;
             $delivery=$integra->delivery;
-            
+            $copias==$integra->copias;
             $Pedido = new RecomponePedido;
             $order=$Pedido->DatosGlobalesPedido($idpedido);
             $order['carrito']=$Pedido->LineasPedido($idpedido);
@@ -99,18 +106,104 @@ include_once('Sermepa/Tpv/Tpv.php');
                 
                 if ($delivery>0){
                     enviadatosadelivery($delivery, $idpedido,$order,$integracion);
-                }   
+                }
+                
+                $tarjetasRegalo=[];
+                $carrito=$order['carrito'];
+                for ($x=0;$x<count($carrito);$x++){
+                    if($carrito[$x]['menu']==5){
+                        $sql="UPDATE tarjetas_regalo SET idRevo=".$revoid." WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
+
+                        $database->setQuery($sql);
+                        $result = $database->execute();
+                        $sql="SELECT uuid,nombre,email,precio FROM tarjetas_regalo WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
+                        $database->setQuery($sql);
+                        $resultT = $database->execute();
+                        while ($lintar = $resultT->fetch_object()) {
+                            $tarjetasRegalo[]=[
+                                'uuid'=>$lintar->uuid,
+                                'nombre'=>$lintar->nombre,
+                                'precio'=>$lintar->precio,
+                                'email'=>$lintar->email  
+                            ];
+                        }
+
+
+                    }
+                }
+
+
+                if (count($tarjetasRegalo)>0){
+                    $tr= $Revo->addTarjetasRegalo($tarjetasRegalo);
+                    $TRegalo = new TarjetaRegalo;
+
+                    for ($x=0;$x<count($tarjetasRegalo);$x++){
+                        $latarjeta=[
+                            'uuid'=>$tarjetasRegalo[$x]['uuid'],
+                            'nombre'=>$tarjetasRegalo[$x]['nombre'],
+                            'precio'=>$tarjetasRegalo[$x]['precio'],
+                            'nom_remite'=>$order['nombre'],
+                            'ape_remite'=>$order['apellidos']
+                        ];
+                        $latr= $TRegalo->creaTarjeta($latarjeta);
+
+
+                        $miMail = new MisMails;
+                        $datosM=$miMail->BuscaDatosMail();
+
+                        $phpmailer = new PHPMailer();
+                        $phpmailer->CharSet = 'UTF-8';
+                        $phpmailer->Username = $datosM['Username'];
+                        $phpmailer->Password = $datosM['Password'];
+                        $phpmailer->SMTPSecure = $datosM['SMTPSecure'];
+                        $phpmailer->Host = $datosM['Host'];
+                        $phpmailer->Port = $datosM['Port'];
+                        $phpmailer->SMTPAuth = true;
+                        $phpmailer->Sender = $datosM['Sender'];;
+                        $phpmailer->SetFrom($datosM['Sender'], $datosM['NombreEmpresa']);
+                        $phpmailer->IsHTML(true);
+
+                        //$cco=false;
+
+                        $datos=$miMail->CreaBodyTextoTarjetaRegalo($latarjeta);
+                        $para=$tarjetasRegalo[$x]['email'];
+                        $phpmailer->Subject = $datos['subject'];
+                        $phpmailer->AddAddress($para); // recipients email
+
+                        $phpmailer->Body =$miMail->CreaHeadMail();
+                        $phpmailer->Body .= iconv("UTF-8", "UTF-8",$datos['textomail']);
+                        $phpmailer->Body .= iconv("UTF-8", "UTF-8",$miMail->CreaPieMail());
+                        $phpmailer->addAttachment(__DIR__.'/includes/tarjetas/tr-'.$tarjetasRegalo[$x]['uuid'].'.png');
+
+                        if ($phpmailer->send()) {
+                            //echo "Mail enviado correctamente"; 
+
+                        } else {
+                            //echo "Error enviando mail<br>"; 
+                            //echo 'Mailer Error: ' . $mail->ErrorInfo;
+                        }
+
+                    }
+
+                }
+
                 
             }
             else {
+                if ($order['cliente']>0){
+                    $sql="UPDATE usuarios_app SET monedero=monedero+".($order['importe_fidelizacion']-$order['monedero'])." WHERE id=".$order['cliente'].";";
+                    $database->setQuery($sql);
+                    $result3 = $database->execute(); 
+                }
                 $sql="UPDATE pedidos SET estadoPago='1' WHERE id='".$idpedido."';";
                 $database->setQuery($sql);
                 $result2 = $database->execute(); 
-                 
                 //include 'imprimeticket.php';
                 $tiket = new ImprimeTicket;
-                $resultado_tiket=$tiket->generaTicket($idpedido);
-                $resultado_tiket2=$tiket->generaTicket($idpedido);
+                for ($x=0;$x<$copias;$x++){
+                    $resultado_tiket=$tiket->generaTicket($idpedido);
+                }
+                
                 if ($delivery>0){
                     enviadatosadelivery($delivery, $idpedido,$order,$integracion);
                 }  
@@ -189,7 +282,7 @@ include_once('Sermepa/Tpv/Tpv.php');
         
         
     
-        
+      
         
     } else {
 
@@ -206,6 +299,8 @@ include_once('Sermepa/Tpv/Tpv.php');
 } catch (\Sermepa\Tpv\TpvException $e) {
     echo $e->getMessage();
 }
+
+
 
 function enviadatosadelivery($idDelivery, $idpedido, $order, $integracion){
     if ($order['metodo']==1){
@@ -231,5 +326,5 @@ function enviadatosadelivery($idDelivery, $idpedido, $order, $integracion){
         
     }
     
-}             
+}
 ?>
