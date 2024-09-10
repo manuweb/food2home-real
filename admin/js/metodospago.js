@@ -193,7 +193,7 @@ function editametodo(id,nombre, activo,idrevo,esRedsys){
                     '<li class="">'+
                         '<label class="item-content">'+
                           '<div class="item-inner">'+
-                            '<div class="item-title">Bizun</div>'+
+                            '<div class="item-title">Bizum</div>'+
                             '<div class="item-after">'+
                             '<div class="toggle toggle-init">'+
                               '<input type="checkbox"  id="usar_bizum" >'+
