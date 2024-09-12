@@ -63,7 +63,7 @@ include_once('Sermepa/Tpv/Tpv.php');
             $integra = $result->fetch_object();
             $integracion=$integra->tipo;
             $delivery=$integra->delivery;
-            $copias==$integra->copias;
+            $copias=$integra->copias;
             $Pedido = new RecomponePedido;
             $order=$Pedido->DatosGlobalesPedido($idpedido);
             $order['carrito']=$Pedido->LineasPedido($idpedido);
