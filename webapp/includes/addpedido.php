@@ -161,7 +161,7 @@ for ($x=0;$x<count($carrito);$x++){
     }
     //$carrito[$x]['precio']+=$suma_mod;
     
-    $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*$carrito[$x]['precio_sin'];
+    $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*($carrito[$x]['precio_sin']+$suma_mod);
     $subtotal+=$carrito[$x]['subtotal'];
     if($carrito[$x]['menu']==5){
         $nombreT=$carrito[$x]['nombreT'];
