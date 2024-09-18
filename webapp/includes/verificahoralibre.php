@@ -3,8 +3,8 @@
  *
  * Archivo: verificahoralibre.php
  *
- * Version: 1.0.0
- * Fecha  : 18/08/2023
+ * Version: 1.0.1
+ * Fecha  : 18/09/2024
  * Se usa en :caomprar.js ->checkout_3) 
  *
  * © Manuel Sánchez (www.elmaestroweb.es)
@@ -62,7 +62,7 @@ switch ($hoy) {
 }
 
 if ($solotr=='no'){
-
+    $contadoenhora=0;   
     $sql='SELECT horas_cocina.'.$busco.' AS maximo_pedidosportramococina, horas_repartos.'.$busco.' AS maximo_pedidosportramoenvio FROM horas_cocina LEFT JOIN horas_repartos ON horas_repartos.id=horas_cocina.id  WHERE horas_cocina.id=1;';
 
     $database = DataBase::getInstance();
@@ -96,36 +96,37 @@ if ($solotr=='no'){
 
 
     if ($result->num_rows>0) {
+        
+        $checking=true;
+        while ($horas = $result->fetch_object()) {
+            $horaEnc=$horas->hora;
+            $metodoEnvio=$horas->metodoEnvio;
+            $contado=$horas->contado;
+            if ($hora==$horaEnc) {
+                $contadoenhora=$contado;
+                if ($metodoEnvio==1){
+                    if ($contado>=$maximo_pedidosportramoenvio){
 
-    $checking=true;
-    while ($horas = $result->fetch_object()) {
-        $horaEnc=$horas->hora;
-        $metodoEnvio=$horas->metodoEnvio;
-        $contado=$horas->contado;
-        if ($hora==$horaEnc) {
-            if ($metodoEnvio==1){
-                if ($contado>=$maximo_pedidosportramoenvio){
+                    //
+                        $checking=false;
+                        break;
+                    }
 
-                //
-                    $checking=false;
-                    break;
+                }
+                else {
+                    if ($contado>=$maximo_pedidosportramococina){
+                        $checking=false;
+                        break;
+                    }
                 }
 
-            }
-            else {
-                if ($contado>=$maximo_pedidosportramococina){
-                    $checking=false;
-                    break;
-                }
             }
 
         }
 
     }
-
-    }
     else {
-    $checking=true;
+        $checking=true;
     }
     $txt='';
 
@@ -150,34 +151,42 @@ if ($solotr=='no'){
     $disponiblecocina=$array['disponiblecocina'];
     //$disponiblecocina=['19:30'];
     if ($fechabusco==$eshoy){
-    $txt='ES Hoy';
-    if ($envio==1){
+        $txt='ES Hoy';
+        if ($envio==1){
 
-        if(is_array($disponiblereparto) ){
-            $checking=false;
-            $txt='ES Hoy';
-            for ($x=0;$x<count($disponiblereparto);$x++){
+            if(is_array($disponiblereparto) ){
+                $checking=false;
+                $txt='ES Hoy';
+                for ($x=0;$x<count($disponiblereparto);$x++){
 
-                if (date("H:i")<=$disponiblereparto[$x]){
-                    $checking=true;
+                    if (date("H:i")<=$disponiblereparto[$x]){
+                        $checking=true;
+                    }
                 }
-            }
-        }   
-    }
-    else {
-        if(is_array($disponiblecocina) ){
-            $checking=false;
-            $txt='ES Hoy '.date("H:i");
-            for ($x=0;$x<count($disponiblecocina);$x++){
+            }   
+        }
+        else {
+            if(is_array($disponiblecocina) ){
+                $checking=false;
+                $txt='ES Hoy '.date("H:i");
+                for ($x=0;$x<count($disponiblecocina);$x++){
 
-                if (date("H:i")<=$disponiblecocina[$x]){
-                    $checking=true;
-                    $txt='ES Hoy '.date("H:i").'<='.$disponiblecocina[$x];
+                    if (date("H:i")<=$disponiblecocina[$x]){
+                        $checking=true;
+                        $txt='ES Hoy '.date("H:i").'<='.$disponiblecocina[$x];
+                    }
                 }
-            }
-        } 
+            } 
+        }
     }
+    
+    if ($envio==1&&($contadoenhora>=$maximo_pedidosportramoenvio)){
+        $checking=false;
     }
+    if ($envio==2&&($contadoenhora>=$maximo_pedidosportramococina)){
+        $checking=false;
+    }
+    
 }
 else {
     $checking=true;
@@ -194,14 +203,14 @@ echo json_encode($json);
 
 /*
 
-$file = fopen("zz-verificahoras.txt", "w");
+$file = fopen("zz2-verificahoras.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql1: ". $sql1 . PHP_EOL);
 fwrite($file, "maximo_pedidosportramococina: ". $maximo_pedidosportramococina . PHP_EOL);
 fwrite($file, "maximo_pedidosportramoenvio: ". $maximo_pedidosportramoenvio . PHP_EOL);
 fwrite($file, "Envio: ". $envio . PHP_EOL);
 fwrite($file, "hora: ". $hora . PHP_EOL);
-fwrite($file, "Contados: ". $contado . PHP_EOL);
+fwrite($file, "Contados: ". $contadoenhora . PHP_EOL);
 fwrite($file, "TXT: ". $txt . PHP_EOL);
 fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
 
