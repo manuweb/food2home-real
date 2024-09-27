@@ -361,6 +361,7 @@ function vercliente(tipo,email){
     
 }
 function GuardaCliente(){
+    return;
     var formData = app.form.convertToData('#cliente-form');
     var idCliente=formData['idCliente'];
     var tratamiento=formData['tratamiento'];
