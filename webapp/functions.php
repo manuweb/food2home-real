@@ -1468,7 +1468,7 @@ class ImprimeTicket
             }
         }
         if($order['monedero']>0){
-            $largo_pedido+=25;
+            $largo_pedido+=60;
         }
         if($order['cupon']>0){
             $largo_pedido+=25;
