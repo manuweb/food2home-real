@@ -1421,7 +1421,7 @@ class ImprimeTicket
             for ($h=0;$h<count($lines);$h++){
                 $largo_pedido+=30;
             }
-            $largo_pedido-=30;
+            //$largo_pedido-=30;
             if ($carrito[$x]['comentario'] !=""){
                 $largo_pedido+=30;
             }
