@@ -127,10 +127,14 @@ function navegar(destino) {
 }
 
 var tienda=window.localStorage.getItem("tienda");
+//var tienda=0;
 var nombreTiendas=['Master'];
 console.log('tienda:'+tienda);
 cambiaNombreTienda();
-var tipousu=window.localStorage.getItem("tipousu");               console.log('tipousu:'+tipousu);
+var tipousu=window.localStorage.getItem("tipousu");   
+var idUsu=window.localStorage.getItem("idUsu");   
+console.log('tipousu:'+tipousu);
+console.log('idUsu:'+idUsu);
 
 
 $(".tab" ).on('tab:show', function() {
@@ -151,7 +155,11 @@ $('#my-login-screen .login-button').on('click', function () {
             if (obj.valid==true){
                 console.log(obj);
                 console.log('Tipo:'+obj.tipo);
-                    window.localStorage.setItem("nick",username);
+                console.log('id:'+obj.id);
+                
+                window.localStorage.setItem("nick",username);
+                window.localStorage.setItem("idUsu",obj.id);
+                
                    window.localStorage.setItem("tienda",obj.tienda); window.localStorage.setItem("email",obj.email);
                     window.localStorage.setItem("tipousu",obj.tipo);
                 if(obj.tipo=='3'){

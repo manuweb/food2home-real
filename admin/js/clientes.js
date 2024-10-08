@@ -5,7 +5,7 @@ $('#filtro-clientes-button').on('click', function(){
     clientes(1,filtro, orden);
 });
 
-
+var objmonedero;
 
 function clientes(pagina=1,filtro='', orden=0) {
 
@@ -136,7 +136,8 @@ function vercliente(tipo,email){
           '</div>'  ,
         on: {
             open: function (popup) {
-                var server=servidor+'admin/includes/leeuncliente.php';     $.ajax({
+                var server=servidor+'admin/includes/leeuncliente.php';     
+                $.ajax({
                     type: "POST",
                     url: server,
                     data: {tipo:tipo,email:email},
@@ -229,10 +230,13 @@ function vercliente(tipo,email){
                         '</li>'+
                         '<li id="li-monedero">'+
                             '<div class="item-content item-input">'+
+                                '<div class="item-media busca-movimiento-monedero" id="busca-movimiento-monedero" onclick="muestraMonedero('+obj.idCliente+',\''+obj.apellidos+', '+obj.nombre+'\','+obj.monedero+');">'+
+                            '<i class="icon f7-icons">search</i>'+
+                        '</div>'+
                               '<div class="item-inner">'+
                                 '<div class="item-title item-label">Monedero</div>'+
                                 '<div class="item-input-wrap">'+
-                                  '<input type="text" name="monedero" placeholder="Monedero" value="'+obj.monedero+'" required validate '+disabled+'/>'+
+                                  '<input type="text" name="monedero" id="antiguo-monedero" placeholder="Monedero" value="'+obj.monedero+'" disabled/>'+
                                 '</div>'+
                               '</div>'+
                             '</div>'+
@@ -314,6 +318,8 @@ function vercliente(tipo,email){
 
                         }
                         $('#detallecliente').html(txt);
+                        
+                        
                         if(obj.publicidad=='1'){
                            $('#cliente-form input[name*="publi-checkbox"]').attr('checked', true); 
                         }
@@ -360,8 +366,94 @@ function vercliente(tipo,email){
 
     
 }
+
+function muestraMonedero(id, nombre,monedero){
+    var dynamicPopup = app.popup.create({
+        content: ''+
+          '<div class="popup">'+
+            '<div class="block page-content">'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p>'+
+        '<input type="hidden" id="id-cliente" value="'+id+'">'+
+               ' <div class="block-title block-title-medium" style="margin-top: 0;">Consulta monedero</div>'+
+                '<div class="block" style="margin-bottom:0;">'+
+                '<p style="font-size:16px;">Nombre: <b>'+nombre+'</b></p>'+
+                '<p style="font-size:16px;">Monedro: <b><span id="monedero-actual">'+monedero.toFixed(2)+'</span></b> €</p>'+
+                '<div class="data-table">'+
+                    '<table>'+
+                        '<thead>'+
+                        '<th class="label-cell">Fecha</th>'+
+                        '<th class="label-cell">Usuario</th>'+
+                        '<th class="numeric-cell">Usado</th>'+
+                        '<th class="numeric-cell">Acumuladdo</th>'+
+                        '<th class="numeric-cell">Saldo</th>'+
+                        '</thead>'+
+                        '<tbody id="detalle-monedero-cliente">'+
+                        '</tbody>'+
+                    '</table>'+
+        '<div class="data-table-footer" id="pagination-monedero-cliente">'+
+        
+        '</div>'+ 
+                '</div>'+   
+                '</div>'+         
+            
+            '<div class="list list-strong-ios list-dividers-ios inset-ios" style="margin-top: 0;margin-bottom: 15px;">'+
+              '<ul>'+
+                '<li class="item-content item-input">'+
+                  '<div class="item-inner">'+
+                    '<div class="item-title item-label">Nuevo monedero</div>'+
+                    '<div class="item-input-wrap">'+
+                      '<input type="text" id="nuevo-monedero" placeholder="Nuevo monedero" value="'+monedero.toFixed(2)+'" onfocus="$(\'#guarda-monedero\').show();">'+
+                      '<span class="input-clear-button"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</li>'+
+                '</ul>'+
+            '</div>'+
+        '<div style="display:none;width: 50%;margin: auto;" id="guarda-monedero"><a class="button button-fill" onclick="GuardaMonedero();" href="#">Guardar</a></div>'+
+        '</div>'+
+          '</div>'  ,
+        on: {
+            open: function (popup) {   
+                var server=servidor+'admin/includes/leemonederocliente.php';
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    data: {cliente:id},
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        var fechaCas='';
+                        if (obj.valid==true){
+                            objmonedero=obj;
+                            var pedido=obj.pedido;
+                            var porpaginas=5;
+                            var total=pedido.length;
+                            var paginas=Math.floor(total/porpaginas);
+                            if (total % porpaginas >0){
+                               paginas++; 
+                            };
+                            versaldomonedero(paginas);
+                            
+                            
+                        }
+                    },
+                    error: function(e){
+                        console.log('error');
+                    }
+                });
+                
+            },
+            close: function (){
+                app.popup.close();
+            }
+        }
+    });
+    dynamicPopup.open();
+            
+}
+
 function GuardaCliente(){
-    return;
+    
     var formData = app.form.convertToData('#cliente-form');
     var idCliente=formData['idCliente'];
     var tratamiento=formData['tratamiento'];
@@ -370,7 +462,7 @@ function GuardaCliente(){
     var nacimiento=formData['nacimiento'];
     //console.log(nacimiento);
     var telefono=formData['telefono'];
-    var monedero=formData['monedero'];
+    //var monedero=formData['monedero'];
     var usuario=formData['email'];
     var publi=formData['publi-checkbox'];
     if (publi!='1'){
@@ -382,7 +474,7 @@ function GuardaCliente(){
     var server=servidor+'admin/includes/guardacliente.php';
     $.ajax({
         url: server,
-        data:{idCliente:idCliente, nombre:nombre, apellidos:apellidos, nacimiento:nacimiento, telefono:telefono, usuario:usuario, publi:parseInt(publi), tratamiento:tratamiento, monedero:monedero},
+        data:{idCliente:idCliente, nombre:nombre, apellidos:apellidos, nacimiento:nacimiento, telefono:telefono, usuario:usuario, publi:parseInt(publi), tratamiento:tratamiento},
         method: "post",
         dataType:"json",
         success: function(data){ 
@@ -390,7 +482,8 @@ function GuardaCliente(){
             if (obj.valid==true){
                 app.popup.close();
                 var filtro=$('#filtro-cliente').val();
-                clientes(1,filtro);
+                
+                clientes(1);
             }
         },
         error: function(e){
@@ -400,5 +493,131 @@ function GuardaCliente(){
     
 }
     
+function versaldomonedero(pagina) {
+    var obj=objmonedero;
+    var pedido=obj.pedido;
+    var idP=obj.id;
+    var numero=obj.numero;
+    var fecha=obj.fecha;
+    var usado=obj.usado;
+    var acumulado=obj.acumulado;
+    var saldo=obj.saldo;
+    var anulado=obj.anulado;
+    var nick=obj.nick;
+    var txt='';
+    var porpaginas=5;
+    var total=pedido.length;
+    var paginas=Math.floor(total/porpaginas);
+    if (total % porpaginas >0){
+       paginas++; 
+    };
+    var desde=(pagina-1)*porpaginas;
+    var hasta=pagina*porpaginas;
+    if (hasta>total) {
+        hasta=total;
+    }
+    var txt_pie="";
+    txt_pie+=
+    '<div class="data-table-rows-select">Paginas:'+paginas+'</div>'+
+    '<div class="data-table-pagination">'+
+        '<span class="data-table-pagination-label">'+pagina+' de '+paginas+'</span>';
 
+    var anterior="";
+    var siguiente="";
+
+    if (paginas>1){
+        var filtro=$('#filtro-cliente').val();
+        if (pagina>1){
+
+            txt_pie+='<a href="#" onclick="versaldomonedero('+(pagina-1)+');"class="link"><i class="icon icon-prev color-gray"></i></a>';
+        }
+        else {
+            txt_pie+='<a href="#" class="link disabled"><i class="icon icon-prev color-gray"></i></a>';
+        }
+
+        if (pagina<(paginas)){
+
+            txt_pie+='<a href="#" onclick="versaldomonedero('+(pagina+1)+');"class="link"><i class="icon icon-next color-gray"></i></a>';
+        }
+        else {
+            txt_pie+='<a href="#" class="link disabled"><i class="icon icon-next color-gray"></i></a>';
+        }
+
+    }             
+
+    txt_pie+='</div>';
+    $('#pagination-monedero-cliente').html(txt_pie);
+    var link='';
+    var usuario='';
+    for (var x=desde;x< hasta;x++){
+       if (pedido[x]=='P') {
+           link='onclick="verpedido('+idP[x]+','+anulado[x]+');"';
+           usuario='Pedido';
+        }
+        else {
+           link='';
+            usuario=nick[x];
+            
+        }
+    fechaCas=fecha[x].substr(8,2)+'/'+fecha[x].substr(5,2)+'/'+fecha[x].substr(0,4);
+       txt+='<tr '+link+'>'+
+        '<td class="label-cell">'+fechaCas+'</td>'+
+        '<td class="label-cell">'+usuario+'</td>'+
+        '<td class="numeric-cell">'+usado[x]+'</td>'+
+        '<td class="numeric-cell">'+acumulado[x]+'</td>'+
+        '<td class="numeric-cell">'+saldo[x].toFixed(2)+'</td>'+
+           '</tr>';
+    }
+    $('#detalle-monedero-cliente').html(txt);
+}
+
+$('input#nuevo-monedero').blur(function(){
+    var num = parseFloat($(this).val());
+    var cleanNum = num.toFixed(2);
+    $(this).val(cleanNum);
+  });
+
+$('input#nuevo-monedero').focus(function(){
+    $('#guarda-monedero').show();
+});
+
+
+
+function GuardaMonedero(){
+    var id=$('#id-cliente').val();
+    var nMonedero=parseFloat($('#nuevo-monedero').val());
+    var cleanNum = nMonedero.toFixed(2);
+    $('#nuevo-monedero').val(cleanNum);
+    if (cleanNum=='NaN'){
+        app.dialog.alert('Error valor monedero');
+        $('#nuevo-monedero').val('');
+       return;
+    }
     
+    var aMonedero=parseFloat($('#monedero-actual').html());
+
+
+   var aSumar=nMonedero-aMonedero;
+    
+    if (aSumar==0){
+        app.popup.close();
+    }
+    var server=servidor+'admin/includes/guardamonedero.php';
+    $.ajax({
+        url: server,
+        data:{cliente:id, aSumar:aSumar, monedero:nMonedero, usuario:idUsu},
+        method: "post",
+        dataType:"json",
+        success: function(data){ 
+            var obj=Object(data);
+            if (obj.valid==true){
+                app.popup.close();
+                //clientes();
+            }
+        },
+        error: function(e){
+            console.log('error');
+        }
+    });
+    
+}
