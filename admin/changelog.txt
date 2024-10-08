@@ -1,3 +1,5 @@
+<p><i class="f7-icons size-16">calendar</i> 10/09/2024 MEJORAS:<br><span style='display: flex;'><b>Monedero</b> &nbsp;<i class="icons f7-icons size-18">giftcard</i></span>
+Nueva gestión del monedero de clientes.</p>
 <p><i class="f7-icons size-16">calendar</i> 10/09/2024 MEJORAS:<br><span style='display: flex;'><b>Productos</b> &nbsp;<i class="icons material-icons size-18">lunch_dining</i></span>
 &#8226; Añadida la gestión de productos Gift Card (tarjeta regalo, sólo para Revo).<br>&#8226; Ahora se puede añadir opcionalmente un producto «Bolsa de plástico» como obligatorio en el carrito.</li></ul></p>
 <p><span style='display: flex;'><b>Tickets</b> &nbsp;<i class="icons f7-icons size-18">ticket_fill</i></span>
