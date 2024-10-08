@@ -8,7 +8,8 @@ $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
 $nacimiento=substr($array['nacimiento'],6,4).'-'.substr($array['nacimiento'],3,2).'-'.substr($array['nacimiento'],0,2);
-$sql="UPDATE usuarios_app SET username='".$array['usuario']."', ".$update." tratamiento='".$array['tratamiento']."', nombre='".$array['nombre']."', apellidos='".$array['apellidos']."', nacimiento='".$nacimiento."', telefono='".$array['telefono']."', telefono='".$array['telefono']."',monedero='".$array['monedero']."' WHERE id='".$array['idCliente']."';";
+//$sql="UPDATE usuarios_app SET username='".$array['usuario']."', ".$update." tratamiento='".$array['tratamiento']."', nombre='".$array['nombre']."', apellidos='".$array['apellidos']."', nacimiento='".$nacimiento."', telefono='".$array['telefono']."', telefono='".$array['telefono']."',monedero='".$array['monedero']."' WHERE id='".$array['idCliente']."';";
+$sql="UPDATE usuarios_app SET username='".$array['usuario']."', ".$update." tratamiento='".$array['tratamiento']."', nombre='".$array['nombre']."', apellidos='".$array['apellidos']."', nacimiento='".$nacimiento."', telefono='".$array['telefono']."', telefono='".$array['telefono']."' WHERE id='".$array['idCliente']."';";
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();

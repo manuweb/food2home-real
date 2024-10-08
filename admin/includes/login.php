@@ -12,7 +12,7 @@ $checking=false;
 $email="";
 
 
-$sql="SELECT email, tipo,tienda FROM usuarios WHERE nick='".$array["username"]."' and clave='".md5($array["password"])."'";
+$sql="SELECT id, email, tipo,tienda FROM usuarios WHERE nick='".$array["username"]."' and clave='".md5($array["password"])."'";
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
@@ -23,6 +23,7 @@ if ($result) {
 
     if ($usuario ->email!="") {
         $checking=true;
+        $id=$usuario ->id;
         $email=$usuario ->email;
         $tipo=$usuario ->tipo;
         $tienda=$usuario ->tienda;
@@ -39,7 +40,7 @@ if ($result) {
 }
 $database->freeResults();
 
-$json=array("valid"=>$checking, "email"=>$email, "tipo"=>$tipo, "tienda"=>$tienda, "first"=>$first);
+$json=array("valid"=>$checking, "id"=>$id,"email"=>$email, "tipo"=>$tipo, "tienda"=>$tienda, "first"=>$first);
 
 echo json_encode($json);    
 
