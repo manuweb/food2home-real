@@ -87,22 +87,37 @@ if ($solotr=='no'){
 
     //$sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE fecha LIKE "'.date('Y').'-'.date('m').'-'.date('d').'%" AND estadoPago>=0  AND metodoEnvio='.$envio.' AND hora="'.$hora.'" GROUP by hora, metodoEnvio;';
 
-    $sql1='SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE dia="'.date_format($fecha,'Y-m-d').'" AND estadoPago>=0 GROUP by hora, metodoEnvio;';
-
+    //$sql1="SELECT count(id) AS contado,hora,metodoEnvio from pedidos WHERE dia="'.date_format($fecha,'Y-m-d').'" AND estadoPago>=0 GROUP by hora, metodoEnvio;";
+    
+    $sql1="SELECT count(id) AS contado from pedidos WHERE dia='".date_format($fecha,'Y-m-d')."' AND estadoPago>=0 and hora='".$hora."' and metodoEnvio=".$envio.";";
 
     $database = DataBase::getInstance();
     $database->setQuery($sql1);
     $result = $database->execute();
-
-
+    $checking=true;
+    if ($result) {
+        $horas = $result->fetch_object();
+        $contado=$horas->contado;
+        if ($envio==1){
+            $maximo=$maximo_pedidosportramoenvio;
+        }
+        else {
+            $maximo=$maximo_pedidosportramococina;
+        }
+        if ($contado>=$maximo){
+            $checking=false;
+        }
+    }
+    /*
     if ($result->num_rows>0) {
         
         $checking=true;
         while ($horas = $result->fetch_object()) {
             $horaEnc=$horas->hora;
             $metodoEnvio=$horas->metodoEnvio;
+            
             $contado=$horas->contado;
-            if ($hora==$horaEnc) {
+            if ($hora==$horaEnc && $metodoEnvio==$metodo) {
                 $contadoenhora=$contado;
                 if ($metodoEnvio==1){
                     if ($contado>=$maximo_pedidosportramoenvio){
@@ -129,7 +144,7 @@ if ($solotr=='no'){
         $checking=true;
     }
     $txt='';
-
+    */
 
     $fecha2=date_create(substr($lafecha,6,4)."-".substr($lafecha,3,2)."-".substr($lafecha,0,2));
     $eshoy= date("Y-m-d");  
@@ -138,15 +153,17 @@ if ($solotr=='no'){
     /*
     $fechabusco=date_format($fecha2,"Y-m-d");
     if ($fechabusco==$eshoy){
-    $txt='Hoy';
-    if ($hora<=date("H:i")){
-        $txt='Hoy en hora:'.date("H:i");
-    }
-    else {
-        $txt='Hoy pasado de hora:'.date("H:i");
-    }
+        $txt='Hoy';
+        if ($hora<=date("H:i")){
+            $txt='Hoy en hora:'.date("H:i");
+        }
+        else {
+            $txt='Hoy pasado de hora:'.date("H:i");
+        }
     }
     */
+    
+    /*
     $disponiblereparto=$array['disponiblereparto'];
     $disponiblecocina=$array['disponiblecocina'];
     //$disponiblecocina=['19:30'];
@@ -186,6 +203,7 @@ if ($solotr=='no'){
     if ($envio==2&&($contadoenhora>=$maximo_pedidosportramococina)){
         $checking=false;
     }
+    */
     
 }
 else {
@@ -201,8 +219,8 @@ ob_end_clean();
 echo json_encode($json);
 
 
-/*
 
+/*
 $file = fopen("zz2-verificahoras.txt", "w");
 fwrite($file, "sql: ". $sql . PHP_EOL);
 fwrite($file, "sql1: ". $sql1 . PHP_EOL);
@@ -210,9 +228,10 @@ fwrite($file, "maximo_pedidosportramococina: ". $maximo_pedidosportramococina . 
 fwrite($file, "maximo_pedidosportramoenvio: ". $maximo_pedidosportramoenvio . PHP_EOL);
 fwrite($file, "Envio: ". $envio . PHP_EOL);
 fwrite($file, "hora: ". $hora . PHP_EOL);
-fwrite($file, "Contados: ". $contadoenhora . PHP_EOL);
+fwrite($file, "Contados: ". $contado . PHP_EOL);
+fwrite($file, "Maximo: ". $maximo . PHP_EOL);
 fwrite($file, "TXT: ". $txt . PHP_EOL);
-fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
+//fwrite($file, "DATOS: ". json_encode($json) . PHP_EOL);
 
 fclose($file);
 */
