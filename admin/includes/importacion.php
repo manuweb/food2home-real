@@ -48,7 +48,7 @@ if (isset($_FILES)) {
         $database = DataBase::getInstance();
         $file = fopen("zz.txt", "w");
         for ($x=1;$x<count($lineas);$x++){
-            $lineas[$x]=html_entity_decode($lineas[$x], ENT_QUOTES | ENT_HTML401, "UTF-8");
+            //$lineas[$x]=html_entity_decode($lineas[$x], ENT_QUOTES | ENT_HTML401, "UTF-8");
             $porciones = explode(";", $lineas[$x]);
             //id 0 ;category.group.name 1 ;category.group.id 2 ;category.name 3 ;category.id 4;name 5;price 6;tax 7
             $idP=$porciones[0];
@@ -96,7 +96,7 @@ if (isset($_FILES)) {
                 $contadorP++;
                 $producto=$idP;
                 //nuevo producto
-                $sql='INSERT INTO productos (id, nombre, categoria, imagen, impuesto, activo, precio, info, alergias, precio_web, precio_app, activo_web, activo_app, imagen_app1) VALUES ('.$contadorP.',"'.$porciones[5].'",'.$contadorC.',"",'.$impuesto.',1,'.$porciones[6].',"","",'.$porciones[6].','.$porciones[6].',1,1,"");';
+                $sql='INSERT INTO productos (id, nombre, categoria, imagen, impuesto, activo, precio, info, alergias, precio_web, precio_app, activo_web, activo_app, imagen_app1) VALUES ('.$contadorP.',"'.utf8_decode($porciones[5]).'",'.$contadorC.',"",'.$impuesto.',1,'.$porciones[6].',"","",'.$porciones[6].','.$porciones[6].',1,1,"");';
                 
                 fwrite($file, "sql: ". $sql . PHP_EOL);
                 
