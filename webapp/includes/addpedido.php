@@ -417,7 +417,8 @@ if ($cliente!=0){
         $importe_fide=0;
        
        //$esRedsys != $tarjeta
-       if ($esRedsys != $tarjeta){
+       //if ($esRedsys != $tarjeta){
+       if ($tarjeta=='2'){
             $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
        
        //fwrite($file, "sql: ".$sql. PHP_EOL);
