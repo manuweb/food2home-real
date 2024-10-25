@@ -48,6 +48,7 @@ if (isset($_FILES)) {
         $database = DataBase::getInstance();
         $file = fopen("zz.txt", "w");
         for ($x=1;$x<count($lineas);$x++){
+            $lineas[$x]=html_entity_decode($lineas[$x], ENT_QUOTES | ENT_HTML401, "UTF-8");
             $porciones = explode(";", $lineas[$x]);
             //id 0 ;category.group.name 1 ;category.group.id 2 ;category.name 3 ;category.id 4;name 5;price 6;tax 7
             $idP=$porciones[0];
