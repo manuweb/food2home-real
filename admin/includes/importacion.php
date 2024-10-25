@@ -96,7 +96,7 @@ if (isset($_FILES)) {
                 $contadorP++;
                 $producto=$idP;
                 //nuevo producto
-                $porciones[5] = mb_convert_encoding($porciones[5], "UTF-8", "auto");
+                //$porciones[5] = mb_convert_encoding($porciones[5], "UTF-8", "auto");
                 $sql='INSERT INTO productos (id, nombre, categoria, imagen, impuesto, activo, precio, info, alergias, precio_web, precio_app, activo_web, activo_app, imagen_app1) VALUES ('.$contadorP.',"'.$porciones[5].'",'.$contadorC.',"",'.$impuesto.',1,'.$porciones[6].',"","",'.$porciones[6].','.$porciones[6].',1,1,"");';
                 
                 fwrite($file, "sql: ". $sql . PHP_EOL);
