@@ -757,7 +757,7 @@ class PedidosRevo
 
         //$mifecha= date(substr($order['fecha'],0,10)." ". $order['hora'].":00"); 
         $mifecha= date($order['dia']." ". $order['hora'].":00"); 
-        $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+        $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
         $NuevaFecha = date ( 'Y-m-d H:i:s' , $NuevaFecha); 
 
         $delivery['channel']=24;
@@ -2389,7 +2389,7 @@ class Delivery
             // Help Delivery (Jerez)
             $url='https://api.torredecontrol.io/dev/v3/order';
             $mifecha= date($order['dia']." ". $order['hora'].":00"); 
-            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
             $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
             
             $numero=$order['pedido'];
@@ -2495,7 +2495,7 @@ class Delivery
             // Gryc Delivery (Cádiz)
             $url='https://api.shipday.com/orders';
             $mifecha= date($order['dia']." ". $order['hora'].":00"); 
-            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
             $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
             
             $numero=$order['pedido'];
@@ -2579,7 +2579,7 @@ class Delivery
             // Shipday
             $url='https://api.shipday.com/orders';
             $mifecha= date($order['dia']." ". $order['hora'].":00"); 
-            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
             $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
             
             $numero=$order['pedido'];
@@ -2665,7 +2665,7 @@ class Delivery
             // Jelp Delivery (demo)
             $url='https://api.torredecontrol.io/dev/v3/order';
             $mifecha= date($order['dia']." ". $order['hora'].":00"); 
-            $NuevaFecha = strtotime('-2 hour',strtotime ($mifecha)); 
+            $NuevaFecha = strtotime('-1 hour',strtotime ($mifecha)); 
             $NuevaFecha = date ('Y-m-d H:i:s',$NuevaFecha); 
             
             $numero=$order['pedido'];
