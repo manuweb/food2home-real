@@ -72,7 +72,7 @@ function leepedidos(pagina=1,fecha='') {
                 var resto=numReg%12;
                 var pagina_actual=pagina;
                 var num_delivery=obj.num_delivery;
-                
+                var impreso=obj.impreso;
                 
                 if (pagina_actual==0){
                     //pagina_actual=1;
@@ -149,13 +149,15 @@ function leepedidos(pagina=1,fecha='') {
                         color='style="color:darkorange;cursor:pointer;"';
                     }
                     
-                    link=' onclick="verpedido(\''+id[x]+'\','+anulado[x]+');"';
+                    link=' onclick="verpedido(\''+id[x]+'\','+anulado[x]+','+integracion+','+delivery+',\''+num_delivery[x]+'\');"';
+                    linkRevo='';
                     if (integracion==1){
                         linkRevo=link;
                     }
-                    else { 
+                    if (integracion==2){
                         if (anulado[x]==0){
-                            linkRevo=' onclick="imprimePedido(\''+id[x]+'\');"';
+                            linkRevo=link;
+                            //linkRevo=' onclick="imprimePedido(\''+id[x]+'\');"';
                         
                         }
                         else {
@@ -164,6 +166,12 @@ function leepedidos(pagina=1,fecha='') {
                         }
                         
                         numeroRevo[x]='<i class="f7-icons size-20">printer</i>';
+                        if (impreso[x]!=null){
+                            if (impreso[x]==0){
+                                numeroRevo[x]='<i class="f7-icons size-20 text-color-red">printer</i>';
+                            }
+                        }
+                        console.log('impreso:'+impreso[x])
                     }
                     txt+=
                         '<tr '+color+'>'+
@@ -289,14 +297,14 @@ function cambiavalorfechas(){
     leepedidos(1,fechas);
 }
 
-function verpedido(idpedido,anulado){
+function verpedido(idpedido,anulado,integracion,delivery,numDelivery){
     
     var txt='';
     var dynamicPopup = app.popup.create({
         content: ''+
           '<div class="popup">'+
             '<div class="block page-content">'+
-              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><button class="button button-fill button-round color-red" id="boton-anular-pedido" onclick="anularPedido();" style="margin: auto;width: 30%;float: left;">ANULAR</button><br><br>'+
+              '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><p><button class="button button-fill button-round color-red" id="boton-anular-pedido" onclick="anularPedido();" style="margin: auto;width: 30%;float: left;">ANULAR</button><span id="txt-printer" style="    float: right;margin-right: 10%;"></span><span id="txt-delivery" style="float: right;margin-right: 20px;"></span></p><br><br>'+
                 '<div id="detallepedido"></div>'+         
             '</div>'+
           '</div>'  ,
@@ -308,7 +316,7 @@ function verpedido(idpedido,anulado){
             var server=servidor+'admin/includes/leeunpedido.php';     $.ajax({
                 type: "POST",
                 url: server,
-                data: {idpedido:idpedido},
+                data: {idpedido:idpedido,integracion:integracion},
                 dataType:"json",
                 success: function(data){
                     var obj=Object(data);
@@ -317,6 +325,29 @@ function verpedido(idpedido,anulado){
                     if (obj.valid==true){
                         //console.log(obj.order);
                         var order=obj.order;
+                        var impreso=obj.impreso;
+                        console.log('integracion:'+integracion+' - '+impreso);
+                        var txt_print='<i class="f7-icons" style="color:green;font-size: 30px;" onclick="imprimePedido(\''+idpedido+'\');">printer</i>';
+                        if (impreso==0){
+                            txt_print='<i class="f7-icons" style="color:red;font-size: 30px;"  onclick="imprimePedido(\''+idpedido+'\');">printer</i>';
+                        }
+                        if (integracion==2){
+                            $('#txt-printer').html(txt_print);
+                        }
+                        var txtDelivery='';
+                        if (delivery>0){
+                            if (numDelivery!='null') {
+                                if (numDelivery!='error') {
+                                    txtDelivery='<i class="icons material-icons" style="color:green;font-size: 30px;">delivery_dining</i>';
+                                }
+                                else {
+                                    txtDelivery='<i class="icons material-icons" style="color:red;font-size: 30px;">delivery_dining</i>';
+                                }
+                                $('#txt-delivery').html(txtDelivery);
+                            }
+                            
+                        }
+                        
                         var carrito=order['carrito'];
                         /*
                         if (obj.estadoPago==-1){
