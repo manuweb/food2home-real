@@ -14,7 +14,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST) ) {
 
 //$numero='H137BL0T';
 $idpedido=$array['idpedido'];
-
+$integracion=$array['integracion'];
 
 $checking=true;
 
@@ -47,8 +47,20 @@ if ($result) {
     
 $database->freeResults();  
 */
-
-$json=array("valid"=>$checking, "order"=>$order, "estadoPago"=>$estadoPago, "numero"=>$numero);
+$impreso=0;
+if ($integracion==2){
+    $sql="SELECT pedidos.numero, tickets.impreso FROM pedidos LEFT JOIN tickets on pedidos.numero=tickets.ticket  WHERE pedidos.id=".$idpedido." LIMIT 1;";
+    $database = DataBase::getInstance();
+    $database->setQuery($sql);
+    $result = $database->execute();
+    if ($result) {
+        $pedido = $result->fetch_object();
+        $impreso=$pedido->impreso;
+    }
+    $database->freeResults(); 
+    
+}
+$json=array("valid"=>$checking, "order"=>$order, "estadoPago"=>$estadoPago, "numero"=>$numero,"impreso"=>$impreso);
 
 ob_end_clean();
 echo json_encode($json); 

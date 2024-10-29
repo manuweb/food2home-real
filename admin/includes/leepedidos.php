@@ -65,7 +65,7 @@ while ($pedid = $result->fetch_object()) {
 }
 
 $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.numeroRevo as numeroRevo, pedidos_delivery.resultado AS num_delivery, pedidos.canal as canal, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha, pedidos.dia as dia, pedidos.hora as hora, pedidos.cliente as cliente, usuarios_app.id AS idcliente, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.portes as portes,
-pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro,  pedidos.anulado FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id LEFT OUTER JOIN pedidos_delivery ON pedidos_delivery.idpedido = pedidos.id  WHERE ".$rangofecha.$rangometodo.$rangoenvio." AND estadoPago>=0 ORDER BY pedidos.dia DESC, pedidos.hora DESC LIMIT ".$limitInf.",".$tamPagina.";";
+pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro,  pedidos.anulado, tickets.impreso FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id LEFT OUTER JOIN pedidos_delivery ON pedidos_delivery.idpedido = pedidos.id LEFT OUTER JOIN tickets ON tickets.ticket = pedidos.numero WHERE ".$rangofecha.$rangometodo.$rangoenvio." AND estadoPago>=0 ORDER BY pedidos.dia DESC, pedidos.hora DESC LIMIT ".$limitInf.",".$tamPagina.";";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -102,6 +102,7 @@ if ($result) {
         $canal[$n]=$pedidos->canal;
         $estadoPago[$n]=$pedidos->estadoPago;
         $anulado[$n]=$pedidos->anulado;
+        $impreso[$n]=$pedidos->impreso;
         /*
         $sumaSubtotal+=$subtotal[$n];
         $sumaTotal+=$total[$n];
@@ -114,11 +115,12 @@ if ($result) {
 
 $database->freeResults();  
 
-$json=array("valid"=>$checking,"id"=>$id,"numero"=>$numero,"numeroRevo"=>$numeroRevo,"fecha"=>$fecha,"dia"=>$dia,"hora"=>$hora,"cliente"=>$cliente,"apellidos"=>$apellidos,"nombre"=>$nombre,"ape_otro"=>$ape_otro,"nom_otro"=>$nom_otro,"subtotal"=>$subtotal,"portes"=>$portes,"sumaTotal"=>number_format(round($sumaTotal,2),2,'.',','),"sumaPortes"=>number_format(round($sumaPortes,2),2,'.',','),"sumaDescuentos"=>number_format(round($sumaDescuentos,2),2,'.',','),"sumaSubtotal"=>number_format(round($sumaSubtotal,2),2,'.',','),"impuestos"=>$impuestos,"descuentos"=>$descuentos,"total"=>$total,"envio"=>$envio,"metodo"=>$metodo,"canal"=>$canal,"estadoPago"=>$estadoPago,"registros"=>$numReg,"ped_reparto"=>$aEnviar,"ped_recoger"=>$aRecoger,"ped_efectivo"=>$aEfectivo,"ped_tarjeta"=>$aTarjeta,"anulado"=>$anulado, "num_delivery"=>$num_delivery);
+$json=array("valid"=>$checking,"id"=>$id,"numero"=>$numero,"numeroRevo"=>$numeroRevo,"fecha"=>$fecha,"dia"=>$dia,"hora"=>$hora,"cliente"=>$cliente,"apellidos"=>$apellidos,"nombre"=>$nombre,"ape_otro"=>$ape_otro,"nom_otro"=>$nom_otro,"subtotal"=>$subtotal,"portes"=>$portes,"sumaTotal"=>number_format(round($sumaTotal,2),2,'.',','),"sumaPortes"=>number_format(round($sumaPortes,2),2,'.',','),"sumaDescuentos"=>number_format(round($sumaDescuentos,2),2,'.',','),"sumaSubtotal"=>number_format(round($sumaSubtotal,2),2,'.',','),"impuestos"=>$impuestos,"descuentos"=>$descuentos,"total"=>$total,"envio"=>$envio,"metodo"=>$metodo,"canal"=>$canal,"estadoPago"=>$estadoPago,"registros"=>$numReg,"ped_reparto"=>$aEnviar,"ped_recoger"=>$aRecoger,"ped_efectivo"=>$aEfectivo,"ped_tarjeta"=>$aTarjeta,"anulado"=>$anulado, "num_delivery"=>$num_delivery,"impreso"=>$impreso);
 
 echo json_encode($json); 
 
 /*
+
 $file = fopen("zz-leepedidos.txt", "w");
 fwrite($file, "metodo: ". $array['metodo'] . PHP_EOL);
 fwrite($file, "envio: ". $array['envio'] . PHP_EOL);
