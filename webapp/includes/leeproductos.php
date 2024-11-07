@@ -225,6 +225,7 @@ function miraprecioenMenus($id){
     if ($precio>0){
         $desde='desde';
     }
+	return $desde;
 }
 
 function miramodifi($mc,$mg){
