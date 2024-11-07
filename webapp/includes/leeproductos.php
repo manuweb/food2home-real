@@ -126,8 +126,10 @@ if ($result->num_rows>0) {
         }
         
         if ($grupo->esMenu==1){
-            $desde="desde";
+            
+            $desde=miraprecioenMenus($grupo->id);
         }
+        
         if ($grupo->imagen!=''){
             $imagen[]=IMGREVO.$grupo->imagen;
         }
@@ -207,6 +209,23 @@ $json=array("valid"=>$checking,"id"=>$id,"nombre"=>$nombre,"precio_web"=>$precio
 ob_end_clean();
 
 echo json_encode($json); 
+
+function miraprecioenMenus($id){
+    $desde='';
+    $precio=0;
+    $sql ="SELECT MAX(MenuItems.precio) AS precio FROM MenuItems LEFT JOIN MenuCategories ON MenuCategories.id=MenuItems.category_id WHERE MenuCategories.producto=".$id;
+    $database = DataBase::getInstance();
+    $database->setQuery($sql);
+    $result = $database->execute();
+    if ($result) {
+        $MenuItems = $result->fetch_object();
+        $precio=$MenuItems->precio;
+    }
+    $database->freeResults(); 
+    if ($precio>0){
+        $desde='desde';
+    }
+}
 
 function miramodifi($mc,$mg){
     $devolver=false;
