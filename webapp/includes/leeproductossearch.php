@@ -53,7 +53,7 @@ else {
 }
 
 
-$sql="SELECT productos.id, productos.nombre, productos.categoria, categorias.nombre AS catnombre, grupos.id AS grupoid, grupos.nombre AS gruponombre,productos.precio_web, productos.precio_app, productos.modifier_category_id, productos.modifier_group_id, impuestos.porcentaje AS impuesto FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria LEFT JOIN grupos ON grupos.id=categorias.grupo LEFT JOIN impuestos ON if (productos.impuesto='', if (categorias.impuesto='', grupos.impuesto, categorias.impuesto), productos.impuesto)=impuestos.id WHERE ".$isApp.$isId." AND productos.tienda=".$array['tienda']." GROUP BY productos.nombre";
+$sql="SELECT productos.id, productos.nombre, productos.categoria, categorias.nombre AS catnombre, grupos.id AS grupoid, grupos.nombre AS gruponombre,productos.precio_web, productos.precio_app, productos.modifier_category_id, productos.modifier_group_id, impuestos.porcentaje AS impuesto FROM productos LEFT JOIN categorias ON categorias.id=productos.categoria LEFT JOIN grupos ON grupos.id=categorias.grupo LEFT JOIN impuestos ON if (productos.impuesto='', if (categorias.impuesto='', grupos.impuesto, categorias.impuesto), productos.impuesto)=impuestos.id WHERE productos.activo_web='1'".$isId." AND grupos.activo_web='1' AND categorias.activo_web='1' AND productos.tienda=".$array['tienda']." GROUP BY productos.nombre";
 
 
 
