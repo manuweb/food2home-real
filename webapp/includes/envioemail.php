@@ -63,7 +63,10 @@ if ($array['tipo']=='contacto'){
     $para=MAILEMPRESA;
     
     if (($datosM['cco_contacto']==1)&&($cco)){
-        $phpmailer->addBCC($datosM['cco']);
+        $losmails=explode(';',$datosM['cco']);
+        for ($h=0;$h<count($losmails);$h++){
+            $phpmailer->addBCC($losmails[$h]);
+        }
     }
 }
 
@@ -79,7 +82,10 @@ if ($array['tipo']=='nuevo'){
     $para=$array['usuario'];
     
     if (($datosM['cco_registro']==1)&&($cco)){
-        $phpmailer->addBCC($datosM['cco']);
+        $losmails=explode(';',$datosM['cco']);
+        for ($h=0;$h<count($losmails);$h++){
+            $phpmailer->addBCC($losmails[$h]);
+        }
     }
 }
 
@@ -91,7 +97,10 @@ if ($array['tipo']=='pedido'){
     $datos=$miMail->CreaBodyTextoPedido($order);   
     
     if (($datosM['cco_pedidos']==1)&&($cco)){
-        $phpmailer->addBCC($datosM['cco']);
+        $losmails=explode(';',$datosM['cco']);
+        for ($h=0;$h<count($losmails);$h++){
+            $phpmailer->addBCC($losmails[$h]);
+        }
     }
 }  
 
@@ -120,7 +129,10 @@ if ($array['tipo']=='devolucion'){
     
     
     if (($datosM['cco_pedidos']==1)&&($cco)){
-        $phpmailer->addBCC($datosM['cco']);
+        $losmails=explode(';',$datosM['cco']);
+        for ($h=0;$h<count($losmails);$h++){
+            $phpmailer->addBCC($losmails[$h]);
+        }
     }
     
 }
