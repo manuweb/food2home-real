@@ -304,7 +304,7 @@ class RecomponePedido
     }
     
     public function BuscaLineasModificadores($idLinea){
-        $sql="SELECT idModificador,  descripcion, precio FROM pedidos_lineas_modificadores WHERE idLineaPedido=".$idLinea.";";
+        $sql="SELECT pedidos_lineas_modificadores.idModificador, pedidos_lineas_modificadores.descripcion, pedidos_lineas_modificadores.precio, modifierCategories.nombre AS nom_cat FROM pedidos_lineas_modificadores LEFT JOIN modifiers ON modifiers.id=pedidos_lineas_modificadores.idModificador LEFT JOIN modifierCategories on modifierCategories.id=modifiers.category_id WHERE idLineaPedido=".$idLinea.";";
         $modificadores=[];
         $database = DataBase::getInstance();
         $database->setQuery($sql);
@@ -314,7 +314,8 @@ class RecomponePedido
                 $modificadores[]=[
                     "id" =>$lineasModificadores->idModificador,
                     "nombre" =>$lineasModificadores->descripcion,
-                    "precio" =>$lineasModificadores->precio
+                    "precio" =>$lineasModificadores->precio,
+                    "nom_cat" =>$lineasModificadores->nom_cat
                 ];
             }
         }
