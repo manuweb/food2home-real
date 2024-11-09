@@ -1430,8 +1430,12 @@ class ImprimeTicket
             if (isset($carrito[$x]['modificadores'])){
                 //echo count($carrito[$x]['modificadores']);
                 //echo "<br>";
-
+                $nom_cat='';
                 for ($j=0;$j<count($carrito[$x]['modificadores']);$j++){
+                    if ($nom_cat!=$carrito[$x]['modificadores'][$j]['nom_cat']){
+                        $largo_pedido+=30;
+                        $nom_cat=$carrito[$x]['modificadores'][$j]['nom_cat'];
+                    }
                     $largo_pedido+=30;
                 }
 
@@ -1576,6 +1580,9 @@ class ImprimeTicket
         $y+=30;
 
         /// el pedido
+        
+
+
         for ($n=0;$n<count($carrito);$n++){
             $txt=$carrito[$n]['cantidad'];
             imagettftext($ticket, 20, 0, $margen, $y, $negro, $font_path_b, $txt);
@@ -1606,8 +1613,21 @@ class ImprimeTicket
             
             imagettftext($ticket, 20, 0, $x, $y, $negro, $font_path_b, $txt);
             $y+=30;
+
+
+
             if (isset($carrito[$n]['modificadores'])){
+
+                $nom_cat='';
                  for ($j=0;$j<count($carrito[$n]['modificadores']);$j++){
+                     if ($nom_cat!=$carrito[$n]['modificadores'][$j]['nom_cat']){
+                       
+                        $nom_cat=$carrito[$n]['modificadores'][$j]['nom_cat'];
+                         $txt=$nom_cat;
+                        imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path_bi, $txt);
+                        $y+=30;
+                    }
+                     
                      $txt=$carrito[$n]['modificadores'][$j]['nombre'];
                      imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path, $txt);
                      $y+=30;
