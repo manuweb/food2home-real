@@ -9,7 +9,7 @@ function sincronizacion(){
 '<li>'+
                     '<span>Grupos</span>'+
                     '<label class="toggle toggle-init">'+
-                        '<input id="chk-grupos" type="checkbox" checked />'+
+                        '<input id="chk-grupos" type="checkbox"  />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+
                 '</li>'+
@@ -26,7 +26,7 @@ function sincronizacion(){
                 '<li>'+
                     '<span>Categorías</span>'+
                     '<label class="toggle toggle-init">'+
-                        '<input id="chk-categorias" type="checkbox" checked />'+
+                        '<input id="chk-categorias" type="checkbox"  />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+
                 '</li>'+
@@ -41,7 +41,7 @@ function sincronizacion(){
                 '<li>'+
                     '<span>Productos</span>'+
                     '<label class="toggle toggle-init">'+
-                        '<input id="chk-productos" type="checkbox" checked />'+
+                        '<input id="chk-productos" type="checkbox"  />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+
                 '</li>'+
@@ -54,7 +54,7 @@ function sincronizacion(){
                 '<li>'+
                     '<span>Modificadores</span>'+
                     '<label class="toggle toggle-init">'+
-                        '<input id="chk-modificadores" type="checkbox" checked />'+
+                        '<input id="chk-modificadores" type="checkbox"  />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+
                 '</li>'+
@@ -67,7 +67,7 @@ function sincronizacion(){
                 '<li>'+
                     '<span>Menús</span>'+
                     '<label class="toggle toggle-init">'+
-                        '<input id="chk-menus" type="checkbox" checked />'+
+                        '<input id="chk-menus" type="checkbox"  />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+
                 '</li>'+
@@ -104,7 +104,16 @@ function sincronizacion(){
         '<div class="item-title">Sincronizar precios</div>'+
       '</div>'+
     '</label>'+
-'</li>'+         
+'</li>'+  
+'<li>'+
+    '<label class="item-checkbox item-content">'+
+      '<input type="checkbox" id="chk-estados" value="chk-estados" />'+
+      '<i class="icon icon-checkbox"></i>'+
+      '<div class="item-inner">'+
+        '<div class="item-title">Sincronizar estados</div>'+
+      '</div>'+
+    '</label>'+
+'</li>'+  
             '</ul>'+
         '</div>'+
         '<div class="text-align-center">'+
@@ -124,6 +133,10 @@ function sincronizar(){
     var menus=document.getElementById('chk-menus').checked;
     var imagenes=document.getElementById('chk-imagenes').checked;
     var imagenes_png=document.getElementById('chk-imagenes-png').checked;
+    
+    var estados=document.getElementById('chk-estados').checked;
+    
+    console.log(estados);
     $('.sync-button').prop('disabled', true);
     var precios=document.getElementById('chk-precios').checked;
     
@@ -149,7 +162,11 @@ function sincronizar(){
             success: function(data){    
                 var obj=Object(data);
                 if (obj.valid==true){
-                    var datosRevo=obj.datosRevo;     $('#grupos-progressbar').removeClass('progressbar-infinite');
+                    
+                    var datosRevo=obj.datosRevo; 
+                    //console.log(datosRevo);
+                    
+                    $('#grupos-progressbar').removeClass('progressbar-infinite');
                     
                     $('#grupos-progressbar').addClass('progressbar');
                     
@@ -165,7 +182,7 @@ function sincronizar(){
                     
     $.ajax({
         url: server,
-        data:{tipo:'grupos',datosRevo:datosRevo[n]},
+        data:{tipo:'grupos',datosRevo:datosRevo[n], estados:estados},
         method: "post",
         dataType:"json",
         success: function(data){    
@@ -236,7 +253,7 @@ function sincronizar(){
                     
     $.ajax({
         url: server,
-        data:{tipo:'categorias',datosRevo:datosRevo[n], syncimagen:imagenes,syncimagen_png:imagenes_png},
+        data:{tipo:'categorias',datosRevo:datosRevo[n], syncimagen:imagenes,syncimagen_png:imagenes_png, estados:estados},
         method: "post",
         dataType:"json",
         success: function(data){    
@@ -302,7 +319,7 @@ function sincronizar(){
                     
     $.ajax({
         url: server,
-        data:{tipo:'productos',datosRevo:datosRevo[n],syncimagen:imagenes,syncimagen_png:imagenes_png},
+        data:{tipo:'productos',datosRevo:datosRevo[n],syncimagen:imagenes,syncimagen_png:imagenes_png, estados:estados},
         method: "post",
         dataType:"json",
         success: function(data){    
