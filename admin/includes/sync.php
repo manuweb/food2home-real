@@ -2,7 +2,9 @@
 include "../../webapp/conexion.php";
 include "../../webapp/MySQL/DataBase.class.php";
 header('Access-Control-Allow-Origin: *');
+ini_set('display_errors', 1);
 
+error_reporting(E_ALL);
 
 $array = json_decode(json_encode($_POST), true);
 
@@ -20,14 +22,14 @@ $token = $empresa->token;
 $user= $empresa->usuario;
 $clienttoken=CLIENTTOKEN;
 $database->freeResults();
+//$array['tipo']='categorias';
 $tipo='categories';
-if ($array['tipo']=='productos'){
-    $tipo='items';
-}
 if ($array['tipo']=='grupos'){
     $tipo='groups';
 }
-
+if ($array['tipo']=='productos'){
+    $tipo='items';
+}
 if ($array['tipo']=='catmod'){
     $tipo='modifierCategories';
 }
@@ -76,9 +78,15 @@ while ( ! $finished ):                   // while not finished
     $data = json_decode($response, true);
     $datos=$data['data'];
     $per_page=$data['per_page'];
-    
+
+
     for ($n=0;$n<count($datos);$n++){
+        
         if ($array['tipo']=='productos'){
+            $info=$datos[$n]['info'];
+            if ($info!=''){
+                $info=substr(quitaComillas($datos[$n]['info']),0,495);
+            }
             $datosRevo[]=[
                 'id'=>$datos[$n]['id'],
                 'categoria'=>$datos[$n]['category_id'],
@@ -89,37 +97,28 @@ while ( ! $finished ):                   // while not finished
                 'orden'=>$datos[$n]['order'],
                 'activo'=>$datos[$n]['active'],
                 'precio'=>$datos[$n]['price'],
-                'info'=>substr(quitaComillas($datos[$n]['info']),0,495),
+                'info'=>$info,
                 'alergias'=>$datos[$n]['allergies'],
                 'modifier_group_id'=>$datos[$n]['modifier_group_id'],
                 'modifier_category_id'=>$datos[$n]['modifier_category_id']
             ]; 
+
         }
         if ($array['tipo']=='categorias'){
             $datosRevo[]=[
-                'id'=>$datos[$n]['id'],
-                'grupo'=>$datos[$n]['group_id'],
-                'nombre'=>quitaComillas($datos[$n]['name']),
-                'imagen'=>$datos[$n]['photo'],
-                'impuesto'=>$datos[$n]['tax_id'],
-                'orden'=>$datos[$n]['order'],
-                'activo'=>$datos[$n]['active'],
-                'modifier_group_id'=>$datos[$n]['modifier_group_id'],
-                'modifier_category_id'=>$datos[$n]['modifier_category_id']
+            'id'=>$datos[$n]['id'],
+            'grupo'=>$datos[$n]['group_id'],
+            'nombre'=>quitaComillas($datos[$n]['name']),
+            'imagen'=>$datos[$n]['photo'],
+            'impuesto'=>$datos[$n]['tax_id'],
+            'orden'=>$datos[$n]['order'],
+            'activo'=>$datos[$n]['active'],
+            'modifier_group_id'=>$datos[$n]['modifier_group_id'],
+            'modifier_category_id'=>$datos[$n]['modifier_category_id']
             ];
             
             
-        }
-        if ($array['tipo']=='grupos'){
-            $datosRevo[]=[
-                'id'=>$datos[$n]['id'],
-                'nombre'=>quitaComillas($datos[$n]['name']),
-                'imagen'=>$datos[$n]['photo'],
-                'impuesto'=>$datos[$n]['tax_id'],
-                'orden'=>$datos[$n]['order'],
-                'activo'=>$datos[$n]['active']
-            ];
- 
+            
         }
         if ($array['tipo']=='modificadores'){
             $datosRevo[]=[
@@ -183,6 +182,17 @@ while ( ! $finished ):                   // while not finished
             'category_id'=>$datos[$n]['category_id'] 
             ];
         }
+        if ($tipo=='groups'){
+            
+            $datosRevo[]=[
+                'id'=>$datos[$n]['id'],
+                'nombre'=>$datos[$n]['name'],
+                'imagen'=>$datos[$n]['photo'],
+                'orden'=>$datos[$n]['order'],
+                'impuesto'=>$datos[$n]['tax_id'],
+                'activo'=>$datos[$n]['active']
+            ];
+        }
     }
 
     $contador=$contador+count($datos);
@@ -199,14 +209,12 @@ curl_close($curl);
 
 $json=array("valid"=>$checking,"datosRevo"=>$datosRevo);
 
+ob_end_clean();
 echo json_encode($json); 
 
 $fichero="synccategorias.txt";
 if ($array['tipo']=='productos'){
     $fichero="syncproductos.txt";
-}
-if ($array['tipo']=='grupos'){
-    $fichero="syncgrupos.txt";
 }
 if ($array['tipo']=='modificadores'){
     $fichero="syncmodificadores.txt";
@@ -241,17 +249,17 @@ fclose($file);
 file_put_contents($fichero, print_r($datosRevo, true),FILE_APPEND);
 
 function quitaComillas($nombre){
-    $text=$nombre;
-    if (strlen($nombre)>500){
-        $text=substr($nombre,0,499);
+    if ($nombre!=''){
+        $text = str_replace("'", "´", $nombre);
+        if (str_contains($nombre, "'")) {
+            $file = fopen('Reemplazo comillas.txt', "a+");
+            fwrite($file, "Reemplazado: ". $nombre. " --> " .$text. PHP_EOL);
+            fclose($file);
+        }
     }
-    $text = str_replace("'", "´", $text);
-    if (str_contains($nombre, "'")) {
-        $file = fopen('Reemplazo comillas.txt', "a+");
-        fwrite($file, "Reemplazado: ". $nombre. " --> " .$text. PHP_EOL);
-        fclose($file);
+    else {
+        $text=$nombre;
     }
-    
     return $text;
 }
 

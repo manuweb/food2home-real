@@ -31,6 +31,7 @@ $datosRevo=$array['datosRevo'];
 
 $syncimagen=$array['syncimagen'];
 $syncimagen_png=$array['syncimagen_png'];
+$estados=$array['estados'];
 $destino = '../../webapp/img/revo/';
 
 
@@ -46,25 +47,38 @@ if ($array['tipo']=='grupos'){
     if ($result->num_rows>0) {
         
         if ($syncimagen=='true'){
-            $sql="UPDATE grupos SET nombre='".quitaComillas($datosRevo['nombre'])."', orden='".$datosRevo['orden']."', imagen='".$datosRevo['imagen']."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."' WHERE id='".$datosRevo['id']."';";   
+            $txt_estado='';
+            if ($estados=='true'){
+                $txt_estado=", activo_web='".$datosRevo['activo']."'";
+            }
+            $sql="UPDATE grupos SET nombre='".quitaComillas($datosRevo['nombre'])."', orden='".$datosRevo['orden']."', imagen='".$datosRevo['imagen']."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."'".$txt_estado." WHERE id='".$datosRevo['id']."';";   
         }
         else {
-         $sql="UPDATE grupos SET nombre='".quitaComillas($datosRevo['nombre'])."', orden='".$datosRevo['orden']."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."' WHERE id='".$datosRevo['id']."';";  
+            $txt_estado='';
+            if ($estados=='true'){
+                $txt_estado=", activo_web='".$datosRevo['activo']."'";
+            }
+            $sql="UPDATE grupos SET nombre='".quitaComillas($datosRevo['nombre'])."', orden='".$datosRevo['orden']."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."'".$txt_estado." WHERE id='".$datosRevo['id']."';";  
         }
          
-        
+
     }
 
     else {
         $existe='NEW';
          if ($syncimagen=='true'){
-            $sql="INSERT INTO grupos (id, nombre, orden, imagen, impuesto, activo,imagen_app) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."', '".$datosRevo['orden']."', '".$datosRevo['imagen']."', '".$datosRevo['impuesto']."', '".$datosRevo['activo']."','');";   
+            
+            $sql="INSERT INTO grupos (id, nombre, orden, imagen, impuesto, activo,,activo_web,imagen_app) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."', '".$datosRevo['orden']."', '".$datosRevo['imagen']."', '".$datosRevo['impuesto']."', '".$datosRevo['activo']."','".$datosRevo['activo']."','');";   
         }
         else {
-         $sql="INSERT INTO grupos (id, nombre, orden, imagen, impuesto, activo,imagen_app) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."', '".$array['orden']."', '', '".$datosRevo['impuesto']."', '".$datosRevo['activo']."','');"; 
+            
+            $sql="INSERT INTO grupos (id, nombre, orden, imagen, impuesto, activo,activo_web,imagen_app) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."', '".$datosRevo['orden']."', '', '".$datosRevo['impuesto']."', '".$datosRevo['activo']."','".$datosRevo['activo']."','');";   
         }   
         
-    }   
+    }  
+    $file = fopen('zz-sync.txt', "a+");
+        fwrite($file,  $sql . PHP_EOL);
+        fclose($file);
     
 
 }
@@ -80,6 +94,10 @@ if ($array['tipo']=='categorias'){
     $existe='UPDATE';
     // Verificar si se obtuvieron resultados
     if ($result->num_rows>0) {
+        $txt_estado='';
+        if ($estados=='true'){
+            $txt_estado=", activo_web='".$datosRevo['activo']."'";
+        }
         if ($syncimagen=='true'){
             $nombre_img=$datosRevo['imagen'];
             if ($nombre_img!=''){
@@ -89,7 +107,9 @@ if ($array['tipo']=='categorias'){
                     $nombre_img=$sep[0].'.webp';
                 }
             }
-            $sql="UPDATE categorias SET nombre='".quitaComillas($datosRevo['nombre'])."', grupo='".$datosRevo['grupo']."', orden='".$datosRevo['orden']."', imagen='".$nombre_img."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."', modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."' WHERE id='".$datosRevo['id']."';";   
+            
+            
+            $sql="UPDATE categorias SET nombre='".quitaComillas($datosRevo['nombre'])."', grupo='".$datosRevo['grupo']."', orden='".$datosRevo['orden']."', imagen='".$nombre_img."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."'".$txt_estado.", modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."' WHERE id='".$datosRevo['id']."';";   
 
             if ($datosRevo['imagen']!=''){
                  
@@ -106,7 +126,7 @@ if ($array['tipo']=='categorias'){
                 //captureImage($temp, $destino.$array['imagen']);
         }
         else {
-            $sql="UPDATE categorias SET nombre='".quitaComillas($datosRevo['nombre'])."', grupo='".$datosRevo['grupo']."', orden='".$datosRevo['orden']."', impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."', modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."' WHERE id='".$datosRevo['id']."';";  
+            $sql="UPDATE categorias SET nombre='".quitaComillas($datosRevo['nombre'])."', grupo='".$datosRevo['grupo']."', orden='".$datosRevo['orden']."', impuesto='".$datosRevo['impuesto']."',activo='".$datosRevo['activo']."'".$txt_estado.", modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."' WHERE id='".$datosRevo['id']."';";  
         }
           
         
@@ -169,7 +189,11 @@ if ($array['tipo']=='productos'){
     if ($result->num_rows>0) {
         $imagen='';
         $precio='';
-
+        $syncimagen='true';
+        $txt_estado='';
+        if ($estados=='true'){
+            $txt_estado=", activo_web='".$datosRevo['activo']."'";
+        }
         if ($syncimagen=='true'){
             if ($datosRevo['imagen']!=''){
                 $sep=explode('.',$datosRevo['imagen']);
@@ -195,7 +219,7 @@ if ($array['tipo']=='productos'){
             $precio=", precio='".$datosRevo['precio']."', precio_web='".$datosRevo['precio']."', precio_app='".$datosRevo['precio']."'";
         }
         
-        $sql="UPDATE productos SET nombre='".quitaComillas($datosRevo['nombre'])."', categoria='".$datosRevo['categoria']."', orden='".$datosRevo['orden']."'".$imagen.", impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."'".$precio.", info='".quitaComillas($datosRevo['info'])."', alergias='".$datosRevo['alergias']."', modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."', esMenu='".$datosRevo['esMenu']."' WHERE id='".$datosRevo['id']."';";  
+        $sql="UPDATE productos SET nombre='".quitaComillas($datosRevo['nombre'])."', categoria='".$datosRevo['categoria']."', orden='".$datosRevo['orden']."'".$imagen.", impuesto='".$datosRevo['impuesto']."', activo='".$datosRevo['activo']."'".$txt_estado.$precio.", info='".quitaComillas($datosRevo['info'])."', alergias='".$datosRevo['alergias']."', modifier_category_id='".$datosRevo['modifier_category_id']."', modifier_group_id='".$datosRevo['modifier_group_id']."', esMenu='".$datosRevo['esMenu']."' WHERE id='".$datosRevo['id']."';";  
         
         
         
@@ -232,13 +256,18 @@ if ($array['tipo']=='productos'){
 
 
             }
+            else {
+                $txt_imagen=", imagen";
+                $imagen=", imagen='".$datosRevo['imagen']."'";
+            }
 
 
         }
 
-        $sql="INSERT INTO productos (id, nombre, categoria, orden".$txt_imagen.", impuesto, activo, precio".$txt_precio.", info,alergias, modifier_category_id, modifier_group_id, esMenu) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."','".$datosRevo['categoria']."', '".$datosRevo['orden']."'".$imagen.", '".$datosRevo['impuesto']."', '".$datosRevo['activo']."', '".$datosRevo['precio'].$precio."' , '".quitaComillas($datosRevo['info'])."', '".$datosRevo['alergias']."', '".$datosRevo['modifier_category_id']."', '".$datosRevo['modifier_group_id']."', '".$datosRevo['esMenu']."');"; 
+        $sql="INSERT INTO productos (id, nombre, categoria, orden".$txt_imagen.", impuesto, activo, precio, precio_web, precio_app, info,alergias, modifier_category_id, modifier_group_id, esMenu) VALUES ('".$datosRevo['id']."','".quitaComillas($datosRevo['nombre'])."','".$datosRevo['categoria']."', '".$datosRevo['orden']."'".$imagen.", '".$datosRevo['impuesto']."', '".$datosRevo['activo']."', '".$datosRevo['precio']."' ,'".$datosRevo['precio']."' ,'".$datosRevo['precio']."' , '".quitaComillas($datosRevo['info'])."', '".$datosRevo['alergias']."', '".$datosRevo['modifier_category_id']."', '".$datosRevo['modifier_group_id']."', '".$datosRevo['esMenu']."');"; 
         
-        
+        $file = fopen('SQL-PROD.txt', "a+");
+        fwrite($file,  $sql . PHP_EOL);
     }   
     
 }
