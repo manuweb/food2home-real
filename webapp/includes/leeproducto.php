@@ -232,7 +232,7 @@ if (count($grupo)>0) {
             $modifierCategories = $databaseInteraction->queryToArray($sql1);
         
              
-            $sql2="SELECT id, nombre, precio, autoseleccionado FROM modifiers WHERE id IN(".$modifierCategories[0]->modificadores.") ORDER BY FIELD(id, ".$modifierCategories[0]->modificadores.");";
+            $sql2="SELECT id, nombre, precio, autoseleccionado FROM modifiers WHERE id IN(".$modifierCategories[0]->modificadores.") AND activo='1' ORDER BY FIELD(id, ".$modifierCategories[0]->modificadores.");";
         
              $databaseInteraction = new DatabaseInteraction($host, $username, $password, $database);
             $modificadores = $databaseInteraction->queryToArray($sql2);
