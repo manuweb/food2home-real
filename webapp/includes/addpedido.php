@@ -103,533 +103,539 @@ $order['publicidad']=$publicidad;
 $domicilio['direccion']=eliminaComillas($domicilio['direccion']);
 $domicilio['complementario']=eliminaComillas($domicilio['complementario']);
 
-
-
-// idRedsys
-$sql="SELECT idrevo FROM metodospago WHERE esRedsys=1;";
-$db = DataBase::getInstance();  
-$db->setQuery($sql);  
-$iesRedsys = $db->loadObjectList();  
-$db->freeResults();
-$esRedsys=$iesRedsys[0]->idrevo;
-
-
-// Buscar impuestos
-
-$sql="SELECT ivaEnvio as iva, idEnvio AS idEnvio FROM opcionescompra WHERE id=1;";
-
-
-
-$db = DataBase::getInstance();  
-$db->setQuery($sql);  
-$ivadeEnvio = $db->loadObjectList();  
-$db->freeResults();
-$ivaEnvio=$ivadeEnvio[0]->iva;
-$idEnvio=$ivadeEnvio[0]->idEnvio;
-
-$order['ivaenvio']=$ivaEnvio;
-$order['idenvio']=$idEnvio;
-
-$sql="SELECT id, nombre, porcentaje FROM impuestos ORDER BY porcentaje;";
-
-$db = DataBase::getInstance();  
-$db->setQuery($sql);  
-$impuestosGenerales = $db->loadObjectList();  
-$db->freeResults();
-
-$subtotal=0;
-for ($n=0;$n<count($impuestosGenerales);$n++){
-    $porcentajeImpuesto[$n]=$impuestosGenerales[$n]->porcentaje;  
-    $baseImpuesto[$n]=0;
-    $ivaImpuesto[$n]=0;
-}    
-
-$tarjetasRegalo=[];
-$j=0;
-for ($x=0;$x<count($carrito);$x++){
-    $carrito[$x]['descuento']=0;
-    $suma_mod=0;
-    if (isset($carrito[$x]['modificadores'])) {
-        for($j=0;$j<count($carrito[$x]['modificadores']);$j++){
-            $suma_mod+=$carrito[$x]['modificadores'][$j]['precio'];
-        }
-    }
-    if (isset($carrito[$x]['elmentosMenu'])) {
-        for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
-            $suma_mod+=($carrito[$x]['elmentosMenu'][$j]['precio']*$carrito[$x]['elmentosMenu'][$j]['cantidad']);
-        }
-    }
-    //$carrito[$x]['precio']+=$suma_mod;
-    
-    $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*($carrito[$x]['precio_sin']+$suma_mod);
-    $subtotal+=$carrito[$x]['subtotal'];
-    if($carrito[$x]['menu']==5){
-        $nombreT=$carrito[$x]['nombreT'];
-        $emailT=$carrito[$x]['emailT'];
-        if ($emailT==''){
-            $emailT=$order['email'];
-        }
-        if ($nombreT==''){
-            $nombreT=$order['nombre']. ' '.$order['apellidos'];
-        }
-
-        for ($h=0;$h<$carrito[$x]['cantidad'];$h++){
-            $tarjetasRegalo[]=[
-                'uuid'=> generate_string(6)."-".generate_string(6),
-                'idPedido'=>0,
-                'idRevo'=>0,
-                'idProducto'=>$carrito[$x]['id'],
-                'nombre'=>$nombreT,
-                'email'=>$emailT,
-                'precio'=>$carrito[$x]['precio']   
-            ];
-        }
-    }
-    $j=$x;
+if ($order['nombre']=='' || $order['telefono']=='' || $order['email']=='') {
+    // no llegan datos
+     $json=array("valid"=>$checking,"msg"=>"error datos");
+    ob_end_clean();
+    echo json_encode($json); 
 }
+else {
 
-
-if ($llevabolsa=='si'){
-    $x=$j+1;
-    $carrito[$x]['descuento']=0;
-    $carrito[$x]['id']=$array['idBolsa'];
-    $carrito[$x]['nombre']=$array['productoBolsa'];
-    $carrito[$x]['precio']=$array['precioBolsa'];
-    $carrito[$x]['precio_sin']=$array['precioBolsa'];
-    $carrito[$x]['subtotal']=$array['precioBolsa'];
-    $subtotal+=$carrito[$x]['subtotal'];
-    $carrito[$x]['cantidad']=1;
-    $carrito[$x]['iva']=0;
-    $carrito[$x]['menu']=0;
-    $carrito[$x]['comentario']=''; 
-}
-$order['subtotal']=$subtotal;
-$order['total']=$subtotal;
-
-//file_put_contents('carrito_detalle.txt', print_r($carrito, true));
-
-/*
-$file = fopen("carrito.txt", "w");
-//fwrite($file, "sql: ". $sql . PHP_EOL);
-fwrite($file, "desc: ". $suma_descuentos . PHP_EOL);
-fclose($file);
-*/
-
-//logica descuentos
+    // idRedsys
+    $sql="SELECT idrevo FROM metodospago WHERE esRedsys=1;";
+    $db = DataBase::getInstance();  
+    $db->setQuery($sql);  
+    $iesRedsys = $db->loadObjectList();  
+    $db->freeResults();
+    $esRedsys=$iesRedsys[0]->idrevo;
     
-   //   1 --> % Dto. Global
-   //   2 --> % Dto. Producto
-   //   3 --> Envío Gratis
-   //   4 --> Importe descuento
-
-
-if ($descuento > 0 || $monedero > 0) {
-
-
-    // aplicar descuento
-    $adescontar=0;
- 
-
-    if ($tipo_descuento!=""){
-        $tipo = explode("#", $tipo_descuento);
-        if ($tipo[0]=='3'){ // Envío Gratis
-            
-            $descuento=$descuento-$portes;
-            $portes=0;
-        }
-        if ($tipo[0]=='4'){ // Importe descuento
-            $adescontar=$tipo[1];
-
-        }
-        if ($tipo[0]=='1'){ // Dto. Global
-            $adescontar=round($subtotal*$tipo[1]/100,2);
-
-
-        }
-        if ($tipo[0]=='2'){ // Dto. Producto
-            for ($x=0;$x<count($carrito);$x++){
-                if ($carrito[$x]['id']==$tipo[2]){
-                    $carrito[$x]['descuento']=round($carrito[$x]['cantidad']*$carrito[$x]['precio']*$tipo[1]/100,2);
-
-                }
-
-                $adescontar=0;
-            }
-
-        }
-    }
-    if($monedero>0) {
-        $adescontar+=$monedero;
-    }
-
-    if($adescontar>0) {
-        // repartir descuento según subtotal
-        $suma_descuentos=0;
-
-          
-
-         for ($x=0;$x<count($carrito);$x++){
-             //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL);
-             //if ($carrito[$x]['descuento']==0){
-                 $carrito[$x]['descuento']=round(calcula_descuento($adescontar,$carrito[$x],$subtotal),2);
-                 //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL); 
-             //}
-             /*
-             else{
-                 $carrito[$x]['descuento']+=calcula_descuento($monedero,$carrito[$x]['subtotal'],$subtotal);
-                 //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL);
-             }
-             */
-
-             $suma_descuentos+=$carrito[$x]['descuento'];
-
-
-         }
-                 //fwrite($file, "Suma desc: ". $suma_descuentos . PHP_EOL);
-
-
-    }
     
-}
-
-
-// calculo de base e iva
-
-$sumadesivass=0;   
-
-for ($x=0;$x<count($carrito);$x++){
-    for ($n=0;$n<count($porcentajeImpuesto);$n++){
-        if ($carrito[$x]['iva']==$porcentajeImpuesto[$n]) {
-            $baseImpuesto[$n]+=calcula_base($carrito[$x]['subtotal']-$carrito[$x]['descuento'],$porcentajeImpuesto[$n]);
-            $ivaImpuesto[$n]=calcula_iva($baseImpuesto[$n],$porcentajeImpuesto[$n]);
-            $sumadesivass+=$ivaImpuesto[$n];
-        }
-    }
-}
-
-
+    // Buscar impuestos
     
-
-
-
-if ($portes>0){
-
-    $base_portes=round($portes/(1+($ivaEnvio/100)),2);
-     $iva_portes=round($base_portes*$ivaEnvio/100,2);
-
-
-    for ($h=0;$h<count($porcentajeImpuesto);$h++){ 
-        if ($porcentajeImpuesto[$h]==$ivaEnvio){
-            $baseImpuesto[$h]+=$base_portes;
-            $ivaImpuesto[$h]+=$iva_portes;
-        }
-    }
-     
-}
-$total=$subtotal-$descuento-$monedero+$portes;
-$order['subtotal']=$subtotal;
-$order['total']=$total;   
+    $sql="SELECT ivaEnvio as iva, idEnvio AS idEnvio FROM opcionescompra WHERE id=1;";
     
-$sumadescuentos=0;
- $sumadeivas=0;   
-for ($x=0;$x<count($carrito);$x++){
-    $sumadescuentos+=$carrito[$x]['descuento'];
-    $carrito[$x]['nuevo_subtotal']=$carrito[$x]['subtotal']-$carrito[$x]['descuento'];
-    $carrito[$x]['nuevo_precio']=$carrito[$x]['nuevo_subtotal']/$carrito[$x]['cantidad'];
-    $carrito[$x]['base']=calcula_base($carrito[$x]['nuevo_subtotal'],$carrito[$x]['iva']);
-    $carrito[$x]['iva_calculado']=calcula_iva($carrito[$x]['base'],$carrito[$x]['iva']);
-    $sumadeivas+=$carrito[$x]['iva_calculado'];  
     
-    $carrito[$x]['comentario']=eliminaIntros($carrito[$x]['comentario']);
-    $carrito[$x]['comentario']=eliminaComillas($carrito[$x]['comentario']);
-}
-
-
-
-$order['carrito']=$carrito;
-
-//file_put_contents('zz-pedido.txt', print_r($order, true));
-
-
-$suma_subtotal=0;
-$suma_impuestos=0;
-$suma_total=0;
-
-/*
-for ($x=0;$x<count($carrito);$x++){
-    if ($carrito[$x]['mod']!='') {
-        
-        //$carrito[$x]['mod']=json_decode($carrito[$x]['mod']);
-        $carrito[$x]['mod'] = json_decode(json_encode($carrito[$x]['mod']),true);
-    }
-    
-}
-
-*/
-
-
-$order['fecha']=date('Y-m-d H:i:s');
-
-$sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon,codigoCupon,monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', '".$order['codigocupon']."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", 0, ".$canal.", '".$comentario."', 0);";
-
-//$order['fecha']=date('Y-m-d H:i:s');
-
-$db = DataBase::getInstance();  
-$db->setQuery($sql);  
-//$pedidos = $db->loadObjectList();  
-
-if ($db->alter()){
-    //fwrite($file, "sql: ".$sql. PHP_EOL);
-    $checking=true;
-    $sql="SELECT id FROM pedidos WHERE numero='".$OrderId."';";
     
     $db = DataBase::getInstance();  
     $db->setQuery($sql);  
-    $pedido = $db->loadObjectList();  
-    //$db->freeResults();
+    $ivadeEnvio = $db->loadObjectList();  
+    $db->freeResults();
+    $ivaEnvio=$ivadeEnvio[0]->iva;
+    $idEnvio=$ivadeEnvio[0]->idEnvio;
     
-    //fwrite($file, "sql: ".$sql. PHP_EOL);
+    $order['ivaenvio']=$ivaEnvio;
+    $order['idenvio']=$idEnvio;
     
-    $idPedido=$pedido[0]->id;
-}
-//$db->freeResults();
-for ($h=0;$h<count($tarjetasRegalo);$h++){
-    $tarjetasRegalo[$h]['idPedido']=$idPedido;
+    $sql="SELECT id, nombre, porcentaje FROM impuestos ORDER BY porcentaje;";
     
-    $sql="INSERT INTO tarjetas_regalo (uuid,idPedido,idRevo,idProducto,nombre,precio,email) VALUES ('".$tarjetasRegalo[$h]['uuid']."','".$idPedido."','0','".$tarjetasRegalo[$h]['idProducto']."','".$tarjetasRegalo[$h]['nombre']."','".$tarjetasRegalo[$h]['precio']."','".$tarjetasRegalo[$h]['email']."');";
-$file = fopen("zz-pedido-tr.txt", "w");
-fwrite($file, "sql: ". $sql . PHP_EOL);
-
-fclose($file);
     $db = DataBase::getInstance();  
-    $db->setQuery($sql);   
-    if ($db->alter()){}
-    else {}
-}
-
-//file_put_contents('zz-pedido-tr.txt', print_r($tarjetasRegalo, true));
-
-if ($cliente!=0){
-    //fwrite($file, "Cliente ". PHP_EOL);
+    $db->setQuery($sql);  
+    $impuestosGenerales = $db->loadObjectList();  
+    $db->freeResults();
     
-   if($importe_fidelizacion>0){
-       //fwrite($file, "Fidelizacion ". PHP_EOL);
-        $importe_fide=0;
-       
-       //$esRedsys != $tarjeta
-       //if ($esRedsys != $tarjeta){
-       if ($tarjeta=='2'){
-            $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
-       
-       //fwrite($file, "sql: ".$sql. PHP_EOL);
-        
-     
-            $db = DataBase::getInstance();  
-            $db->setQuery($sql); 
-       
-        
-        //$moned = $db->loadObjectList(); 
-       
-            if ($db->alter()){
-                //fwrite($file, "sql OK ". PHP_EOL);
-            }
-            else {
-               //fwrite($file, "sql NO ". PHP_EOL);
-           }
-        //$db->freeResults();
-        
-       }
-   }
-}
-//$idPedido
-if (isset($idPedido)) {
-//if (count($pedidos)>=0) {
+    $subtotal=0;
+    for ($n=0;$n<count($impuestosGenerales);$n++){
+        $porcentajeImpuesto[$n]=$impuestosGenerales[$n]->porcentaje;  
+        $baseImpuesto[$n]=0;
+        $ivaImpuesto[$n]=0;
+    }    
     
-    
-    // lineas pedido
-
+    $tarjetasRegalo=[];
+    $j=0;
     for ($x=0;$x<count($carrito);$x++){
+        $carrito[$x]['descuento']=0;
+        $suma_mod=0;
+        if (isset($carrito[$x]['modificadores'])) {
+            for($j=0;$j<count($carrito[$x]['modificadores']);$j++){
+                $suma_mod+=$carrito[$x]['modificadores'][$j]['precio'];
+            }
+        }
+        if (isset($carrito[$x]['elmentosMenu'])) {
+            for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                $suma_mod+=($carrito[$x]['elmentosMenu'][$j]['precio']*$carrito[$x]['elmentosMenu'][$j]['cantidad']);
+            }
+        }
+        //$carrito[$x]['precio']+=$suma_mod;
         
-        $articulo= explode ('-',$carrito[$x]['id']);
-        $idarticulo=$articulo[0];
-        $descripcion=$carrito[$x]['nombre'];
-        $modificador="";
-        $carrito[$x]['id']=$idarticulo;
+        $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*($carrito[$x]['precio_sin']+$suma_mod);
+        $subtotal+=$carrito[$x]['subtotal'];
+        if($carrito[$x]['menu']==5){
+            $nombreT=$carrito[$x]['nombreT'];
+            $emailT=$carrito[$x]['emailT'];
+            if ($emailT==''){
+                $emailT=$order['email'];
+            }
+            if ($nombreT==''){
+                $nombreT=$order['nombre']. ' '.$order['apellidos'];
+            }
+    
+            for ($h=0;$h<$carrito[$x]['cantidad'];$h++){
+                $tarjetasRegalo[]=[
+                    'uuid'=> generate_string(6)."-".generate_string(6),
+                    'idPedido'=>0,
+                    'idRevo'=>0,
+                    'idProducto'=>$carrito[$x]['id'],
+                    'nombre'=>$nombreT,
+                    'email'=>$emailT,
+                    'precio'=>$carrito[$x]['precio']   
+                ];
+            }
+        }
+        $j=$x;
+    }
+    
+    
+    if ($llevabolsa=='si'){
+        $x=$j+1;
+        $carrito[$x]['descuento']=0;
+        $carrito[$x]['id']=$array['idBolsa'];
+        $carrito[$x]['nombre']=$array['productoBolsa'];
+        $carrito[$x]['precio']=$array['precioBolsa'];
+        $carrito[$x]['precio_sin']=$array['precioBolsa'];
+        $carrito[$x]['subtotal']=$array['precioBolsa'];
+        $subtotal+=$carrito[$x]['subtotal'];
+        $carrito[$x]['cantidad']=1;
+        $carrito[$x]['iva']=0;
+        $carrito[$x]['menu']=0;
+        $carrito[$x]['comentario']=''; 
+    }
+    $order['subtotal']=$subtotal;
+    $order['total']=$subtotal;
+    
+    //file_put_contents('carrito_detalle.txt', print_r($carrito, true));
+    
+    /*
+    $file = fopen("carrito.txt", "w");
+    //fwrite($file, "sql: ". $sql . PHP_EOL);
+    fwrite($file, "desc: ". $suma_descuentos . PHP_EOL);
+    fclose($file);
+    */
+    
+    //logica descuentos
         
+       //   1 --> % Dto. Global
+       //   2 --> % Dto. Producto
+       //   3 --> Envío Gratis
+       //   4 --> Importe descuento
+    
+    
+    if ($descuento > 0 || $monedero > 0) {
+    
+    
+        // aplicar descuento
+        $adescontar=0;
+     
+    
+        if ($tipo_descuento!=""){
+            $tipo = explode("#", $tipo_descuento);
+            if ($tipo[0]=='3'){ // Envío Gratis
+                
+                $descuento=$descuento-$portes;
+                $portes=0;
+            }
+            if ($tipo[0]=='4'){ // Importe descuento
+                $adescontar=$tipo[1];
+    
+            }
+            if ($tipo[0]=='1'){ // Dto. Global
+                $adescontar=round($subtotal*$tipo[1]/100,2);
+    
+    
+            }
+            if ($tipo[0]=='2'){ // Dto. Producto
+                for ($x=0;$x<count($carrito);$x++){
+                    if ($carrito[$x]['id']==$tipo[2]){
+                        $carrito[$x]['descuento']=round($carrito[$x]['cantidad']*$carrito[$x]['precio']*$tipo[1]/100,2);
+    
+                    }
+    
+                    $adescontar=0;
+                }
+    
+            }
+        }
+        if($monedero>0) {
+            $adescontar+=$monedero;
+        }
+    
+        if($adescontar>0) {
+            // repartir descuento según subtotal
+            $suma_descuentos=0;
+    
+              
+    
+             for ($x=0;$x<count($carrito);$x++){
+                 //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL);
+                 //if ($carrito[$x]['descuento']==0){
+                     $carrito[$x]['descuento']=round(calcula_descuento($adescontar,$carrito[$x],$subtotal),2);
+                     //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL); 
+                 //}
+                 /*
+                 else{
+                     $carrito[$x]['descuento']+=calcula_descuento($monedero,$carrito[$x]['subtotal'],$subtotal);
+                     //fwrite($file, " art: ". $carrito[$x]['nombre'] . " (".$carrito[$x]['descuento'].")".PHP_EOL);
+                 }
+                 */
+    
+                 $suma_descuentos+=$carrito[$x]['descuento'];
+    
+    
+             }
+                     //fwrite($file, "Suma desc: ". $suma_descuentos . PHP_EOL);
+    
+    
+        }
         
-
-        $sql="INSERT INTO pedidos_lineas (idPedido,idArticulo,descripcion,modificadores,canidad,precio,impuesto,menu,comentario) VALUES (".$idPedido.",".$idarticulo.",'".$descripcion."','".$modificador."',".$carrito[$x]['cantidad'].",".$carrito[$x]['precio_sin'].",".$carrito[$x]['iva'].",".$carrito[$x]['menu'].",'".$carrito[$x]['comentario']."');"; 
+    }
+    
+    
+    // calculo de base e iva
+    
+    $sumadesivass=0;   
+    
+    for ($x=0;$x<count($carrito);$x++){
+        for ($n=0;$n<count($porcentajeImpuesto);$n++){
+            if ($carrito[$x]['iva']==$porcentajeImpuesto[$n]) {
+                $baseImpuesto[$n]+=calcula_base($carrito[$x]['subtotal']-$carrito[$x]['descuento'],$porcentajeImpuesto[$n]);
+                $ivaImpuesto[$n]=calcula_iva($baseImpuesto[$n],$porcentajeImpuesto[$n]);
+                $sumadesivass+=$ivaImpuesto[$n];
+            }
+        }
+    }
+    
+    
+        
+    
+    
+    
+    if ($portes>0){
+    
+        $base_portes=round($portes/(1+($ivaEnvio/100)),2);
+         $iva_portes=round($base_portes*$ivaEnvio/100,2);
+    
+    
+        for ($h=0;$h<count($porcentajeImpuesto);$h++){ 
+            if ($porcentajeImpuesto[$h]==$ivaEnvio){
+                $baseImpuesto[$h]+=$base_portes;
+                $ivaImpuesto[$h]+=$iva_portes;
+            }
+        }
+         
+    }
+    $total=$subtotal-$descuento-$monedero+$portes;
+    $order['subtotal']=$subtotal;
+    $order['total']=$total;   
+        
+    $sumadescuentos=0;
+     $sumadeivas=0;   
+    for ($x=0;$x<count($carrito);$x++){
+        $sumadescuentos+=$carrito[$x]['descuento'];
+        $carrito[$x]['nuevo_subtotal']=$carrito[$x]['subtotal']-$carrito[$x]['descuento'];
+        $carrito[$x]['nuevo_precio']=$carrito[$x]['nuevo_subtotal']/$carrito[$x]['cantidad'];
+        $carrito[$x]['base']=calcula_base($carrito[$x]['nuevo_subtotal'],$carrito[$x]['iva']);
+        $carrito[$x]['iva_calculado']=calcula_iva($carrito[$x]['base'],$carrito[$x]['iva']);
+        $sumadeivas+=$carrito[$x]['iva_calculado'];  
+        
+        $carrito[$x]['comentario']=eliminaIntros($carrito[$x]['comentario']);
+        $carrito[$x]['comentario']=eliminaComillas($carrito[$x]['comentario']);
+    }
+    
+    
+    
+    $order['carrito']=$carrito;
+    
+    //file_put_contents('zz-pedido.txt', print_r($order, true));
+    
+    
+    $suma_subtotal=0;
+    $suma_impuestos=0;
+    $suma_total=0;
+    
+    /*
+    for ($x=0;$x<count($carrito);$x++){
+        if ($carrito[$x]['mod']!='') {
+            
+            //$carrito[$x]['mod']=json_decode($carrito[$x]['mod']);
+            $carrito[$x]['mod'] = json_decode(json_encode($carrito[$x]['mod']),true);
+        }
+        
+    }
+    
+    */
+    
+    
+    $order['fecha']=date('Y-m-d H:i:s');
+    
+    $sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon,codigoCupon,monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', '".$order['codigocupon']."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", 0, ".$canal.", '".$comentario."', 0);";
+    
+    //$order['fecha']=date('Y-m-d H:i:s');
+    
+    $db = DataBase::getInstance();  
+    $db->setQuery($sql);  
+    //$pedidos = $db->loadObjectList();  
+    
+    if ($db->alter()){
+        //fwrite($file, "sql: ".$sql. PHP_EOL);
+        $checking=true;
+        $sql="SELECT id FROM pedidos WHERE numero='".$OrderId."';";
         
         $db = DataBase::getInstance();  
         $db->setQuery($sql);  
-        //$lineas = $db->loadObjectList();  
+        $pedido = $db->loadObjectList();  
         //$db->freeResults();
-         
+        
         //fwrite($file, "sql: ".$sql. PHP_EOL);
-
-        // modificadores
-     
-        if ($db->alter()){
-            $checking=true;
-            $sql="SELECT MAX(id) AS idLineaPedido FROM pedidos_lineas WHERE idPedido='".$idPedido."';";
+        
+        $idPedido=$pedido[0]->id;
+    }
+    //$db->freeResults();
+    for ($h=0;$h<count($tarjetasRegalo);$h++){
+        $tarjetasRegalo[$h]['idPedido']=$idPedido;
+        
+        $sql="INSERT INTO tarjetas_regalo (uuid,idPedido,idRevo,idProducto,nombre,precio,email) VALUES ('".$tarjetasRegalo[$h]['uuid']."','".$idPedido."','0','".$tarjetasRegalo[$h]['idProducto']."','".$tarjetasRegalo[$h]['nombre']."','".$tarjetasRegalo[$h]['precio']."','".$tarjetasRegalo[$h]['email']."');";
+    $file = fopen("zz-pedido-tr.txt", "w");
+    fwrite($file, "sql: ". $sql . PHP_EOL);
+    
+    fclose($file);
+        $db = DataBase::getInstance();  
+        $db->setQuery($sql);   
+        if ($db->alter()){}
+        else {}
+    }
+    
+    //file_put_contents('zz-pedido-tr.txt', print_r($tarjetasRegalo, true));
+    
+    if ($cliente!=0){
+        //fwrite($file, "Cliente ". PHP_EOL);
+        
+       if($importe_fidelizacion>0){
+           //fwrite($file, "Fidelizacion ". PHP_EOL);
+            $importe_fide=0;
+           
+           //$esRedsys != $tarjeta
+           //if ($esRedsys != $tarjeta){
+           if ($tarjeta=='2'){
+                $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
+           
+           //fwrite($file, "sql: ".$sql. PHP_EOL);
+            
+         
+                $db = DataBase::getInstance();  
+                $db->setQuery($sql); 
+           
+            
+            //$moned = $db->loadObjectList(); 
+           
+                if ($db->alter()){
+                    //fwrite($file, "sql OK ". PHP_EOL);
+                }
+                else {
+                   //fwrite($file, "sql NO ". PHP_EOL);
+               }
+            //$db->freeResults();
+            
+           }
+       }
+    }
+    //$idPedido
+    if (isset($idPedido)) {
+    //if (count($pedidos)>=0) {
+        
+        
+        // lineas pedido
+    
+        for ($x=0;$x<count($carrito);$x++){
+            
+            $articulo= explode ('-',$carrito[$x]['id']);
+            $idarticulo=$articulo[0];
+            $descripcion=$carrito[$x]['nombre'];
+            $modificador="";
+            $carrito[$x]['id']=$idarticulo;
+            
+            
+    
+            $sql="INSERT INTO pedidos_lineas (idPedido,idArticulo,descripcion,modificadores,canidad,precio,impuesto,menu,comentario) VALUES (".$idPedido.",".$idarticulo.",'".$descripcion."','".$modificador."',".$carrito[$x]['cantidad'].",".$carrito[$x]['precio_sin'].",".$carrito[$x]['iva'].",".$carrito[$x]['menu'].",'".$carrito[$x]['comentario']."');"; 
             
             $db = DataBase::getInstance();  
             $db->setQuery($sql);  
-            $linea = $db->loadObjectList();
-            $db->freeResults();
+            //$lineas = $db->loadObjectList();  
+            //$db->freeResults();
+             
+            //fwrite($file, "sql: ".$sql. PHP_EOL);
+    
+            // modificadores
+         
+            if ($db->alter()){
+                $checking=true;
+                $sql="SELECT MAX(id) AS idLineaPedido FROM pedidos_lineas WHERE idPedido='".$idPedido."';";
+                
+                $db = DataBase::getInstance();  
+                $db->setQuery($sql);  
+                $linea = $db->loadObjectList();
+                $db->freeResults();
+                
+                //fwrite($file, "sql: ".$sql. PHP_EOL);
+                
+                $idLineaPedido=$linea[0]->idLineaPedido;
+                //fwrite($file, "linea: ".$idLineaPedido. PHP_EOL);
+                // elementos menu
+                if (isset($carrito[$x]['elmentosMenu'])) {
+                    for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                        $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
+                        $db = DataBase::getInstance();  
+                        $db->setQuery($sql);  
+                        //$linea = $db->loadObjectList();
+                        //$db->freeResults();
+                        //fwrite($file, "sql: ".$sql. PHP_EOL);
+                        if ($db->alter()){
+                            //fwrite($file, "sql OK ". PHP_EOL);
+                        }
+                        else {
+                            //fwrite($file, "sql NO ". PHP_EOL);
+                        }
+                        
+                    }
+                }
+                // modificadores
+                if (isset($carrito[$x]['modificadores'])) {
+                    for($j=0;$j<count($carrito[$x]['modificadores']);$j++){
+                        
+                        $sql="INSERT INTO pedidos_lineas_modificadores (idLineaPedido,idModificador,descripcion,precio) VALUES (".$idLineaPedido.",'".$carrito[$x]['modificadores'][$j]['id']."','".$carrito[$x]['modificadores'][$j]['nombre']."','".$carrito[$x]['modificadores'][$j]['precio']."');"; 
+                        
+                        $db = DataBase::getInstance();  
+                        $db->setQuery($sql);  
+                        //$modifi = $db->loadObjectList();
+                        //$db->freeResults();    
+                        if ($db->alter()){
+                            //fwrite($file, "sql OK ". PHP_EOL);
+                        }
+                        else {
+                            //fwrite($file, "sql NO ". PHP_EOL);
+                        }
+                        //fwrite($file, "sql: ".$sql. PHP_EOL);
+    
+                    }
+                }
+             }
+             else {
+                 $checking=false;
+             }
+    
+             
+             
+        }  
+        // domicilio si envio=1
+    
+        if ($envio<2){
+            //add domicilio
+            $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia,lat,lng) VALUES (".$idPedido.",'".$domicilio['direccion']."','".$domicilio['complementario']."','".$domicilio['cod_postal']."','".$domicilio['poblacion']."','".$domicilio['provincia']."',".$domicilio['coordenadas']['lat'].",".$domicilio['coordenadas']['lng'].");"; 
+            $db = DataBase::getInstance();  
+            $db->setQuery($sql);  
+            //$domi = $db->loadObjectList();
+            //$db->freeResults();    
+            //fwrite($file, "sql: ".$sql. PHP_EOL);
+            
+    
+    
+            
+            if ($db->alter()){
+                $checking=true;
+                //fwrite($file, "sql: OK". PHP_EOL);
+            }
+            else {
+                $checking=false;
+                //fwrite($file, "sql: NO OK". PHP_EOL);
+            }
+        }
+        // Datos del cliente si es 0
+        if ($cliente<1){
+            //add cliente       
+            
+            $sql="INSERT INTO pedidos_clientes (idPedido,tratamiento,nombre,apellidos,telefono,email,publicidad) VALUES (".$idPedido.",'".$tratamiento."','".$nombre."','".$apellidos."','".$telefono."','".$email."','".$publicidad."');"; 
+            
+            $db = DataBase::getInstance();  
+            $db->setQuery($sql);  
+            //$clien = $db->loadObjectList();  
+            //$db->freeResults();
             
             //fwrite($file, "sql: ".$sql. PHP_EOL);
             
-            $idLineaPedido=$linea[0]->idLineaPedido;
-            //fwrite($file, "linea: ".$idLineaPedido. PHP_EOL);
-            // elementos menu
-            if (isset($carrito[$x]['elmentosMenu'])) {
-                for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
-                    $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
-                    $db = DataBase::getInstance();  
-                    $db->setQuery($sql);  
-                    //$linea = $db->loadObjectList();
-                    //$db->freeResults();
-                    //fwrite($file, "sql: ".$sql. PHP_EOL);
-                    if ($db->alter()){
-                        //fwrite($file, "sql OK ". PHP_EOL);
-                    }
-                    else {
-                        //fwrite($file, "sql NO ". PHP_EOL);
-                    }
-                    
-                }
+            if ($db->alter()){
+                $checking=true;
+                //fwrite($file, "sql: OK". PHP_EOL);
             }
-            // modificadores
-            if (isset($carrito[$x]['modificadores'])) {
-                for($j=0;$j<count($carrito[$x]['modificadores']);$j++){
-                    
-                    $sql="INSERT INTO pedidos_lineas_modificadores (idLineaPedido,idModificador,descripcion,precio) VALUES (".$idLineaPedido.",'".$carrito[$x]['modificadores'][$j]['id']."','".$carrito[$x]['modificadores'][$j]['nombre']."','".$carrito[$x]['modificadores'][$j]['precio']."');"; 
-                    
-                    $db = DataBase::getInstance();  
-                    $db->setQuery($sql);  
-                    //$modifi = $db->loadObjectList();
-                    //$db->freeResults();    
-                    if ($db->alter()){
-                        //fwrite($file, "sql OK ". PHP_EOL);
-                    }
-                    else {
-                        //fwrite($file, "sql NO ". PHP_EOL);
-                    }
-                    //fwrite($file, "sql: ".$sql. PHP_EOL);
-
-                }
+            else {
+                $checking=false;
+                //fwrite($file, "sql: NO OK". PHP_EOL);
             }
-         }
-         else {
-             $checking=false;
-         }
-
-         
-         
-    }  
-    // domicilio si envio=1
-
-    if ($envio<2){
-        //add domicilio
-        $sql="INSERT INTO pedidos_domicilios (idPedido,direccion,complementario,cod_postal,poblacion,provincia,lat,lng) VALUES (".$idPedido.",'".$domicilio['direccion']."','".$domicilio['complementario']."','".$domicilio['cod_postal']."','".$domicilio['poblacion']."','".$domicilio['provincia']."',".$domicilio['coordenadas']['lat'].",".$domicilio['coordenadas']['lng'].");"; 
-        $db = DataBase::getInstance();  
-        $db->setQuery($sql);  
-        //$domi = $db->loadObjectList();
-        //$db->freeResults();    
-        //fwrite($file, "sql: ".$sql. PHP_EOL);
-        
-
-
-        
-        if ($db->alter()){
-            $checking=true;
-            //fwrite($file, "sql: OK". PHP_EOL);
-        }
-        else {
-            $checking=false;
-            //fwrite($file, "sql: NO OK". PHP_EOL);
-        }
-    }
-    // Datos del cliente si es 0
-    if ($cliente<1){
-        //add cliente       
-        
-        $sql="INSERT INTO pedidos_clientes (idPedido,tratamiento,nombre,apellidos,telefono,email,publicidad) VALUES (".$idPedido.",'".$tratamiento."','".$nombre."','".$apellidos."','".$telefono."','".$email."','".$publicidad."');"; 
-        
-        $db = DataBase::getInstance();  
-        $db->setQuery($sql);  
-        //$clien = $db->loadObjectList();  
-        //$db->freeResults();
-        
-        //fwrite($file, "sql: ".$sql. PHP_EOL);
-        
-        if ($db->alter()){
-            $checking=true;
-            //fwrite($file, "sql: OK". PHP_EOL);
-        }
-        else {
-            $checking=false;
-            //fwrite($file, "sql: NO OK". PHP_EOL);
-        }
-        
-
-    }
-    // cupones
-    if ($array['idcupon']>0){
-        if (($array['idcupon']==1)||($array['idcupon']==2)){
-            $sql='UPDATE cuponesespeciales SET usado="1", importe="'.$array['cupon'].'" WHERE codigo="'.$array['codigocupon'].'" AND usuario="'.$cliente.'";';
-        }
-        else {
-            $sql='INSERT INTO cupones (codigo, usuario, importe) VALUES ("'.$array['codigocupon'].'", "'.$cliente.'", "'.$array['cupon'].'");';
-        }
-        $db = DataBase::getInstance();  
-        $db->setQuery($sql);  
-        //$cupones = $db->loadObjectList();  
-        //$db->freeResults();
-        //fwrite($file, "sql: ".$sql. PHP_EOL);
-        
-        if ($db->alter()){
-            $checking=true;
-            //fwrite($file, "sql: OK". PHP_EOL);
-        }
-        else {
-            $checking=false;
-            //fwrite($file, "sql: NO OK". PHP_EOL);
-        }
-        /*
-        $file = fopen("cupones.txt", "w");
-        fwrite($file, "sql: ". $sql . PHP_EOL);
-
-        fclose($file);
-        */
-    }
+            
     
-}
-if ($checking){
-   $sql="INSERT INTO orders (idPedido,datos) VALUES (".$idPedido.",'".json_encode($order,JSON_UNESCAPED_UNICODE)."');"; 
-    //fwrite($file, "sql: ".$sql. PHP_EOL);  
-    $db = DataBase::getInstance();  
-    $db->setQuery($sql);   
-    if ($db->alter()){
-        $checking=true;
-        //fwrite($file, "sql: OK". PHP_EOL);
+        }
+        // cupones
+        if ($array['idcupon']>0){
+            if (($array['idcupon']==1)||($array['idcupon']==2)){
+                $sql='UPDATE cuponesespeciales SET usado="1", importe="'.$array['cupon'].'" WHERE codigo="'.$array['codigocupon'].'" AND usuario="'.$cliente.'";';
+            }
+            else {
+                $sql='INSERT INTO cupones (codigo, usuario, importe) VALUES ("'.$array['codigocupon'].'", "'.$cliente.'", "'.$array['cupon'].'");';
+            }
+            $db = DataBase::getInstance();  
+            $db->setQuery($sql);  
+            //$cupones = $db->loadObjectList();  
+            //$db->freeResults();
+            //fwrite($file, "sql: ".$sql. PHP_EOL);
+            
+            if ($db->alter()){
+                $checking=true;
+                //fwrite($file, "sql: OK". PHP_EOL);
+            }
+            else {
+                $checking=false;
+                //fwrite($file, "sql: NO OK". PHP_EOL);
+            }
+            /*
+            $file = fopen("cupones.txt", "w");
+            fwrite($file, "sql: ". $sql . PHP_EOL);
+    
+            fclose($file);
+            */
+        }
+        
     }
-    else {
-        $checking=false;
-        //fwrite($file, "sql: NO OK". PHP_EOL);
+    if ($checking){
+       $sql="INSERT INTO orders (idPedido,datos) VALUES (".$idPedido.",'".json_encode($order,JSON_UNESCAPED_UNICODE)."');"; 
+        //fwrite($file, "sql: ".$sql. PHP_EOL);  
+        $db = DataBase::getInstance();  
+        $db->setQuery($sql);   
+        if ($db->alter()){
+            $checking=true;
+            //fwrite($file, "sql: OK". PHP_EOL);
+        }
+        else {
+            $checking=false;
+            //fwrite($file, "sql: NO OK". PHP_EOL);
+        }
     }
+
+
+
+    $json=array("valid"=>$checking,"order"=>$OrderId,"idpedido"=>$idPedido);
+    //fwrite($file, "json: ". json_encode($json) . PHP_EOL);
+    
+    //fclose($file);
+    ob_end_clean();
+    echo json_encode($json); 
 }
-
-
-
-$json=array("valid"=>$checking,"order"=>$OrderId,"idpedido"=>$idPedido);
-//fwrite($file, "json: ". json_encode($json) . PHP_EOL);
-
-//fclose($file);
-ob_end_clean();
-echo json_encode($json); 
-
 
 
 
