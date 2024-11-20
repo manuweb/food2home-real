@@ -23,10 +23,19 @@ else {
     $array['activo_app']=1;
 }
 
-$sql="UPDATE categorias SET activo_web='".$array['activo_web']."', activo_app='".$array['activo_app']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
+if ($array['id']==0){
+    
+    $sql="INSERT INTO categorias (id, tienda, nombre, grupo, orden, imagen, impuesto, activo, activo_web, activo_app, imagen_app, modifier_category_id, modifier_group_id) VALUES (NULL, '".$array['tienda']."', '".$array['nombre']."', '".$array['grupo']."', '0', '', '".$array['impuesto']."', '1', '1', '0', '', NULL, NULL);";
+}
+else {
+$sql="UPDATE categorias SET nombre='".$array['nombre']."',activo_web='".$array['activo_web']."', activo_app='".$array['activo_app']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
 
-
-
+}
+/*
+$file = fopen("zz-guiardaprod.txt", "w");
+fwrite($file, "sql: ". $sql . PHP_EOL);
+fclose($file);
+*/
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
