@@ -4,6 +4,7 @@
 function muestragrupos(){
      $('#titulo-productos').html('<span>Grupos</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
     $('#volver-productos').attr("href", "javascript:navegar('#view-home');");
+    $('#boton-add-grupo').attr('onclick','editaGrupo(); ');
     var server=servidor+'admin/includes/leegrupos.php';
     
     $.ajax({
@@ -476,12 +477,13 @@ function guardagrupo(id){
     var formData = app.form.convertToData('#grupo-form');   var nombre=$('input[name=nombre]').val(); 
     var impuesto=$('input[name=impuesto]').val();  
     console.log('nombre:'+nombre+' impuesto:'+impuesto);
+    
     var server=servidor+'admin/includes/guardagrupo.php';
     $.ajax({
         type: "POST",
         url: server,
         dataType:"json",
-        data: {id:id, activo_web:activo_web, activo_app:activo_app, tienda:tienda,nombre:nombre,impuesto:impuesto} ,
+        data: {id:id,nombre:nombre, impuesto:impuesto, activo_web:activo_web, activo_app:activo_app, tienda:tienda,nombre:nombre,impuesto:impuesto} ,
         success: function(data){
             var obj=Object(data);   
             if (obj.valid==true){
@@ -532,7 +534,7 @@ function muestracategorias(grupo,nombregrupo){
                 var txt='<div class="grid grid-cols-2"><div class=""></div><div class=""></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable" id="lista-categorias">'+
                     '<ul id="prod">';
-
+                if(id!=null){
                 for (x=0;x<id.length;x++){
                     var chk_web='';
                     var chk_app='';
@@ -588,6 +590,7 @@ function muestracategorias(grupo,nombregrupo){
                         '<div class="sortable-handler" ></div>'+
 
                     '</li>';
+                }
                 }
                 txt=txt+
                     '</ul>'+
@@ -910,7 +913,7 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                 var txt='<div class="grid grid-cols-2"><div class=""></div><div class=""></div></div>';
                  txt+='<div class="list sortable sortable-opposite list-outline-ios list-dividers-ios" id="lista-productos">'+
                     '<ul id="prod">';
-                
+                if(id!=null){
                 for (x=0;x<id.length;x++){
                     var chk_web='';
                     var chk_app='';
@@ -970,7 +973,7 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                     
                     
                 }
-                
+                }
                 txt=txt+
                     '</ul>'+
                 '</div>';               
