@@ -38,13 +38,15 @@ if (isset($_FILES)) {
         }
             
            
-        imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+        //imagewebp($img, $uploaddir.$newFileName.'.webp',80);
+        imagepng($img, $uploaddir.$newFileName.'.png',8,);
         imagedestroy($img);
         
         
         
 
-            $sql="UPDATE categorias  SET imagen_app='".$newFileName.'.webp'."' WHERE id='".$_POST['id']."' AND tienda='".$array['tienda']."';";
+            //$sql="UPDATE categorias  SET imagen_app='".$newFileName.'.webp'."' WHERE id='".$_POST['id']."' AND tienda='".$array['tienda']."';";
+        $sql="UPDATE categorias  SET imagen_app='".$newFileName.'.png'."' WHERE id='".$_POST['id']."' AND tienda='".$array['tienda']."';";
 
             $database = DataBase::getInstance();
             $database->setQuery($sql);
@@ -64,15 +66,15 @@ $json=array("valid"=>$checking);
 
 echo json_encode($json); 
 
-/*
+
 $file = fopen("xxx.txt", "w");
 fwrite($file, "Datos: ". json_encode($array) . PHP_EOL);
 fwrite($file, "Datos: ". json_encode($_FILES) . PHP_EOL);
-//
+
 
 fwrite($file, "Sql: ". $sql . PHP_EOL); 
 
 fclose($file);
-*/
+
 
 ?>

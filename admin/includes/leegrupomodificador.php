@@ -15,9 +15,9 @@ include "../../webapp/MySQL/DataBase.class.php";
 header("Access-Control-Allow-Origin: *");
 
 
-//$array = json_decode(json_encode($_POST), true);
+$array = json_decode(json_encode($_POST), true);
 
-$array['id']=34;
+//$array['id']=45;
 
 $checking=false;
 
@@ -26,7 +26,7 @@ $sql="SELECT id, nombre, modifierCategories_id FROM modifierGroups WHERE id='".$
 $database = DataBase::getInstance();
 $database->setQuery($sql);
 $result = $database->execute();
-echo $sql."<br>";
+//echo $sql."<br>";
 if ($result) {    
     $checking=true;
     $n=0;
@@ -39,7 +39,7 @@ if ($result) {
         if ($modificadores[$n]!=''){
             $sql2="SELECT id, nombre FROM modifierCategories WHERE id IN (".$modificadores[$n].");";
 
-            echo $sql2."<br>";
+            //echo $sql2."<br>";
             $database = DataBase::getInstance();
             $database->setQuery($sql2);
             $result2 = $database->execute();
