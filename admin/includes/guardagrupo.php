@@ -23,8 +23,13 @@ if($array['activo_app']=='false'){
 else {
     $array['activo_app']=1;
 }
+if ($array['id']==0){
+    $sql="INSERT INTO grupos (id, tienda, nombre, orden, imagen, impuesto, activo, activo_web, activo_app, imagen_app) VALUES (NULL, '0', '".$array['nombre']."', 0, '', 2, 0, '".$array['activo_app']."', '0', '');";
+}
+else {
+    $sql="UPDATE grupos SET nombre='".$array['nombre']."', activo_web='".$array['activo_web']."', activo_app='".$array['activo_app']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
+}
 
-$sql="UPDATE grupos SET activo_web='".$array['activo_web']."', activo_app='".$array['activo_app']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
 
 
 
