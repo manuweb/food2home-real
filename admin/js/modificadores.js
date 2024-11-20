@@ -375,7 +375,6 @@ function cambiaActivo(e) {
    
 }
 
-
 function cambiaAuto(e) {
     var id=e.getAttribute('data-id');
     var estado=$(e).prop('checked');
@@ -437,6 +436,7 @@ function cambiaNombre(e) {
                        
     );   
 }
+
 function cambiaPrecio(e) {
     var id=e.getAttribute('data-id');
     var precio=e.getAttribute('data-precio');
@@ -543,7 +543,7 @@ function editagrupomodificadores(id=0, nombre='',nuevo='si') {
             '<div class="block page-content">'+
               '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><br>'+
                 '<div class="title">Grupo Modificador</div>'+
-                '<form>'+
+                '<form id="grupo-modificadores-form">'+
                 '<div class="list">'+
                     '<ul>'+
                        '<li>'+
@@ -587,7 +587,6 @@ function editagrupomodificadores(id=0, nombre='',nuevo='si') {
             //console.log('Popup open');
                 if (id!='0'){
                     var server=servidor+'admin/includes/leegrupomodificador.php';
-
                     $.ajax({
                         type: "POST",
                         url: server,
@@ -595,6 +594,7 @@ function editagrupomodificadores(id=0, nombre='',nuevo='si') {
                         dataType:"json",
                         success: function(data){
                             var obj=Object(data);
+                            
                             if (obj.valid==true){
                                 
                                 var nombre=obj.nombre;
@@ -627,12 +627,12 @@ function editagrupomodificadores(id=0, nombre='',nuevo='si') {
     
     $('.save-data').on('click', function () {
         
-        var formData = app.form.convertToData('#categoria-form'); 
+        var formData = app.form.convertToData('#grupo-modificadores-form'); 
         var id=$('input[name=id]').val();
         var nombre=$('input[name=nombre]').val();
 
         var server=servidor+'admin/includes/guardagrupomodificador.php';
-        app.preloader.show();
+        //app.preloader.show();
         $.ajax({
             type: "POST",
             url: server,
@@ -667,7 +667,7 @@ function muestrgrupoamodificadores(id,nombre) {
                 '<div class="title">Grupo <b>'+nombre+'<b></div>'+    
                 '<div class="block-title">Categorías:</div>'+
                 '<div id="cat-page" class="block block-strong">'+
-                    '<div class="list sortable sortable-opposite" id="lista-cate">'+
+                    '<div class="list sortable sortable-opposite sortable-enabled" id="lista-cate">'+
                     '</div>'+
                 '</div>'+
        
@@ -722,76 +722,88 @@ function muestrgrupoamodificadores(id,nombre) {
                             var idg=obj.id;
                             var nombreg=obj.nombre; 
                             var cate=obj.modificadores[0].split(",");
-                            var txt2='<ul>';
-
+                            var txt2='<ul id="inicModGru">';
+                            
                             var server=servidor+'admin/includes/leecategoriamodificadores.php';
-                            $.ajax({
-                                type: "POST",
-                                url: server,
-                                data:{id:id, order:obj.modificadores[0]},
-                                dataType:"json",
-                                success: function(data){
-                                    var obj=Object(data);
-                                    if (obj.valid==true){
-                                        var idg=obj.id;
-                                        var nombreg=obj.nombre; 
+                           
+$.ajax({
+    type: "POST",
+    url: server,
+    data:{id:id, order:obj.modificadores[0]},
+    dataType:"json",
+    success: function(data){
+        var obj=Object(data);
+        if (obj.valid==true){
+            var idg=obj.id;
+            var nombreg=obj.nombre; 
+            var num='';
+            var txt='<option value="0" disabled ></option>';
+                                       
+                for(x=0;x<idg.length;x++){
+                    num=idg[x].toString();
+                    if (cate.indexOf( num )>=0 ){
 
-                                        var num='';
-                                        var txt='<option value="0" disabled ></option>';
-                                        for(x=0;x<idg.length;x++){
-                                            num=idg[x].toString();
-                                            if (cate.indexOf( num )>=0 ){
+                        txt2+=
+                      '<li data="'+idg[x]+'">'+
+                        '<div class="item-content" >'+
+                       
+                            '<div class="item-inner">'+
+                                '<div class="item-title">'+nombreg[x]+'</div>'+
+                                '<div class="item-after" onclick="borraCategoria(\''+id+'\',\''+nombre+'\',\''+idg[x]+'\',\''+cate+'\');"><i class="f7-icons" >trash</i></div>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="sortable-handler" ></div>'+
+                        '</li>';
+                        
+                    }
+                    else {
+                        txt+='<option value="'+idg[x]+'">'+nombreg[x]+'</option>';
+                    }
+                
+                }
+            txt2+='</ul>';
+            
+            $("#lista-cate").html(txt2);
+            var aGrupos=new Array();
+            app.sortable.enable($('#lista-cate'));
+            app.on('sortableSort', function (listEl, indexes) {
+               var n=0;
+                $("#inicModGru li").each(function(){
+                    aGrupos[n]=$(this).attr('data');
 
-                                                txt2+=
-                                                  '<li>'+
-                                                    '<div class="item-content >'+
-                                                        '<div class="item-inner">'+
-                                                            '<div class="item-title">'+nombreg[x]+'</div>'+
-                                                            '<div class="item-after" onclick="borraCategoria(\''+id+'\',\''+nombre+'\',\''+idg[x]+'\',\''+cate+'\');"><i class="f7-icons" >trash</i></div>'+
-                                                        '</div>'+
-                                                    '</div>'+
-                                                    '<div class="sortable-handler" ></div>'+
-                                                '</li>';
-                                            }
-                                            else {
-                                                txt+='<option value="'+idg[x]+'">'+nombreg[x]+'</option>';
-                                            }
-                                        }
-                                        txt2=txt2+'</ul>';
-                                        $("#lista-cate").html(txt2);
+                    n++;
+                }); 
+                
+                //console.log(id+":"+cate);
 
-                                        app.sortable.enable($('#lista-cate'));
-                                        app.on('sortableSort', function (listEl, indexes) {
-                                            cate=ordenaArray(cate,indexes['from'],indexes['to']);
-                                            //alert(id+":"+cate);
+                var server=servidor+'admin/includes/ordengrupomodificador.php';
 
-                                            var server=servidor+'admin/includes/ordengrupomodificador.php';
-                                            
-                                            $.ajax({
-                                                type: "POST",
-                                                url: server,
-                                                data:{iid:id, cate:cate},
-                                                dataType:"json",
-                                                success: function(data){
-                                                    var obj=Object(data);
-                                                    if (obj.valid==true){
-                                                    }
-                                                    else{
-                                                        console.log('ERROR');
-                                                    } 
-                                                }
-                                            });
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    data:{id:id, cate:aGrupos},
+                    dataType:"json",
+                    success: function(data){
+                        var obj=Object(data);
+                        if (obj.valid==true){
+                        }
+                        else{
+                            console.log('ERROR');
+                        } 
+                    }
+                });
+                
 
-                                        });
+            });
 
-                                        $("#select-categoria").html(txt);
-                                    }
-                                    else{
-                                        app.dialog.alert('No se pudo leer las categorias');
-                                    }
-                                }
-                                
-                            });
+            $("#select-categoria").html(txt);
+        }
+        else{
+            app.dialog.alert('No se pudo leer las categorias');
+        }
+    }
+
+});
 
                         }
                         else{
