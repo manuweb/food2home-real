@@ -504,7 +504,7 @@ function muestracategorias(grupo,nombregrupo){
     
     $('#volver-productos').attr("href", "javascript:muestragrupos();");
     $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -> '+nombregrupo+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
-    $('#boton-add-grupo').attr('onclick','');
+    $('#boton-add-grupo').attr('onclick','editaCategoria('+grupo+',\''+nombregrupo+'\',0,\'\'); ');
     var server=servidor+'admin/includes/leecategorias.php';
     
     $.ajax({
@@ -651,7 +651,7 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
             '<div class="block page-content">'+
               '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><br>'+
             
-            '<div class="title">Modificar Categoría</div>'+
+            '<div class="title titulo-categoria">Modificar Categoría</div>'+
             '<form  id="grupo-form" enctype="multipart/form-data">'+
                 '<div class="list">'+
                 '<ul>'+
@@ -701,7 +701,7 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                   '</ul>'+ 
                 '</div>'+
         
-                '<div style="text-align:center;">'+
+                '<div style="text-align:center;" class="producto-nuevo">'+
                   '<p><span style="font-size:12px;">Imagen Web/App: </span></p>'+
                   '<img name="imagen" id="imagen-app" src="" width="80%" height="auto"/>  '+  
                   '<input id="input-imagen" type="file" accept="image/*" onchange="loadFileImg(event,\'#imagen-app\');$(\'#guarda-imagen\').show();" style="display:none;">'+
@@ -721,6 +721,8 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
         on: {
           open: function (popup) {
             //console.log('Popup open');
+                if (id!=0){
+            
                 var server=servidor+'admin/includes/leecategoria.php';
                 $.ajax({
                     type: "POST",
@@ -771,6 +773,17 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                         }
                     }
                 });
+                }
+              else {
+                  $('.producto-nuevo').hide();
+                  $('.titulo-categoria').html('Nueva categoría');
+                  $('input[name=nombre]').attr('disabled',false);
+                    $('input[name=impuesto]').attr('disabled',false);
+              }
+              if(integracion==2){
+                  $('input[name=nombre]').attr('disabled',false);
+                    $('input[name=impuesto]').attr('disabled',false);
+              }
               if(integracion==1){
                     //nombre
                     //impuesto
@@ -782,7 +795,7 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
                 else {
                     $('#revo-img').hide();
                     $('#revo-act').hide();
-                    $('#titulo-edita-grupo').html('NUEVO GRUPO');
+                    //$('#titulo-edita-grupo').html('NUEVO GRUPO');
                 }
                     
           },
@@ -836,13 +849,14 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
     $('.save-data').on('click', function () {
         var activo_web=$('#chk-activo-web').prop("checked");
         var activo_app=$('#chk-activo-app').prop("checked");
-        var formData = app.form.convertToData('#grupo-form');      
+        var formData = app.form.convertToData('#grupo-form');   var impuesto=$('input[name=impuesto]').val(); 
+        var nombre=$('input[name=nombre]').val();    
         var server=servidor+'admin/includes/guardacategoria.php';
         $.ajax({
             type: "POST",
             url: server,
             dataType:"json",
-            data: {id:id, activo_web:activo_web, activo_app:activo_app, tienda:tienda} ,
+            data: {id:id,grupo: idGrupo,nombre:nombre,impuesto:impuesto,activo_web:activo_web, activo_app:activo_app, tienda:tienda} ,
             success: function(data){
                 var obj=Object(data);   
                 if (obj.valid==true){
@@ -1450,7 +1464,8 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                 if (obj.valid==true){
                     //leeempresa();
                    
-                    muestraproductos(grupo,nombregrupo,categoria,nombrecategoria)
+                    muestraproductos(grupo,nombregrupo,categoria,nombrecategoria);
+                   
                 }
                 else{
                     app.dialog.alert('No se pudo guardar el producto');
