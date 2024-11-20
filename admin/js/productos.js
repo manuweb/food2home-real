@@ -103,7 +103,7 @@ function muestragrupos(){
                 
                 $('#product-page').html(txt+txt_add_grupo);
                 $('.button-add-grupo').on('click', function () {
-                    editaGrupo(0);
+                    //editaGrupo(0);
                 });
                 app.sortable.enable("#lista-grupos");
                 var aGrupos=new Array();
@@ -318,7 +318,7 @@ function editaGrupo(id=0) {
                   '</ul>'+ 
                 '</div>'+
         
-                '<div style="text-align:center;">'+
+                '<div style="text-align:center;" id="div-img-web">'+
                   '<p><span style="font-size:12px;">Imagen Web: </span></p>'+
                   '<img name="imagen" id="imagen-app" src="" width="60%" height="auto"/>  '+  
                   '<input id="input-imagen" type="file" accept="image/*" onchange="loadFileImg(event,\'#imagen-app\');$(\'#guarda-imagen\').show();" style="display:none;">'+
@@ -328,7 +328,7 @@ function editaGrupo(id=0) {
                 '</form>'+
                 '<div class="block block-strong grid grid-cols-2 grid-gap">'+
                     '<div class=""><a class="button button-fill popup-close button-cancelar" href="#">Cancelar</a></div>'+
-                    '<div class=""><a class="button button-fill save-data" href="#">Guardar</a</div>'+
+                    '<div class=""><a class="button button-fill" href="#" id="guardagrupo-boton" onclick="guardagrupo(0);">Guardar</a</div>'+
                 '</div>'+
          
             '</div>'+
@@ -339,6 +339,7 @@ function editaGrupo(id=0) {
             open: function (popup) {
             //console.log('Popup open');
                 if (id!=0){
+                    $('#guardagrupo-boton').attr("onclick","guardagrupo("+id+")");
                     var server=servidor+'admin/includes/leegrupo.php';
                     $.ajax({
                         type: "POST",
@@ -390,7 +391,15 @@ function editaGrupo(id=0) {
                     });
                 }
                 else {
-                    document.getElementById('imagen-app').src=servidor+'admin/img/no-imagen.png';
+                   $('#titulo-edita-grupo').html('NUEVO GRUPO'); document.getElementById('imagen-app').src=servidor+'admin/img/no-imagen.png';
+                    if(integracion==2){
+                        $('#titulo-edita-grupo').html('NUEVO GRUPO'); 
+                        $('#revo-img').hide();
+                       $('#cambia-imagen').hide(); 
+                       $('#revo-act').hide();
+                        $('#div-img-web').hide();
+                        //document.getElementById('imagen-app').src=servidor+'admin/img/no-imagen.png';
+                    }
                 }
                 if(integracion==1){
                     //nombre
@@ -403,7 +412,7 @@ function editaGrupo(id=0) {
                 else {
                     $('#revo-img').hide();
                     $('#revo-act').hide();
-                    $('#titulo-edita-grupo').html('NUEVO GRUPO');
+
                 }
 
             },
@@ -457,31 +466,37 @@ function editaGrupo(id=0) {
 
     });    
     
-    $('.save-data').on('click', function () {
-        var activo_web=$('#chk-activo-web').prop("checked");
-        var activo_app=$('#chk-activo-app').prop("checked");
-        var formData = app.form.convertToData('#grupo-form');      
-        var server=servidor+'admin/includes/guardagrupo.php';
-        $.ajax({
-            type: "POST",
-            url: server,
-            dataType:"json",
-            data: {id:id, activo_web:activo_web, activo_app:activo_app, tienda:tienda} ,
-            success: function(data){
-                var obj=Object(data);   
-                if (obj.valid==true){
-                    muestragrupos();
-                }
-                else{
-                    app.dialog.alert('No se pudo guardar el grupo');
-                }   
+
+}
+
+function guardagrupo(id){
+        
+    var activo_web=$('#chk-activo-web').prop("checked");
+    var activo_app=$('#chk-activo-app').prop("checked");
+    var formData = app.form.convertToData('#grupo-form');   var nombre=$('input[name=nombre]').val(); 
+    var impuesto=$('input[name=impuesto]').val();  
+    console.log('nombre:'+nombre+' impuesto:'+impuesto);
+    var server=servidor+'admin/includes/guardagrupo.php';
+    $.ajax({
+        type: "POST",
+        url: server,
+        dataType:"json",
+        data: {id:id, activo_web:activo_web, activo_app:activo_app, tienda:tienda,nombre:nombre,impuesto:impuesto} ,
+        success: function(data){
+            var obj=Object(data);   
+            if (obj.valid==true){
+                muestragrupos();
             }
-        });
+            else{
+                app.dialog.alert('No se pudo guardar el grupo');
+            }   
+        }
+    });
         
         
                   
-        dynamicPopup.close();   
-    });
+       app.popup.close();   
+
 }
 
 function muestracategorias(grupo,nombregrupo){
@@ -489,6 +504,7 @@ function muestracategorias(grupo,nombregrupo){
     
     $('#volver-productos').attr("href", "javascript:muestragrupos();");
     $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -> '+nombregrupo+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
+    $('#boton-add-grupo').attr('onclick','');
     var server=servidor+'admin/includes/leecategorias.php';
     
     $.ajax({
@@ -850,7 +866,7 @@ function muestraproductos(grupo,nombregrupo,categoria,nombrecategoria){
     
     $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -><a href="javascript:muestracategorias(\''+grupo+'\',\''+nombregrupo+'\');" class="item-link"> '+nombregrupo+'</a>->'+nombrecategoria+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
     $('#volver-productos').attr("href", "javascript:muestracategorias('"+grupo+"','"+nombregrupo+"');");
-
+$('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+'\','+categoria+',\''+nombrecategoria+'\');');
     var server=servidor+'admin/includes/leeproductos.php';
     
     $.ajax({
@@ -1006,7 +1022,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
             '<div class="block page-content">'+
               '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><br>'+
             
-            '<div class="title">Modificar Producto</div>'+
+            '<div class="title titulo-edita-producto">Modificar Producto</div>'+
             '<form  id="producto-form" enctype="multipart/form-data">'+
                 '<div class="list">'+
                 '<ul>'+
@@ -1062,19 +1078,11 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                         '<span class="toggle-icon"></span>'+
                       '</label>'+               
                     '</li>'+
-      /*
-                    '<li>'+
-                      '<span>Activo APP</span>'+
-                      '<label class="toggle toggle-init">'+
-                        '<input id="chk-activo-app" name="chk-activo-app" type="checkbox" checked />'+
-                        '<span class="toggle-icon"></span>'+
-                      '</label>'+         
-                    '</li>'+     
-        */
+
                     '<li>'+
                       '<span>Quitar modificadores</span>'+
                       '<label class="toggle toggle-init">'+
-                        '<input id="chk-activo-modificadores" name="chk-activo-modificadores" type="checkbox" checked />'+
+                        '<input id="chk-activo-modificadores" name="chk-activo-modificadores" type="checkbox" />'+
                         '<span class="toggle-icon"></span>'+
                       '</label>'+         
                     '</li>'+    
@@ -1112,16 +1120,8 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                           '</div>'+
                         '</div>'+
                       '</li>'+
-                      '<li id="precio-reparto">'+
-                        '<div class="item-content item-input">'+
-                          '<div class="item-inner">'+
-                            '<div class="item-title item-label">Precio reparto</div>'+
-                            '<div class="item-input-wrap">'+
-                              '<input type="text" name="precio_app" id="precio_app" placeholder="Precio reparto" value="" />'+
-                            '</div>'+
-                          '</div>'+
-                        '</div>'+
-                      '</li>'+
+
+      
                         '<li>'+
                         '<div class="item-content item-input">'+
                           '<div class="item-inner">'+
@@ -1149,8 +1149,8 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                     '<div id="alergias"></div>'+
                 '</div>'+
                 '<div class="block text-align:center">'+
-                    '<p><span style="font-size:12px;">Imagen Web/App: </span></p>'+
-                    '<div class="row">'+
+                    '<p class="producto-nuevo"><span style="font-size:12px;">Imagen Web/App: </span></p>'+
+                    '<div class="row producto-nuevo">'+
                         '<div class="col-100 medium-50 large-33 text-align-center">'+
                             '<img name="imagen1" id="imagen-app1" src="" width="80%" height="auto"/>  '+  
                             '<input id="input-imagen1" type="file" accept="image/*" onchange="loadFileImg(event,\'#imagen-app1\');$(\'#guarda-imagen1\').show();" style="display:none;">'+
@@ -1164,7 +1164,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
       
       
                 '</form>'+
-                '<div class="block block-strong grid grid-cols-2 grid-gap">'+
+                '<div class="block block-strong grid grid-cols-2 grid-gap ">'+
                     '<div class=""><a class="button button-fill popup-close button-cancelar" href="#">Cancelar</a></div>'+
                     '<div class=""><a class="button button-fill save-data" href="#">Guardar</a</div>'+
                 '</div>'+
@@ -1176,6 +1176,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
         on: {
           open: function (popup) {
             //console.log('Popup open');
+              if (id>0){
                 var server=servidor+'admin/includes/leeproducto.php';
                 $.ajax({
                     type: "POST",
@@ -1304,6 +1305,37 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                         }
                     }
                 });
+              }
+              else {
+                server=servidor+'admin/includes/leealergenos.php';   
+           
+                $.ajax({
+                    type: "POST",
+                    url: server,
+                    dataType:"json",
+                    data:{id:'foo'},
+                    success: function(data){
+
+                        var obj2=Object(data); 
+                        //console.log(obj2)
+                        var idalergeno=obj2.id;
+                        var nombrealergeno=obj2.nombre;
+                        var imagenalergeno=obj2.imagen;
+                        var txt_form_ale="";
+
+                        for (h=0;h<idalergeno.length;h++){   
+                            var checked="";
+
+
+                        txt_form_ale+='<div style="text-align:center;float:left;margin:10px;"><img src="'+servidor+'webapp/img/alergenos/'+imagenalergeno[h]+'" width="64px" height="auto"><br>'+nombrealergeno[h]+'<br><label class="checkbox"><input type="checkbox" name="alerChk" '+checked+' value="'+idalergeno[h]+'" /><i class="icon-checkbox"></i></label></div>';
+                        //console.log(obj2);
+                        }
+                        $('#alergias').html(txt_form_ale);
+                    }
+                });
+                  $('.producto-nuevo').hide();
+                  $('.titulo-edita-producto').html('Nuevo producto');
+              }
               if(integracion==1){
                     //nombre
                     //impuesto
@@ -1315,7 +1347,10 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
                 else {
                     $('#revo-img').hide();
                     $('#revo-act').hide();
+                    
                     $('#precio-revo').hide();
+                    $('input[name=nombre]').attr('disabled',false);
+                    $('input[name=impuesto]').attr('disabled',false);
                     //$('#titulo-edita-grupo').html('NUEVO PRODUCTO');
                 }
 
@@ -1380,66 +1415,7 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
             }
         });  
     });    
-    /*
-    $("#guarda-imagen2").on('click', function () {
-        app.preloader.show();
-        var f=document.getElementById('input-imagen2').files[0];
-        var FData = new FormData();
-        FData.append('imagen',f);    // this is main row
-        FData.append('id',id); 
-        var server=servidor+'admin/includes/guardaimgproducto2.php';
-        app.request({
-            url: server, 
-            method: 'POST', 
-            data: FData,
-            cache: false, 
-            dataType: 'application/json',
-            crossDomain: true, 
-            contentType: 'multipart/form-data',
-            processData: true, 
-            success: function (data){
-                app.preloader.hide(); 
-                var obj= JSON.parse(data);
-                if (obj.valid==true){
-                    //leealergenos();
-                }
-                else{
-                    app.dialog.alert('No se pudo guardar imagen');
-                }            
-              //console.log(data);
-              }
-        });      
-    });    
-    $("#guarda-imagen3").on('click', function () {
-        app.preloader.show();
-        var f=document.getElementById('input-imagen3').files[0];
-        var FData = new FormData();
-        FData.append('imagen',f);    // this is main row
-        FData.append('id',id); 
-        var server=servidor+'admin/includes/guardaimgproducto3.php';
-        app.request({
-            url: server, 
-            method: 'POST', 
-            data: FData,
-            cache: false, 
-            dataType: 'application/json',
-            crossDomain: true, 
-            contentType: 'multipart/form-data',
-            processData: true, 
-            success: function (data){
-                app.preloader.hide(); 
-                var obj= JSON.parse(data);
-                if (obj.valid==true){
-                    //leealergenos();
-                }
-                else{
-                    app.dialog.alert('No se pudo guardar imagen');
-                }            
-              //console.log(data);
-              }
-        });      
-    });    
-    */
+    
     
     $('.save-data').on('click', function () {
         var activo_web=$('#chk-activo-web').prop("checked");
@@ -1447,7 +1423,8 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
         var modifi=$('#chk-activo-modificadores').prop("checked");
         
        
-        var formData = app.form.convertToData('#grupo-form');      
+        var formData = app.form.convertToData('#grupo-form');   var impuesto=$('input[name=impuesto]').val(); 
+        var nombre=$('input[name=nombre]').val(); 
         var server=servidor+'admin/includes/guardaproducto.php';
         var precio_web=$('#precio_web').val();
         var precio_app=$('#precio_app').val();
@@ -1460,12 +1437,14 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
         });
         alergenos=alergenos.substring(0, alergenos.length - 1);
         //$('input[name=alergenos]').val(val_alergenos);
+
+        var server=servidor+'admin/includes/guardaproducto.php';
         
         $.ajax({
             type: "POST",
             url: server,
             dataType:"json",
-            data: {id:id, activo_web:activo_web, activo_app:activo_app,precio_web:precio_web, precio_app:precio_app,info:info, modifier_category_id:modifier_category_id, modifier_group_id:modifier_group_id,alergias:alergenos,modifi:modifi, tienda:tienda} ,
+            data: {id:id,categoria:categoria,nombre:nombre, impuesto:impuesto,activo_web:activo_web, activo_app:activo_app,precio_web:precio_web, precio_app:precio_app,info:info, modifier_category_id:modifier_category_id, modifier_group_id:modifier_group_id,alergias:alergenos,modifi:modifi, tienda:tienda} ,
             success: function(data){
                 var obj=Object(data);   
                 if (obj.valid==true){
