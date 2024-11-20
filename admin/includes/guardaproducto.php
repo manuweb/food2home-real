@@ -35,7 +35,7 @@ if ($array['id']==0){
 else {
     
 
-$sql="UPDATE productos SET info='".$array['info']."', activo_web='".$array['activo_web']."',  activo_app='".$array['activo_app']."',modificadores='".$array['modifi']."',precio_web='".$array['precio_web']."', modifier_category_id='".$array['modifier_category_id']."', modifier_group_id='".$array['modifier_group_id']."', alergias='".$array['alergias']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
+$sql="UPDATE productos SET info='".$array['info']."',nombre= '".$array['nombre']."',activo_web='".$array['activo_web']."',  activo_app='".$array['activo_app']."',modificadores='".$array['modifi']."',precio_web='".$array['precio_web']."', modifier_category_id='".$array['modifier_category_id']."', modifier_group_id='".$array['modifier_group_id']."', alergias='".$array['alergias']."' WHERE id='".$array['id']."' AND tienda='".$array['tienda']."'";
 
 }
 
