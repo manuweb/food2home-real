@@ -8,7 +8,7 @@ include "tiempo.php";
 
 
 
-$sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.cliente, pedidos.estadoPago, pedidos.fecha, pedidos.importe_fidelizacion, pedidos.monedero FROM pedidos  WHERE fecha >= '".date("Y")."-".date("m")."-".date("d")." 00:00:01' ORDER BY `pedidos`.`id` DESC;";
+$sql="SELECT pedidos.id, pedidos.numero, pedidos.numeroRevo, pedidos.cliente, pedidos.estadoPago, pedidos.fecha, pedidos.importe_fidelizacion, pedidos.monedero, pedidos.metodoPago FROM pedidos  WHERE fecha >= '".date("Y")."-".date("m")."-".date("d")." 00:00:01' ORDER BY `pedidos`.`id` DESC;";
 
 //echo "sql:<br>";
 //echo $sql;
@@ -28,6 +28,7 @@ while ($pedidos = $result->fetch_object()) {
     $numero=$pedidos->numero;
     $numeroRevo=$pedidos->numeroRevo;
     $estadoPago=$pedidos->estadoPago;
+    $metodoPago=$pedidos->metodoPago;
     $importe_fidelizacion=$pedidos->importe_fidelizacion;
     $monedero=$pedidos->monedero;
     $cliente=$pedidos->cliente;
@@ -41,7 +42,7 @@ while ($pedidos = $result->fetch_object()) {
         $estado='PENDIENTE';
         $color='style="color:black;"';
     }
-    if ($estadoPago==1){
+    if ($estadoPago==1 || $metodoPago==2){
         $estado='PAGADO';
         $color='style="color:black;"';
     }
@@ -61,7 +62,7 @@ while ($pedidos = $result->fetch_object()) {
     
 
         echo "(".$id.") nº: <b>".$numero."</b> idRevo: <b>".$numeroRevo."</b> Estado: <span ".$color."><b>".$estado."</b></span> Tiempo: <b>". round($minutos)  . "</b> minutos.<br>" ;
-    if ($estadoPago==0){
+    if ($estadoPago==0 && $metodoPago!=2){
         if (round($minutos)>$tiempo){
             if ($numeroRevo=='0'){
                 $aquitar[]=$id;
@@ -76,7 +77,7 @@ while ($pedidos = $result->fetch_object()) {
 echo "<hr>";
 for($x=0;$x<count($aquitar);$x++){
 
-    $sql='UPDATE pedidos SET estadoPago=-1 WHERE id='.$aquitar[$x].' AND numeroRevo="0"';
+    $sql='UPDATE pedidos SET estadoPago=-1 WHERE id='.$aquitar[$x].' AND numeroRevo="0" ';
     echo $sql;
     echo "<hr>";
     $database->setQuery($sql);
