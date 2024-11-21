@@ -421,7 +421,7 @@ function verpedido(idpedido,anulado,integracion,delivery,numDelivery){
         if (carrito[x]['elmentosMenu'][j]['nomMenu']!=txt_nom_menu){
             txt_nom_menu=carrito[x]['elmentosMenu'][j]['nomMenu'];
             txt+=''+
-        '<tr style="font-size:11px;font-style:italic;">'+
+        '<tr style="font-size:12px;font-style:italic;">'+
             '<th class="numeric-cell"></th>'+
             '<th class="label-cell"><b>'+txt_nom_menu+'</b></th>'+
             '<th class="numeric-cell"></th>'+
@@ -443,7 +443,7 @@ function verpedido(idpedido,anulado,integracion,delivery,numDelivery){
         if (carrito[x]['modificadores'][j]['nom_cat']!=txt_nom_menu){
             txt_nom_menu=carrito[x]['modificadores'][j]['nom_cat'];
             txt+=''+
-        '<tr style="font-size:11px;font-style:italic;">'+
+        '<tr style="font-size:12px;font-style:italic;">'+
             '<th class="numeric-cell"></th>'+
             '<th class="label-cell"><b>'+txt_nom_menu+'</b></th>'+
             '<th class="numeric-cell"></th>'+
