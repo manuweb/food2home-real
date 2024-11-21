@@ -438,15 +438,26 @@ function verpedido(idpedido,anulado,integracion,delivery,numDelivery){
     }
                             }   
                             if (typeof carrito[x]['modificadores']!='undefined'){
-                                for(var j=0;j<carrito[x]['modificadores'].length;j++){
-                                    txt+=''+
-                                    '<tr style="font-size:11px;font-style:italic;">'+
-                                        '<th class="numeric-cell"></th>'+
-                                        '<th class="label-cell">'+carrito[x]['modificadores'][j]['nombre']+'</th>'+
-                                        '<th class="numeric-cell">'+parseFloat(carrito[x]['modificadores'][j]['precio']).toFixed(2)+'</th>'+
-                                        '<th class="numeric-cell"></th>'+
-                                    '</tr>';
-                                }
+    var txt_nom_menu='';   
+    for(var j=0;j<carrito[x]['modificadores'].length;j++){
+        if (carrito[x]['modificadores'][j]['nom_cat']!=txt_nom_menu){
+            txt_nom_menu=carrito[x]['modificadores'][j]['nom_cat'];
+            txt+=''+
+        '<tr style="font-size:11px;font-style:italic;">'+
+            '<th class="numeric-cell"></th>'+
+            '<th class="label-cell"><b>'+txt_nom_menu+'</b></th>'+
+            '<th class="numeric-cell"></th>'+
+            '<th class="numeric-cell"></th>'+
+        '</tr>';
+        }
+        txt+=''+
+        '<tr style="font-size:11px;font-style:italic;">'+
+            '<th class="numeric-cell"></th>'+
+            '<th class="label-cell">'+carrito[x]['modificadores'][j]['nombre']+'</th>'+
+            '<th class="numeric-cell">'+parseFloat(carrito[x]['modificadores'][j]['precio']).toFixed(2)+'</th>'+
+            '<th class="numeric-cell"></th>'+
+        '</tr>';
+    }
                             }      
                             if (carrito[x]['comentario']!=''){
                                 txt+=''+
