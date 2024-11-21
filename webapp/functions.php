@@ -279,7 +279,7 @@ class RecomponePedido
     }
     
     public function BuscaLineasMenu($idLinea){
-        $sql="SELECT idArticulo,  descripcion, cantidad, precio, impuesto FROM pedidos_lineas_menu WHERE idLinea=".$idLinea.";";
+        $sql="SELECT pedidos_lineas_menu.idArticulo, pedidos_lineas_menu.descripcion, pedidos_lineas_menu.cantidad, pedidos_lineas_menu.precio, pedidos_lineas_menu.impuesto, MenuCategories.nombre FROM pedidos_lineas_menu LEFT JOIN MenuCategories on MenuCategories.id=pedidos_lineas_menu.idMenu WHERE pedidos_lineas_menu.idLinea=".$idLinea.";";
         $elmentosMenu=[];
         $database = DataBase::getInstance();
         $database->setQuery($sql);
@@ -294,6 +294,7 @@ class RecomponePedido
                     "iva" =>$lineasMenu->impuesto,
                     "precio" =>$lineasMenu->precio,
                     "img" =>$this->BuscaImg($lineasMenu->idArticulo),
+                    "nomMenu" =>$lineasMenu->nombre,
                     "mod" =>""
                 ];
             }
