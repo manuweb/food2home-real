@@ -1605,7 +1605,7 @@ class ImprimeTicket
             imagettftext($ticket, 20, 0, $margen+30, $y, $negro, $font_path_b, $txt);
             if ($carrito[$n]['menu']==1){
 
-                $txt='MENU '.$carrito[$n]['nombre'];
+                $txt='(M) '.$carrito[$n]['nombre'];
                 
 
             }
