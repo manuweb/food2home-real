@@ -1287,7 +1287,12 @@ class MisMails
 
             if (isset($carrito[$n]['modificadores'])){
                 $txt_mod="<br>";
+		$txt_nom_menu='';    
                 for ($j=0;$j<count($carrito[$n]['modificadores']);$j++){
+			if ($carrito[$n]['modificadores'][$j]['nom_cat']!=$txt_nom_menu){
+				$txt_nom_menu=$carrito[$n]['modificadores'][$j]['nom_cat'];
+				$textomail .="<b>".$txt_nom_menu."</b><br>";
+			}
                     $txt_mod.=$carrito[$n]['modificadores'][$j]['nombre'].", ";
                 }
                 $txt_mod=trim($txt_mod, ', ');
@@ -1300,7 +1305,12 @@ class MisMails
 
 
             if (isset($carrito[$n]['elmentosMenu'])){
+		$txt_nom_menu='';
                 for ($j=0;$j<count($carrito[$n]['elmentosMenu']);$j++){
+			if ($carrito[$n]['elmentosMenu'][$j]['nomMenu']!=$txt_nom_menu){
+				$txt_nom_menu=$carrito[$n]['elmentosMenu'][$j]['nomMenu'];
+				$textomail .='<tr><td></td><td  align ="left" valign="top"><b>'.$txt_nom_menu.'</b></td><td></td><td ></td><td></td></tr>';
+			}
                     $textomail.='<tr><td align ="center" valign="top"><img src="'.$carrito[$n]['elmentosMenu'][$j]['img'].'" width=30 height=auto></td><td  align ="left" valign="top">'.$carrito[$n]['elmentosMenu'][$j]['nombre'];
                     $textomail .="</td><td align ='right' valign='top'>".$carrito[$n]['elmentosMenu'][$j]['cantidad']."</td><td ></td><td></td></tr>";
 
