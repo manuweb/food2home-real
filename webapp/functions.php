@@ -279,7 +279,7 @@ class RecomponePedido
     }
     
     public function BuscaLineasMenu($idLinea){
-        $sql="SELECT idArticulo,  descripcion, cantidad, precio, impuesto FROM pedidos_lineas_menu WHERE idLinea=".$idLinea.";";
+        $sql="SELECT pedidos_lineas_menu.idArticulo, pedidos_lineas_menu.descripcion, pedidos_lineas_menu.cantidad, pedidos_lineas_menu.precio, pedidos_lineas_menu.impuesto, MenuCategories.nombre FROM pedidos_lineas_menu LEFT JOIN MenuCategories on MenuCategories.id=pedidos_lineas_menu.idMenu WHERE pedidos_lineas_menu.idLinea=".$idLinea.";";
         $elmentosMenu=[];
         $database = DataBase::getInstance();
         $database->setQuery($sql);
@@ -294,6 +294,7 @@ class RecomponePedido
                     "iva" =>$lineasMenu->impuesto,
                     "precio" =>$lineasMenu->precio,
                     "img" =>$this->BuscaImg($lineasMenu->idArticulo),
+                    "nomMenu" =>$lineasMenu->nombre,
                     "mod" =>""
                 ];
             }
@@ -1442,10 +1443,13 @@ class ImprimeTicket
 
             }
             if (isset($carrito[$x]['elmentosMenu'])){
-                //echo count($carrito[$x]['elmentosMenu'] );
-                echo "<br>";
 
+                $nomMenu='';
                 for ($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                    if ($nomMenu!=$carrito[$x]['elmentosMenu'][$j]['nomMenu']){
+                        $largo_pedido+=30;
+                        $nomMenu=$carrito[$x]['elmentosMenu'][$j]['nomMenu'];
+                    }
                     $largo_pedido+=30;
                 }
 
@@ -1632,7 +1636,15 @@ class ImprimeTicket
                  }
             }
             if (isset($carrito[$n]['elmentosMenu'])){
+                $nomMenu='';
                  for ($j=0;$j<count($carrito[$n]['elmentosMenu']);$j++){
+                    if ($nomMenu!=$carrito[$n]['elmentosMenu'][$j]['nomMenu']{
+                       
+                        $nomMenu=$carrito[$n]['elmentosMenu'][$j]['nomMenu'];
+                         $txt=$nomMenu;
+                        imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path_bi, $txt);
+                        $y+=30;
+                    }
                      $txt=$carrito[$n]['elmentosMenu'][$j]['cantidad'];
                     imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path_b, $txt);
                     $txt='x '.$carrito[$n]['elmentosMenu'][$j]['nombre'];
