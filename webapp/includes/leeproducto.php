@@ -232,7 +232,7 @@ if (count($grupo)>0) {
             $modifierCategories = $databaseInteraction->queryToArray($sql1);
         
              
-            $sql2="SELECT id, nombre, precio, autoseleccionado FROM modifiers WHERE id IN(".$modifierCategories[0]->modificadores.") AND activo='1' ORDER BY FIELD(id, ".$modifierCategories[0]->modificadores.");";
+            $sql2="SELECT id, nombre, precio, autoseleccionado FROM modifiers WHERE id IN(".$modifierCategories[0]->modificadores.") ORDER BY FIELD(id, ".$modifierCategories[0]->modificadores.");";
         
              $databaseInteraction = new DatabaseInteraction($host, $username, $password, $database);
             $modificadores = $databaseInteraction->queryToArray($sql2);
@@ -581,7 +581,7 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
             $tmp.='<div class="list media-list" style="margin: 0;"><ul>';
             // llenar
             
-            $tmp.=llenaOpcionesMenuIndividuales($MenuCategories->id,$MenuCategories->eleMulti, $MenuCategories->min, $MenuCategories->max);
+            $tmp.=llenaOpcionesMenuIndividuales($MenuCategories->id,$MenuCategories->eleMulti, $MenuCategories->min, $MenuCategories->max,$MenuCategories->id);
             
             
             
@@ -598,7 +598,7 @@ function llenaOpcionesMenu($idProd,$nombre,$colorprimario) {
         
 }
 
-function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max){
+function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max,$idMenu){
     $sql="SELECT MenuItems.orden, MenuItems.precio, MenuItems.producto, MenuItems.modifier_group_id, MenuItems.addPrecioMod, productos.nombre , productos.imagen, productos.imagen_app1 ,productos.alergias, productos.info, impuestos.porcentaje AS impuesto FROM MenuItems LEFT JOIN productos ON MenuItems.producto=productos.id LEFT JOIN categorias ON categorias.id=productos.categoria LEFT JOIN grupos ON grupos.id=categorias.grupo LEFT JOIN impuestos ON if (productos.impuesto='', if (categorias.impuesto='', grupos.impuesto, categorias.impuesto), productos.impuesto)=impuestos.id WHERE MenuItems.category_id='".$id."' AND MenuItems.activo=1 group by MenuItems.orden";
     $txt='';
     
@@ -638,7 +638,7 @@ function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max){
                             <div class="item-title">'.$Menus->nombre.'</div>
                         </div>
                        
-                            <div class="item-title" style="float: right;margin-right: -20px;">'.poneOpcionSelMenu($id,$Menus->producto,$Menus->nombre,$eleMulti,$min,$max,$Menus->precio,$x,$imagen,$Menus->impuesto).' </div>
+                            <div class="item-title" style="float: right;margin-right: -20px;">'.poneOpcionSelMenu($id,$Menus->producto,$Menus->nombre,$eleMulti,$min,$max,$Menus->precio,$x,$imagen,$Menus->impuesto,$idMenu).' </div>
                       
                         
                         <div class="item-subtitle">(+'.$Menus->precio.' €)</div>
@@ -664,7 +664,7 @@ function llenaOpcionesMenuIndividuales($id,$eleMulti,$min,$max){
 }
 
 
-function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,$imagen,$impuesto){
+function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,$imagen,$impuesto,$idMenu){
     // 0  1 no obligatorio
     // 1  varias opciones no obl
     // 2  seleccion 1 obligatorio
@@ -672,9 +672,9 @@ function poneOpcionSelMenu($id,$producto,$nombre,$eleMulti,$min,$max,$precio,$x,
     // 4  personalizado (min - max) oblig 
     
     $opcionSteeper=1;
-    $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#'.$min.'#'.$max.'#'.$precio.'#'.$imagen.'#'.$impuesto;
+    $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#'.$min.'#'.$max.'#'.$precio.'#'.$imagen.'#'.$impuesto.'#'.$idMenu;
      if ($eleMulti==1 || $eleMulti==3){
-         $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#0#999#'.$precio.'#'.$imagen.'#'.$impuesto;
+         $pasa=$x.'#'.$id.'#'.$producto.'#'.$nombre.'#'.$eleMulti.'#0#999#'.$precio.'#'.$imagen.'#'.$impuesto.'#'.$idMenu;
      }
     if ($eleMulti==0){
         //seleccionar 1
