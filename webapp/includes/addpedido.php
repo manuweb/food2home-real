@@ -491,7 +491,8 @@ else {
                 // elementos menu
                 if (isset($carrito[$x]['elmentosMenu'])) {
                     for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
-                        $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
+                        $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,idMenu,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", ".$carrito[$x]['elmentosMenu'][$j]['idMenu'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
+                        
                         $db = DataBase::getInstance();  
                         $db->setQuery($sql);  
                         //$linea = $db->loadObjectList();
