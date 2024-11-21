@@ -1289,14 +1289,17 @@ class MisMails
                 $txt_mod="<br>";
 		$txt_nom_menu='';    
                 for ($j=0;$j<count($carrito[$n]['modificadores']);$j++){
+			
 			if ($carrito[$n]['modificadores'][$j]['nom_cat']!=$txt_nom_menu){
 				$txt_nom_menu=$carrito[$n]['modificadores'][$j]['nom_cat'];
-				$textomail .="<b>".$txt_nom_menu."</b><br>";
+				$textomail .="<br><b>".$txt_nom_menu."</b><br>";
+				//$txt_mod="<br>";
 			}
-                    $txt_mod.=$carrito[$n]['modificadores'][$j]['nombre'].", ";
+                    	$txt_mod=$carrito[$n]['modificadores'][$j]['nombre'];
+			$textomail .=$txt_mod."<br>";
                 }
-                $txt_mod=trim($txt_mod, ', ');
-                $textomail .=$txt_mod;
+                //$txt_mod=trim($txt_mod, ', ');
+                //$textomail .=$txt_mod;
             }
             if ($carrito[$n]['comentario']!=''){
                 $textomail.='<br><i>'.$carrito[$n]['comentario'].'</i>';
