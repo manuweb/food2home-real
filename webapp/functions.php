@@ -1443,9 +1443,13 @@ class ImprimeTicket
             }
             if (isset($carrito[$x]['elmentosMenu'])){
                 //echo count($carrito[$x]['elmentosMenu'] );
-                echo "<br>";
+                $nom_cat='';
 
                 for ($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
+                    if ($nom_cat!=$carrito[$x]['elmentosMenu'][$j]['nomMenu']){
+                        $largo_pedido+=30;
+                        $nom_cat=$carrito[$x]['elmentosMenu'][$j]['nomMenu'];
+                    }
                     $largo_pedido+=30;
                 }
 
@@ -1635,7 +1639,16 @@ class ImprimeTicket
                  }
             }
             if (isset($carrito[$n]['elmentosMenu'])){
+                $nom_cat='';
                  for ($j=0;$j<count($carrito[$n]['elmentosMenu']);$j++){
+                     if ($nom_cat!=$carrito[$n]['elmentosMenu'][$j]['nomMenu']){
+                       
+                        $nom_cat=$carrito[$n]['elmentosMenu'][$j]['nomMenu'];
+                         $txt=$nom_cat;
+                        imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path_bi, $txt);
+                        $y+=30;
+                    }
+                     
                      $txt=$carrito[$n]['elmentosMenu'][$j]['cantidad'];
                     imagettftext($ticket, 18, 0, $margen+45, $y, $negro, $font_path_b, $txt);
                     $txt='x '.$carrito[$n]['elmentosMenu'][$j]['nombre'];
