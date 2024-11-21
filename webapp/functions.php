@@ -324,6 +324,7 @@ class RecomponePedido
         
     }
     
+    
     public function DatosPortes() {
         $sql="SELECT ivaEnvio as iva, idEnvio AS idEnvio FROM opcionescompra WHERE id=1;";
         $database = DataBase::getInstance();
@@ -1580,9 +1581,6 @@ class ImprimeTicket
         $y+=30;
 
         /// el pedido
-        
-
-
         for ($n=0;$n<count($carrito);$n++){
             $txt=$carrito[$n]['cantidad'];
             imagettftext($ticket, 20, 0, $margen, $y, $negro, $font_path_b, $txt);
