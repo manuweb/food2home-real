@@ -1041,7 +1041,7 @@ function editazona(id) {
             '<div class="block page-content">'+
               '<p class="text-align-right"><a href="#" class="link popup-close"><i class="icon f7-icons ">xmark</i></a></p><br><br>'+
             
-            '<div class="title">Modificar Zona de Reparto</div>'+
+            '<div class="title title-zona">Modificar Zona de Reparto</div>'+
             '<form  id="grupo-form" enctype="multipart/form-data">'+
                 '<div class="list">'+
                 '<ul>'+
@@ -1121,7 +1121,7 @@ function editazona(id) {
             //console.log('Popup open');
               if (id==0){
                   $('#archivo-reparto').show();
-                  $('.title').html('Añadir Zona');
+                  $('.title-zona').html('Añadir Zona');
               }
               else {
                 var server=servidor+'admin/includes/leezonareparto.php';
