@@ -659,8 +659,6 @@ include "../webapp/MySQL/DataBase.class.php";
                     <div class="page-content">
                         <div class="block-title block-title-medium" id="titulo-productos">Grupos</div>
                         <div id="product-page" class="block"> </div>
-                        <br>
-                        <div id="boton-add-grupo" style="width: 50%; margin: auto;"><a class="button button-fill button-add-grupo" href="#" >Añadir</a></div>
                     </div>
                     
                 </div>          
