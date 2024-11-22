@@ -808,16 +808,16 @@ include "../webapp/MySQL/DataBase.class.php";
                                                         </a>
                                                     </li> 
                                                     <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorasrepartos();" class="item-link item-content">   <div class="item-media"><i class="icon material-icons">schedule</i></div>
+                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorasrepartos();" class="item-link item-content">   <div class="item-media"><img src="img/delivery.svg" style="width: 28px;"></div>
                                                           <div class="item-inner">
                                                             <div class="item-title">Horarios reparto</div>
                                                           </div>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorascocina();" class="item-link item-content">   <div class="item-media"><i class="icon f7-icons hora-cocina-icon"></i></div>
+                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorascocina();" class="item-link item-content">   <div class="item-media"><img src="img/commerce.svg" style="width: 28px;"></div>
                                                           <div class="item-inner">
-                                                            <div class="item-title">Horarios entregas</div>
+                                                            <div class="item-title">Horarios recoger</div>
                                                           </div>
                                                         </a>
                                                     </li>
