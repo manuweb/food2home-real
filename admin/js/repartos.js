@@ -1190,7 +1190,7 @@ function editazona(id) {
     
      
     
-    $('.save-data').on('click', function () {
+        $('.save-data').on('click', function () {
         var precio= $('input[name=precio]').val();
         var minimo= $('input[name=minimo]').val();
         var nombre=$('input[name=nombre]').val();
@@ -1211,16 +1211,14 @@ function editazona(id) {
             url: server,
             data: FData,
             cache: false, 
-            dataType: 'application/json',
-            crossDomain: true,      
-            processData: true, 
+            enctype: 'multipart/form-data',
             contentType: false,
             processData: false,
-            success: function (data){
+            success: function (data){    
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
                     //leealergenos();
-                    //muestrazonasrepartos();
+                    muestrazonasrepartos();
                     app.dialog.alert('Datos guardados');
                 }
                 else{
@@ -1233,34 +1231,10 @@ function editazona(id) {
                 console.log(thrownError);
             }
         });
-        /*
-        app.request({
-            url: server, 
-            method: 'POST', 
-            data: FData,
-            cache: false, 
-            dataType: 'application/json',
-            crossDomain: true, 
-            contentType: 'multipart/form-data',
-            processData: true, 
-            success: function (data){
-                app.preloader.hide(); 
-                var obj= JSON.parse(data);
-                if (obj.valid==true){
-                    //leealergenos();
-                    
-                }
-                else{
-                    app.dialog.alert('No se pudo guardar la zona');
-                }       
-                muestrazonasrepartos();
-              //console.log(data);
-              }
-        });   
-        */
+
        dynamicPopup.close();   
 
-    });  
+    });    
 
 }
 
