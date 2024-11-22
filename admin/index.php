@@ -1147,9 +1147,9 @@ include "../webapp/MySQL/DataBase.class.php";
                     <!-- FIN navbar -->     
                     
                     
-                    <div class="page-content">    
+                   <div class="page-content">    
                         
-                        <div class="block-title block-title-medium">Promociones</div> 
+                        <div class="block-title block-title-medium">Promociones <span style="float: right;"><button onclick="editapromoespecial();" id="add-promo-especial" class="button button-fill" >Nueva</button></span></div> 
                         <div id="promos-especiales-page" class="block block-strong inset">     
                             <div class="grid grid-cols-6 grid-gap">
                                 <div class=""><b>Nombre</b></div>
@@ -1161,9 +1161,8 @@ include "../webapp/MySQL/DataBase.class.php";
                             </div>
                             <hr>
                             <div  id="tabla-promos-especiales"></div>   
-                            <div class="grid grid-gap"><button onclick="editapromoespecial();" id="add-promo-especial" class="button button-fill" style="margin:auto;width: 50%;">+ Añadir promoción</button></div>
                         </div>
-                    </div>                    
+                    </div>                  
 
                 </div>          
             </div>
