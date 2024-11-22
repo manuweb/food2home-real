@@ -2,7 +2,7 @@
 
 
 function muestragrupos(){
-     $('#titulo-productos').html('<span>Grupos</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
+     $('#titulo-productos').html('<span>Grupos</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span><span id="boton-add-grupo" class="button button-fill float-right">Nuevo</span>');
     $('#volver-productos').attr("href", "javascript:navegar('#view-home');");
     $('#boton-add-grupo').attr('onclick','editaGrupo(); ');
     var server=servidor+'admin/includes/leegrupos.php';
@@ -122,6 +122,7 @@ function muestragrupos(){
                             var obj=Object(data);
 
                             if (obj.valid==true){
+                                muestragrupos();
                             }
                             else{
                                 console.log('ERROR');
@@ -134,6 +135,7 @@ function muestragrupos(){
 
                 app.on('sortableSort', function (listEl, indexes) {
                     $('#button-guardar').show();
+                    $('#boton-add-grupo').hide();
                    
                     //console.log(indexes['from']+'->'+indexes['to']);
                     var n=0;
@@ -505,7 +507,7 @@ function muestracategorias(grupo,nombregrupo){
     //id="titulo-productos
     
     $('#volver-productos').attr("href", "javascript:muestragrupos();");
-    $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -> '+nombregrupo+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
+    $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -> '+nombregrupo+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span><span id="boton-add-grupo" class="button button-fill float-right">Nuevo</span>');
     $('#boton-add-grupo').attr('onclick','editaCategoria('+grupo+',\''+nombregrupo+'\',0,\'\'); ');
     var server=servidor+'admin/includes/leecategorias.php';
     
@@ -609,6 +611,7 @@ function muestracategorias(grupo,nombregrupo){
                         success: function(data){
                             var obj=Object(data);   
                             if (obj.valid==true){
+                                muestracategorias(grupo,nombregrupo);
                             }
                             else{
                                 console.log('ERROR');
@@ -881,7 +884,7 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
 function muestraproductos(grupo,nombregrupo,categoria,nombrecategoria){
     //id="titulo-productos"
     
-    $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -><a href="javascript:muestracategorias(\''+grupo+'\',\''+nombregrupo+'\');" class="item-link"> '+nombregrupo+'</a>->'+nombrecategoria+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span>');
+    $('#titulo-productos').html('<span style="font-size:16px;"><a href="javascript:muestragrupos();" class="item-link">Grupos</a> -><a href="javascript:muestracategorias(\''+grupo+'\',\''+nombregrupo+'\');" class="item-link"> '+nombregrupo+'</a>->'+nombrecategoria+'</span><span id="button-guardar"class="button button-fill float-right" style="display:none;">Guardar</span><span id="boton-add-grupo" class="button button-fill float-right">Nuevo</span>');
     $('#volver-productos').attr("href", "javascript:muestracategorias('"+grupo+"','"+nombregrupo+"');");
 $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+'\','+categoria+',\''+nombrecategoria+'\');');
     var server=servidor+'admin/includes/leeproductos.php';
@@ -1012,6 +1015,7 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                             var obj=Object(data);
 
                             if (obj.valid==true){
+                                muestraproductos(grupo,nombregrupo,categoria,nombrecategoria);
                             }
                             else{
                                 console.log('ERROR');
