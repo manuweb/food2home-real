@@ -954,7 +954,7 @@ function muestraivabuscado(e) {
 }  
 
 function muestrazonasrepartos(){
-    $('#titulo-repartos').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Zonas de repartos');
+    $('#titulo-repartos').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Zonas de repartos<span style="float: right;"><div class="justify-content-center"><span id="button-guardar" class="button button-fill" onclick="editazona(0);">Añadir zona</span></div></span>');
     var txt="";
     var server=servidor+'admin/includes/leezonasrepartos.php';
     $.ajax({     
@@ -985,7 +985,7 @@ function muestrazonasrepartos(){
                         '<div class="item-content">'+
                             '<div class="item-inner">'+
                                 '<div class="item-title '+txtcolor+'">'+nombre[x]+'</div>'+
-                                '<div class="item-after"><i class="f7-icons" onclick="editazona(\''+id[x]+'\');">pencil</i></div>'+
+                                '<div class="item-after"><i class="f7-icons" onclick="editazona(\''+id[x]+'\');" style="color: black;">pencil</i>&nbsp;&nbsp;&nbsp;<i class="f7-icons" onclick="borrazona(\''+id[x]+'\');" style="color: red;">trash</i></div>'+
                             '</div>'+
                         '</div>'+
                         '<div class="sortable-handler" ></div>'+
@@ -995,13 +995,13 @@ function muestrazonasrepartos(){
                     '</ul>'+
                 '</div>';
                 
-                txt=txt+'<div class="text-align-center"><span id="button-guardar" class="button button-fill" onclick="editazona(0);" style="width: 50%;margin: auto;">Añadir zona</span></div>';
+                //txt=txt+'<div class="text-align-center"><span id="button-guardar" class="button button-fill" onclick="editazona(0);" style="width: 50%;margin: auto;">Añadir zona</span></div>';
                 $('#repartos-page').html(txt);
                 
             }
             else{
                 console.log('ERROR');
-                txt=txt+'<div class="justify-content-center"><span id="button-guardar" class="button button-fill" onclick="editazona(0);">Añadir zona</span></div>';
+                //txt=txt+'<div class="justify-content-center"><span id="button-guardar" class="button button-fill" onclick="editazona(0);">Añadir zona</span></div>';
                 $('#repartos-page').html(txt);
             }
         },
@@ -1011,6 +1011,28 @@ function muestrazonasrepartos(){
     });
 
 }
+
+function borrazona(id){
+
+    var server=servidor+'admin/includes/borrazonareparto.php';
+    $.ajax({     
+        type: "POST",
+        url: server,
+        dataType: "json",
+        data: {id:id},
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                muestrazonasrepartos();
+            }
+            else{
+                app.dialog.alert('No se pudo borrar la zona');
+            }
+        }
+    }); 
+                
+}
+
 
 function editazona(id) {
    var dynamicPopup = app.popup.create({
