@@ -408,7 +408,7 @@ $database->freeResults();
 $checking=true;
 
 //$json=array("valid"=>$checking, "horario"=>$libreED,"pillados"=>$pillados );
-$json=array("valid"=>$checking, "horario"=>$horacogida );
+$json=array("valid"=>$checking, "horario"=>$horacogida,"maximo"=>$maximo_pedidosportramo );
 
 
 ob_end_clean();
