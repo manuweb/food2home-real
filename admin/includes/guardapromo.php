@@ -18,7 +18,7 @@ if ($array['id']=='0') {
 else {
     $hasta=$array['hasta'];
     if ($array['id']<3){
-        $hasta='NULL';
+        $hasta=NULL;
     }
     $sql="UPDATE promos SET nombre='".$array['nombre']."', codigo='".$array['codigo']."', envio_recoger='".$array['envio_recoger']."', usuario='".$array['usuario']."', grupo='".$array['grupo']."', dias='".$array['dias']."', desde='".$array['desde']."', hasta='".$hasta."', maximo='".$array['maximo']."', tipo='".$array['tipo']."', logica='".$array['logica']."' WHERE id='".$array['id']."'";
 }
