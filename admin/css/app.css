@@ -1,5 +1,11 @@
 /* Custom color theme */
+a {
+    cursor:pointer;
+}
 
+[onClick] {
+    cursor:pointer;
+}
 .page {
     /*background-color: #fff;*/
 }
