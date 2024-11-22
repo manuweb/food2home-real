@@ -124,7 +124,7 @@ function hacerPedidollenahoras(fecha,modo){
                             deshabilitado='disabled';
                             estado_boton='button-tonal';
                         }
-                        txt+='<button class="button-hora-reparto button button-large button-raised '+estado_boton+'" data-hora="'+horario[x]['hora']+'" style="line-height: 18px;" onclick="cambiahorapedido(this,'+modo+');" '+    deshabilitado+'><p><b>'+horario[x]['hora']+'</b><br><span style="font-size:14px;">'+horario[x]['cantidad']+'</span></p></button>';
+                        txt+='<button class="button-hora-reparto button button-large button-raised '+estado_boton+'" data-hora="'+horario[x]['hora']+'" style="line-height: 18px;" onclick="cambiahorapedido(this,'+modo+');" '+    deshabilitado+'><p><b>'+horario[x]['hora']+'</b><br><span style="font-size:14px;">'+(obj.maximo-horario[x]['cantidad'])+'</span></p></button>';
                         
                         
                     }
@@ -2733,7 +2733,8 @@ function hacerelpedido() {
                             app.popup.close();
                             borradatospedido();
                             $('#view-pedidos').css('position','relative');
-                            $('.panel-left').css('display','block');
+                            //$('.panel-left').css('display','block');
+                            $('.panel-left').css('display',estadopanel);
                             $('.navbar').show();
                             leepedidos();
                         }else {
