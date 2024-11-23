@@ -193,7 +193,7 @@ function editametodo(id,nombre, activo,idrevo,esRedsys){
                     '<li class="">'+
                         '<label class="item-content">'+
                           '<div class="item-inner">'+
-                            '<div class="item-title">Bizum</div>'+
+                            '<div class="item-title">Bizun</div>'+
                             '<div class="item-after">'+
                             '<div class="toggle toggle-init">'+
                               '<input type="checkbox"  id="usar_bizum" >'+
@@ -318,11 +318,15 @@ function guardametodo(e) {
             var obj=Object(data);
             //console.log(obj);
             if (obj.valid==true){
-                
+                muestraMensaje('Método pago guardado correctamente','Datos Guardados');
                 app.popup.close('.popup');
                 
                 leemetodospago();
             }
+            else{
+                muestraMensaje('No se pudo guardar método pago','Error');                    
+            }
+            
             
         },
         error: function (xhr, ajaxOptions, thrownError){

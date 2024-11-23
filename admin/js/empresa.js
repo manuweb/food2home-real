@@ -234,12 +234,13 @@ $("#edit-datos-empresa").on('click', function () {
             success: function(data){
                 var obj=Object(data);
                 if (obj.valid==true){
+                    muestraMensaje('Empresa guardada correctamente','Datos Guardados');
                     leeempresa();
-                    app.dialog.alert('Datos guardados');
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar la empresa');
+                    muestraMensaje('No se pudo guardar la Empresa','Error');                    
                 }
+                
             }
         });
              
