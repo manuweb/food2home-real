@@ -1277,8 +1277,7 @@ include "../webapp/MySQL/DataBase.class.php";
                             </div>
                             <div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable-enabled" id="lista-destacados">
                             </div>  
-                            <div class="row"><button onclick="editadestacado();" id="add-bloque-destacado" class="col-60 button button-fill" style="margin:auto;width: 50%;">+ Añadir producto</button></div>
-                        </div>
+                            
                         
                     </div>                    
                 </div>          
