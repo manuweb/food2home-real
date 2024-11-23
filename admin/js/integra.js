@@ -545,7 +545,8 @@ function settingTR() {
                       '</div>'+
                     '</li>'+
                     '</ul>'+
-                    '</div>';
+                    '</div>'+
+                    '<div class="row"><button" class="button button-fill popup-close" style="margin:auto;width: 60%;">Cerrar</button></div>'
                 $('#tarjeta-regalo-ajuste').html(txt);
                 var server=servidor+'admin/includes/integracion.php';
                 $.ajax({
@@ -589,7 +590,7 @@ function cambiaprevioenTR(){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
-                app.popup.close();
+                //app.popup.close();
             }
         },
         error: function (xhr, ajaxOptions, thrownError){
