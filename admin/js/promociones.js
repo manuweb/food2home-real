@@ -1220,10 +1220,11 @@ function guardapromoespecial(e){
             success: function(data){
                 var obj=Object(data);
                 if (obj.valid==true){
+                    muestraMensaje('Promoción guardada correctamente','Datos Guardados');
                     promociones();
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar la promoción');
+                    muestraMensaje('No se pudo guardar la Promoción','Error');                    
                 }
             }
         });
