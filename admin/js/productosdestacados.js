@@ -2,7 +2,7 @@
 //navegar('#view-setting-inicio');
 
 function destacados() {
-$('#titulo-destacados').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Productos destacados<span id="button-guardar-destacados" class="button button-fill float-right" style="display:none;">Guardar</span>');
+$('#titulo-destacados').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Productos destacados<span id="button-guardar-destacados" class="button button-fill float-right" style="display:none;">Guardar</span><span onclick="editadestacado();" id="add-bloque-destacado" class="button button-fill float-right">Nuevo</span></div>');
     
 
     var txt='<ul id="desta">';
@@ -71,6 +71,7 @@ $('#titulo-destacados').html('<a href="javascript:navegar(\'#view-setting\');" c
                 
                 $('#button-guardar-destacados').on('click', function () {
                     $('#button-guardar-destacados').hide();
+                    $('#add-bloque-destacado').show();
                    
                     //app.preloader.show();
                     var server=servidor+'admin/includes/ordendestacado.php';         
@@ -102,6 +103,7 @@ $('#titulo-destacados').html('<a href="javascript:navegar(\'#view-setting\');" c
                 
                 app.on('sortableSort', function (listEl, indexes) {
                     $('#button-guardar-destacados').show();
+                    $('#add-bloque-destacado').hide();
                    
                     //console.log(indexes['from']+'->'+indexes['to']);
                     var n=0;
@@ -366,8 +368,13 @@ function guardadestacado() {
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                muestraMensaje('Producto destacado guardado correctamente','Datos Guardados');
                 destacados();
             }
+            else{
+                muestraMensaje('No se pudo guardar Producto destacado','Error');                    
+            }
+            
         }
     });    
     
