@@ -918,11 +918,13 @@ function guardaajustesreparto() {
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
-                app.dialog.alert('Datos guardados');
+                muestraMensaje('Ajustes guardados correctamente','Datos Guardados');
+                
             }
             else {
-                app.dialog.alert('Error guardando datos');
+                muestraMensaje('No se guardaron los ajustes','Error');
             }
+            
         }
     }); 
 }
@@ -1032,7 +1034,6 @@ function borrazona(id){
     }); 
                 
 }
-
 
 function editazona(id) {
    var dynamicPopup = app.popup.create({
@@ -1190,7 +1191,7 @@ function editazona(id) {
     
      
     
-        $('.save-data').on('click', function () {
+    $('.save-data').on('click', function () {
         var precio= $('input[name=precio]').val();
         var minimo= $('input[name=minimo]').val();
         var nombre=$('input[name=nombre]').val();
@@ -1217,14 +1218,14 @@ function editazona(id) {
             success: function (data){    
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
-                    //leealergenos();
+                    muestraMensaje('Zona  guardada correctamente','Datos Guardados');
                     muestrazonasrepartos();
-                    app.dialog.alert('Datos guardados');
+
                 }
-                else{
-                    app.dialog.alert('No se pudo guardar la zona');
-                }       
-                muestrazonasrepartos();
+                else {
+                    muestraMensaje('No se guardó la zona','Error');
+                }
+                
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 console.log(xhr.status);
@@ -1234,7 +1235,7 @@ function editazona(id) {
 
        dynamicPopup.close();   
 
-    });    
+    });  
 
 }
 
@@ -1474,7 +1475,7 @@ function muestrahorasrepartos() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>miercoles</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Miércoles</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-miercoles" name="miercoles" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -1572,7 +1573,7 @@ function muestrahorasrepartos() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>jueves</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Jueves</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-jueves" name="jueves" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -1670,7 +1671,7 @@ function muestrahorasrepartos() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>viernes</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Viernes</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-viernes" name="viernes" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -1768,7 +1769,7 @@ function muestrahorasrepartos() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>sabado</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Sábado</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-sabado" name="sabado" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -1866,7 +1867,7 @@ function muestrahorasrepartos() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>domingo</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Domingo</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-domingo" name="domingo" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -2365,12 +2366,13 @@ function muestrahorasrepartos() {
                 dataType:"json",
                 success: function(data){
                     var obj=Object(data);
+                    
                     if (obj.valid==true){
+                        muestraMensaje('Horarios reparto guardados correctamente','Datos Guardados');
                         muestrahorasrepartos();
-                        app.dialog.alert('Datos guardados');
                     }
-                    else{
-                        app.dialog.alert('No se pudo guardar los horarios');
+                    else {
+                        muestraMensaje('No se guardaron los Horarios reparto','Error');
                     }
                 }
             });
@@ -2612,7 +2614,7 @@ function muestrahorascocina() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>miercoles</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Miércoles</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-miercoles" name="miercoles" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -2710,7 +2712,7 @@ function muestrahorascocina() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>jueves</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Jueves</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-jueves" name="jueves" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -2808,7 +2810,7 @@ function muestrahorascocina() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>viernes</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Viernes</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-viernes" name="viernes" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -2906,7 +2908,7 @@ function muestrahorascocina() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>sabado</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Sábado</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-sabado" name="sabado" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -3004,7 +3006,7 @@ function muestrahorascocina() {
                 '<li>'+
                     '<div class="item-content">'+
                         '<div class="item-inner">'+
-                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>domingo</b></div>'+
+                            '<div class="item-title text-color-primary" style="font-size:22px;"><b>Domingo</b></div>'+
                             '<div class="item-after">'+
                               '<label class="toggle toggle-init">'+
                                 '<input type="checkbox" id="chk-domingo" name="domingo" value="yes" class="dia-semana" /><i class="toggle-icon"></i>'+
@@ -3502,13 +3504,13 @@ function muestrahorascocina() {
                 success: function(data){
                     var obj=Object(data);
                     if (obj.valid==true){
-                        
+                        muestraMensaje('Horarios entrega guardados correctamente','Datos Guardados');
                         muestrahorascocina();
-                        app.dialog.alert('Datos guardados');
                     }
-                    else{
-                        app.dialog.alert('No se pudo guardar los horarios');
+                    else {
+                        muestraMensaje('No se guardaron los Horarios entrega','Error');
                     }
+                    
                 }
             });
  
