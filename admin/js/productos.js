@@ -454,9 +454,10 @@ function editaGrupo(id=0) {
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
                     //leealergenos();
+                    muestraMensaje('Imagen guardada correctamente','Datos Guardados');
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar imagen');
+                    muestraMensaje('No se pudo guardar la imagen','ERROR');
                 }  
                 
             },
@@ -489,10 +490,13 @@ function guardagrupo(id){
         success: function(data){
             var obj=Object(data);   
             if (obj.valid==true){
+                muestraMensaje('Grupo guardado correctamente','Datos Guardados');
                 muestragrupos();
             }
             else{
-                app.dialog.alert('No se pudo guardar el grupo');
+                muestraMensaje('No se pudo guardar el grupo','Error');
+               
+                
             }   
         }
     });
@@ -837,11 +841,15 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
             success : function(data) {
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
-                    //leecategorias();
+                    muestraMensaje('Imagen guardada correctamente','Datos Guardados');
+                  
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar imagen');
-                }  
+                    muestraMensaje('No se pudo guardar la imagen','Error');
+
+
+                }
+                 
                 
             },
             error: function (xhr, ajaxOptions, thrownError){
@@ -866,11 +874,15 @@ function editaCategoria(idGrupo,nombregrupo,id,nombre) {
             success: function(data){
                 var obj=Object(data);   
                 if (obj.valid==true){
+                    muestraMensaje('Categoría guardada correctamente','Datos Guardados');
                     muestracategorias(idGrupo,nombregrupo);
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar la categoria');
-                }   
+                    muestraMensaje('No se pudo guardar la categoría','Error');
+
+
+                }
+                  
             }
         });
                        
@@ -1013,13 +1025,16 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                         data:{productos:aProductos, tienda:tienda}, 
                         success: function(data){
                             var obj=Object(data);
-
                             if (obj.valid==true){
+                                muestraMensaje('Producto guardado correctamente','Datos Guardados');
                                 muestraproductos(grupo,nombregrupo,categoria,nombrecategoria);
                             }
                             else{
-                                console.log('ERROR');
+                                muestraMensaje('No se pudo guardar el producto','Error');
+
+
                             }
+                            
                         }
                     });
                 });
@@ -1423,12 +1438,11 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
             success : function(data) {
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
-                    //leecategorias();
+                    muestraMensaje('Imagen guardada correctamente','Datos Guardados');
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar imagen');
-                }  
-                
+                    muestraMensaje('No se pudo guardar la imagen','Error');                    
+                }   
             },
             error: function (xhr, ajaxOptions, thrownError){
                 console.log(xhr.status);
@@ -1467,16 +1481,17 @@ function editaProducto(id,grupo,nombregrupo,categoria,nombrecategoria) {
             dataType:"json",
             data: {id:id,categoria:categoria,nombre:nombre, impuesto:impuesto,activo_web:activo_web, activo_app:activo_app,precio_web:precio_web, precio_app:precio_app,info:info, modifier_category_id:modifier_category_id, modifier_group_id:modifier_group_id,alergias:alergenos,modifi:modifi, tienda:tienda} ,
             success: function(data){
-                var obj=Object(data);   
+                var obj=Object(data); 
                 if (obj.valid==true){
-                    //leeempresa();
-                   
+                    muestraMensaje('Producto guardado correctamente','Datos Guardados');
                     muestraproductos(grupo,nombregrupo,categoria,nombrecategoria);
-                   
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar el producto');
+                    muestraMensaje('No se pudo guardar el producto','Error');
+
+
                 }
+                
             }
         });
                    
