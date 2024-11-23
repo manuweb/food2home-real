@@ -228,12 +228,13 @@ function guardadatoscorreo(){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                muestraMensaje('Datos mail guardados correctamente','Datos Guardados');
                 restaurapaginacorreos();
-                //correoAjustes();
             }
             else{
-                app.dialog.alert('No se pudo guardar los datos de correo');
+                muestraMensaje('No se pudo guardar los datos','Error');                    
             }
+            
         }
     });       
 }
@@ -594,14 +595,14 @@ function guardatextocorreo(nombre,funcion){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
-                //console.log(obj.textomail);
+                muestraMensaje('Datos mail guardados correctamente','Datos Guardados');
                 restaurapaginacorreos();
                 window[funcion]();
             }
             else{
-                app.dialog.alert('No se pudo guardar los datos de correo');
-                console.log(obj.textomail);
-            }
+                muestraMensaje('No se pudo guardar los datos','Error');                    
+            } 
+            
         }
         ,
         error: function(e){
@@ -620,7 +621,7 @@ function correoCampaign() {
     var txt_old=localStorage.getItem("contenidopagina-correo");
     localStorage.setItem("contenidopagina-correo", txt_old);
 	
-	var txt='<div class="block-title block-title-medium"><a href="" onclick="restaurapaginacorreos();">Emails</a> -> Campañas</div><hr>';
+	var txt='<div class="block-title block-title-medium"><a href="" onclick="restaurapaginacorreos();">Emails</a> -> Campañas<span onclick="editaCampaign();" id="add-campaign" class="button button-fill float-right">Nuevo</span></div>';
     
     txt+='<div class="grid grid-cols-4 grid-gap">'+
             '<div class="">Nombre</div>'+
@@ -630,8 +631,7 @@ function correoCampaign() {
         '</div><hr>'+
         '<div id="campaign-row">'+
             
-        '</div><hr>'+
-        '<div class="grid grid-cols-1 grid-gap"><button onclick="editaCampaign();" id="add-campaign" class="button button-fill" style="margin:auto;width: 50%;">+ Añadir Campaña</button></div>';
+        '</div><hr>';
     $('#emails-page').html(txt);
     var server=servidor+'admin/includes/leecampaign.php';
     $.ajax({
@@ -656,44 +656,46 @@ function correoCampaign() {
                 var link='';
                 var icono='';
                 var hoy=new Date();
-                for (x=0;x<id.length;x++){
-                    // 0123-56-89
-                    fecha=fechas[x].substr(8,2)+'/'+fechas[x].substr(5,2)+'/'+fechas[x].substr(0,4);
-                    fhasta=new Date(fechas[x].substr(0,4), parseInt(fechas[x].substr(5,2))-1, fechas[x].substr(8,2));
-                    link='editaCampaign('+id[x]+',\''+nombre[x]+'\')';
-                    icono='<i class="f7-icons">pencil</i>';
-                    if (hoy>fhasta){
-                         link='verCampaign('+id[x]+')';
-                        icono='<i class="f7-icons">eye</i>';
-                    }
-                    // 1 - todos
-                    // 2 - registrados
-                    // 3 - grupo
-                    if (usuario[x]==1){
-                        tipo='Todos';
-                    }
-                    if (usuario[x]==2){
-                        tipo='Registrados';
-                    }
-                    if (usuario[x]==3){
-                        tipo='Grupo';
-                    }
-                    if (usuario[x]==4){
-                        tipo='Compras >';
-                    }
+                if (id!=undefined){
+                    for (x=0;x<id.length;x++){
+                        // 0123-56-89
+                        fecha=fechas[x].substr(8,2)+'/'+fechas[x].substr(5,2)+'/'+fechas[x].substr(0,4);
+                        fhasta=new Date(fechas[x].substr(0,4), parseInt(fechas[x].substr(5,2))-1, fechas[x].substr(8,2));
+                        link='editaCampaign('+id[x]+',\''+nombre[x]+'\')';
+                        icono='<i class="f7-icons">pencil</i>';
+                        if (hoy>fhasta){
+                             link='verCampaign('+id[x]+')';
+                            icono='<i class="f7-icons">eye</i>';
+                        }
+                        // 1 - todos
+                        // 2 - registrados
+                        // 3 - grupo
+                        if (usuario[x]==1){
+                            tipo='Todos';
+                        }
+                        if (usuario[x]==2){
+                            tipo='Registrados';
+                        }
+                        if (usuario[x]==3){
+                            tipo='Grupo';
+                        }
+                        if (usuario[x]==4){
+                            tipo='Compras >';
+                        }
 
 
-                    txt+='<div class="grid grid-cols-4 grid-gap">'+
-                        '<div class="">'+nombre[x]+'</div>'+
-                        '<div class="">'+fecha+'</div>'+
-                        '<div class="">'+tipo+'</div>'+
-                        '<div class="" onclick="'+link+';">'+icono+'</div>'+
-                    '</div>';
+                        txt+='<div class="grid grid-cols-4 grid-gap">'+
+                            '<div class="">'+nombre[x]+'</div>'+
+                            '<div class="">'+fecha+'</div>'+
+                            '<div class="">'+tipo+'</div>'+
+                            '<div class="" onclick="'+link+';">'+icono+'</div>'+
+                        '</div>';
+                    }
                 }
-                    $('#campaign-row').html(txt);
+                $('#campaign-row').html(txt);
             }
             else{
-                app.dialog.alert('No se pudo leer las campañas');
+                //app.dialog.alert('No se pudo leer las campañas');
 
             }
         }
@@ -735,7 +737,9 @@ function muestraOcultaEmails(){
     }
     
 }
+
 function verCampaign(id){
+    //<span id="boton-add-grupo" class="button button-fill float-right">Nuevo</span>
     var server=servidor+'admin/includes/leecampaign.php';
     $.ajax({
         type: "POST",
