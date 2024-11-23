@@ -1231,11 +1231,13 @@ function guardacampaign(){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
-                 correoCampaign();
+                muestraMensaje('Datos campaña guardados correctamente','Datos Guardados');
+                correoCampaign();
             }
-            else {	
-                app.dialog.alert('Error guardando correo');
+            else{
+                muestraMensaje('No se pudo guardar la campaña','Error');                    
             }
+            
         }
     });
                 
