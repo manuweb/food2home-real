@@ -380,6 +380,10 @@ function guardaRevo(){
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                muestraMensaje('Integración guardada correctamente','Datos Guardados');
+            }
+            else {
+                muestraMensaje('Integración NO se guardó','Error');
             }
         },
         error: function (xhr, ajaxOptions, thrownError){
