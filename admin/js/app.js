@@ -671,3 +671,28 @@ var loadFileImg = function(event,elem) {
 if ( window.innerWidth <= 600) {
     cierrapanel();
 }
+
+function muestraMensaje(texto,titulo='',subtitulo='',tiempo=4000){
+    if (titulo==''){
+        titulo=app.name;
+    }
+
+    //console.log(texto);
+    var not2=app.notification.create({
+        text: texto,
+        icon: '<img src="img/icono.png">',
+        title: titulo,
+        //titleRightText: 'now',
+        subtitle: subtitulo,
+        titleRightText: 'ahora',
+    
+          closeTimeout:tiempo,
+              on: {
+                opened: function () {
+                  //console.log('Notification opened')
+                },
+          }
+    });
+    not2.open(); 
+    
+}
