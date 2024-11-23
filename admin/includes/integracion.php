@@ -15,7 +15,7 @@ if ($array['id']!='foo'){
         $sql="UPDATE integracion SET usuario='".$array['usuario']."', token='".$array['token']."', usar_numero_revo='".$array['usar_numero_revo']."',usar_modo_quiosco='".$array['usar_modo_quiosco']."' WHERE id=1";
     }
     else {
-        $sql="UPDATE integracion SET usar_modo_quiosco='".$array['usar_modo_quiosco']."',copias='".$array['copias']."' WHERE id=1";
+        $sql="UPDATE integracion SET usar_modo_quiosco='".$array['usar_modo_quiosco']."',copias='".$array['copias']."',impresora='".$array['impresora']."' WHERE id=1";
     }
     
     $database = DataBase::getInstance();
