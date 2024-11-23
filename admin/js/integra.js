@@ -11,6 +11,15 @@ function integration() {
                 var txt_delivery=''+
                     '<div class="list block" >'+
                           '<ul>'+
+                    '<li class="item-content item-input" id="li-mac-imptresora">'+
+                                  '<div class="item-inner">'+
+                                    '<div class="item-title item-label">MAC impresora</div>'+
+                                    '<div class="item-input-wrap">'+
+                                      '<input type="text" name="mac_impresora" value="'+obj.impresora+'" placeholder="MAC"/>'+
+                                    '</div>'+
+                                 ' </div>'+
+                                '</label>'+
+                                '</li>'+
                     '<li class="item-content item-input" id="li-copias-tickets">'+
                                   '<div class="item-inner">'+
                                     '<div class="item-title item-label">Copias tickets</div>'+
@@ -106,6 +115,7 @@ function integration() {
                     
                     $('#integra-page').html(txt);
                     $('#li-copias-tickets').hide();
+                    $('#li-mac-imptresora').hide();
                     if (obj.usar_numero_revo==1){
                         $('#usar_numero_revo').prop('checked',true);
                     }
@@ -381,6 +391,7 @@ function guardaRevo(){
 
 function guardaStar(){
     var copias=$('input:text[name=copias_tickets]').val();
+    var impresora=$('input:text[name=mac_impresora]').val();
     var usar_modo_quiosco=0;
     if ($('#usar_modo_quiosco').prop('checked')){
         usar_modo_quiosco=1;
@@ -389,12 +400,16 @@ function guardaStar(){
     var server=servidor+'admin/includes/integracion.php';
     $.ajax({
         type: "POST",
-        data: {id:'star',usar_modo_quiosco:usar_modo_quiosco,copias:copias},
+        data: {id:'star',usar_modo_quiosco:usar_modo_quiosco,copias:copias,impresora:impresora},
         url: server,
         dataType:"json",
         success: function(data){
             var obj=Object(data);
             if (obj.valid==true){
+                muestraMensaje('Integración guardada correctamente','Datos Guardados');
+            }
+            else {
+                muestraMensaje('Integración NO se guardó','Error');
             }
         },
         error: function (xhr, ajaxOptions, thrownError){
@@ -406,7 +421,29 @@ function guardaStar(){
            
 function cambiaaRevo(){
     app.dialog.confirm('¿Seguro que desea cambia a Revo?<br>Eso supone, entre otras cosas, perder todos los productos ya guardados.','Cambio a Revo', function () {
-            console.log('cambio a revo');
+        var server=servidor+'admin/includes/cambiaintegracion.php';
+        $.ajax({
+            type: "POST",
+            data: {tipo:1},
+            url: server,
+            dataType:"json",
+            success: function(data){
+                var obj=Object(data);
+                if (obj.valid==true){
+                    integration();
+                    muestraMensaje('Integración cambiada correctamente','Datos Guardados');
+                }
+                else {
+                    muestraMensaje('Integración NO se camboió','Error');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+        
+        
     }); 
     return;
     
@@ -414,7 +451,27 @@ function cambiaaRevo(){
 
 function cambiaaStar(){
     app.dialog.confirm('¿Seguro que desea cambia a Star?<br>Eso supone, entre otras cosas, perder todos los productos ya guardados.','Cambio a Star', function () {
-            console.log('cambio a revo');
+        var server=servidor+'admin/includes/cambiaintegracion.php';
+        $.ajax({
+            type: "POST",
+            data: {tipo:2},
+            url: server,
+            dataType:"json",
+            success: function(data){
+                var obj=Object(data);
+                if (obj.valid==true){
+                    integration();
+                    muestraMensaje('Integración cambiada correctamente','Datos Guardados');
+                }
+                else {
+                    muestraMensaje('Integración NO se camboió','Error');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError){
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
     }); 
     return;
 }
