@@ -602,6 +602,9 @@ function muestracategorias(grupo,nombregrupo){
                     '</ul>'+
                 '</div>';
                 $('#product-page').html(txt);
+                if (integracion==1){
+                    $('#boton-add-grupo').hide();
+                }
                 app.sortable.enable("#lista-categorias");
                 $('#button-guardar').on('click', function () {
                     $('#button-guardar').hide();
@@ -995,7 +998,9 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                 
                 $('#product-page').html(txt);
                 
-
+                if (integracion==1){
+                    $('#boton-add-grupo').hide();
+                }
 
                 var aProductos=new Array();
                 app.sortable.enable('#lista-productos');
