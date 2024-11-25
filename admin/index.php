@@ -659,6 +659,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     <div class="page-content">
                         <div class="block-title block-title-medium" id="titulo-productos">Grupos</div>
                         <div id="product-page" class="block"> </div>
+                        
                     </div>
                     
                 </div>          
@@ -1147,7 +1148,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     <!-- FIN navbar -->     
                     
                     
-                   <div class="page-content">    
+                    <div class="page-content">    
                         
                         <div class="block-title block-title-medium">Promociones <span style="float: right;"><button onclick="editapromoespecial();" id="add-promo-especial" class="button button-fill" >Nueva</button></span></div> 
                         <div id="promos-especiales-page" class="block block-strong inset">     
@@ -1161,8 +1162,9 @@ include "../webapp/MySQL/DataBase.class.php";
                             </div>
                             <hr>
                             <div  id="tabla-promos-especiales"></div>   
+                            <div class="grid grid-gap"></div>
                         </div>
-                    </div>                  
+                    </div>                   
 
                 </div>          
             </div>
@@ -1278,6 +1280,7 @@ include "../webapp/MySQL/DataBase.class.php";
                             <div class="list sortable sortable-opposite list-outline-ios list-dividers-ios sortable-enabled" id="lista-destacados">
                             </div>  
                             
+                        </div>
                         
                     </div>                    
                 </div>          
