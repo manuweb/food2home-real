@@ -1,8 +1,9 @@
 paginanosotros(); // borrar
 //navegar('#view-setting-inicio');
 var textEditor;
+
 function paginanosotros() {
-$('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Página Nosotros<span id="button-guardar-nosotros" class="button button-fill float-right" style="display:none;">Guardar</span>');
+$('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Página Nosotros<span id="button-guardar-nosotros" class="button button-fill float-right" style="display:none;">Guardar</span><span onclick="editanosotros();" id="add-bloque-nosotros" class="button button-fill float-right" >Nuevo</span>');
    
 
     //var txt='<ul id="noso">';
@@ -72,13 +73,14 @@ $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" cla
                 '</div>';
                 
 
-                $('#nosotros-page').html(txt+'<div class="row"><button onclick="editanosotros();" id="add-bloque-nosotros" class="col-60 button button-fill" style="margin:auto;width: 60%;">+ Añadir bloque</button></div>');  
+                $('#nosotros-page').html(txt);  
                 
-                document.getElementById("add-bloque-nosotros").setAttribute("data-orden", x);
+                //document.getElementById("add-bloque-nosotros").setAttribute("data-orden", x);
                 
                 
                 $('#button-guardar-nosotros').on('click', function () {
-                    $('#button-guardar').hide();
+                    $('#button-guardar-nosotros').hide();
+                    $('#add-bloque-nosotros').show();
                   
                     var server=servidor+'admin/includes/ordenpaginanosotros.php';          
                     $.ajax({
@@ -89,7 +91,7 @@ $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" cla
                         success: function(data){
                             var obj=Object(data);
                             if (obj.valid==true){
-                                document.getElementById('safari_window').contentWindow.location.reload(); $('#button-guardar-nosotros').hide();  
+                                
                             }
                             else{
                                 console.log('ERROR');
@@ -104,7 +106,7 @@ $('#titulo-nosotros').html('<a href="javascript:navegar(\'#view-setting\');" cla
 
                 app.on('sortableSort', function (listEl, indexes) {
                     $('#button-guardar-nosotros').show();
-                   
+                   $('#add-bloque-nosotros').hide();
                     //console.log(indexes['from']+'->'+indexes['to']);
                     var n=0;
                     
@@ -598,22 +600,21 @@ function guardanosotros(e) {
             url: server,
             data: FData,
             cache: false, 
-            dataType: 'application/json',
-            crossDomain: true,      
-            processData: true, 
+            enctype: 'multipart/form-data',
             contentType: false,
             processData: false,
             success: function(data){
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
-                    //leealergenos();
-                    paginanosotros();
-                    //document.getElementById('safari_window').contentWindow.location.reload();  
+                    muestraMensaje('Página nosotros guardada correctamente','Datos Guardados');
+                   paginanosotros(); 
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar');
+                    muestraMensaje('No se pudo guardar Página nosostros','Error');
+
+
                 }
-                paginanosotros();
+                
             },
             error: function (xhr, ajaxOptions, thrownError){
                 
@@ -637,14 +638,3 @@ function guardanosotros(e) {
 
     
 }
-
-
-/*
-
-
-                    <div class="text-editor text-editor-init" id="my-text-editor" data-placeholder="Escriba algo ...">
-                        <div class="text-editor-content" contenteditable></div>
-                    </div>               
-                    <a href="#" onclick="alert(textEditor.getValue());">Mira</a>
-*/
-

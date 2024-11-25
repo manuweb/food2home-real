@@ -3,7 +3,7 @@ var colorprimario='';
 var colorsecundario='';
 paginainicio();
 function paginainicio() {
-$('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Página de inicio<span id="button-guardar-inicio" class="button button-fill float-right" style="display:none;">Guardar</span>');
+$('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Página de inicio<span id="button-guardar-inicio" class="button button-fill float-right" style="display:none;">Guardar</span><span onclick="editainicio();" id="add-bloque-inicio" class="button button-fill float-right" >Nuevo</span>');
 
     //var txt='<ul id="inic">';
     var server=servidor+'admin/includes/leeinicio.php';         $.ajax({
@@ -78,14 +78,14 @@ $('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class
                 '</div>';
                 
 
-                $('#inicio-page').html(txt+'<div class="row"><button onclick="editainicio();" id="add-bloque-inicio" class="col-60 button button-fill" style="margin:auto;width: 60%;">+ Añadir bloque</button></div>');  
+                $('#inicio-page').html(txt);  
                
                 document.getElementById("add-bloque-inicio").setAttribute("data-orden", x);
                 
                 
                 $('#button-guardar-inicio').on('click', function () {
                     $('#button-guardar').hide();
-                    
+                    $('#add-bloque-inicio').show();
                     var server=servidor+'admin/includes/ordenpaginainicio.php';        
                     $.ajax({
                         type: "POST",
@@ -95,8 +95,8 @@ $('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class
                         success: function(data){
                             var obj=Object(data);
                             if (obj.valid==true){
-                                document.getElementById('safari_window').contentWindow.location.reload(); 
-                                $('#button-guardar-inicio').hide();  
+                                 
+                                 
                             }
                             else{
                                 console.log('ERROR');
@@ -116,7 +116,7 @@ $('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class
                 
                 app.on('sortableSort', function (listEl, indexes) {
                     $('#button-guardar-inicio').show();
-                   
+                   $('#add-bloque-inicio').hide();
                     //console.log(indexes['from']+'->'+indexes['to']);
                     var n=0;
                     
@@ -145,6 +145,7 @@ $('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class
     
 
 }
+
 function cambiaInicioActivoWeb(e) {
     var id=e.getAttribute('data-id');
     var estado=$(e).prop('checked');
@@ -494,6 +495,7 @@ function editainicio(id=0,nombre='',tipo=1){
     
     dynamicPopup.open(); 
 }
+
 function cambiatipobloque(e) {
     var tipo=e.value;
     var txteditor='';
@@ -594,8 +596,6 @@ function cambiatipobloque(e) {
     
 }
 
-
-
 function guardainicio(e) {
     var id=e.getAttribute('data-id');
     var nombre=$('input[name=nombre]').val();
@@ -685,23 +685,21 @@ function guardainicio(e) {
             url: server,
             data: FData,
             cache: false, 
-            dataType: 'application/json',
-            crossDomain: true,      
-            processData: true, 
+            enctype: 'multipart/form-data',
             contentType: false,
             processData: false,
             success: function(data){
                 var obj= JSON.parse(data);
                 if (obj.valid==true){
-                    //leealergenos();
-                    app.dialog.alert('Guardado ok');
-                    paginainicio();
-                    //document.getElementById('safari_window').contentWindow.location.reload();  
+                    muestraMensaje('Página inicio guardada correctamente','Datos Guardados');
+                   paginainicio(); 
                 }
                 else{
-                    app.dialog.alert('No se pudo guardar');
-                    
+                    muestraMensaje('No se pudo guardar Página inicio','Error');
+
+
                 }
+                
                 //paginainicio();
             },
             error: function (xhr, ajaxOptions, thrownError){
