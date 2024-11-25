@@ -1328,7 +1328,7 @@ include "../webapp/MySQL/DataBase.class.php";
                     <!-- FIN navbar -->                      
                     
                     <div class="page-content">     
-                        <div class="block-title block-title-medium" id="titulo-inicio"><a href="javascript:navegar('#view-setting');" class="link">Ajustes</a> -> Página Nosotros<span id="button-guardar-nosotros"class="button button-fill float-right" style="display:none;">Guardar</span></div> 
+                        <div class="block-title block-title-medium" id="titulo-nosotros"><a href="javascript:navegar('#view-setting');" class="link">Ajustes</a> -> Página Nosotros<span id="button-guardar-nosotros"class="button button-fill float-right" style="display:none;">Guardar</span></div> 
                         <div id="nosotros-page" class="block block-strong inset">  
 
 
