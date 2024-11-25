@@ -621,9 +621,9 @@ function correoCampaign() {
     var txt_old=localStorage.getItem("contenidopagina-correo");
     localStorage.setItem("contenidopagina-correo", txt_old);
 	
-	var txt='<div class="block-title block-title-medium"><a href="" onclick="restaurapaginacorreos();">Emails</a> -> Campañas<span onclick="editaCampaign();" id="add-campaign" class="button button-fill float-right">Nuevo</span></div>';
+	var txt2='<div class="block-title block-title-medium"><a href="" onclick="restaurapaginacorreos();">Emails</a> -> Campañas<span onclick="editaCampaign();" id="add-campaign" class="button button-fill float-right">Nuevo</span></div>';
     
-    txt+='<div class="grid grid-cols-4 grid-gap">'+
+    txt2+='<div class="grid grid-cols-4 grid-gap">'+
             '<div class="">Nombre</div>'+
             '<div class="">Fecha</div>'+
             '<div class="">Alcance</div>'+
@@ -632,7 +632,7 @@ function correoCampaign() {
         '<div id="campaign-row">'+
             
         '</div><hr>';
-    $('#emails-page').html(txt);
+    $('#emails-page').html(txt2);
     var server=servidor+'admin/includes/leecampaign.php';
     $.ajax({
         type: "POST",
