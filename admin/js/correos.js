@@ -719,7 +719,7 @@ function correoCampaign() {
                 
             }
             else{
-                app.dialog.alert('No se pudo los cupones');
+                //app.dialog.alert('No se pudo los cupones');
 
             }
         }
