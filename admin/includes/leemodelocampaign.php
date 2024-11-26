@@ -10,7 +10,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) ) {
 $array = json_decode(json_encode($_POST), true);
 $checking=false;
 
-$sql="SELECT CONVERT(textomail USING utf8) AS texto FROM tiposcorreos WHERE id=4";
+$sql="SELECT CONVERT(textomail USING utf8) AS texto FROM tiposcorreos WHERE id=5";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
