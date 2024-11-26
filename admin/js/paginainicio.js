@@ -84,7 +84,7 @@ $('#titulo-inicio').html('<a href="javascript:navegar(\'#view-setting\');" class
                 
                 
                 $('#button-guardar-inicio').on('click', function () {
-                    $('#button-guardar').hide();
+                    $('#button-guardar-inicio').hide();
                     $('#add-bloque-inicio').show();
                     var server=servidor+'admin/includes/ordenpaginainicio.php';        
                     $.ajax({
