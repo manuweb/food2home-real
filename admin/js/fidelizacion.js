@@ -182,7 +182,7 @@ function addgrupofidelidad(id, grupo){
                                     '</div>'+
                                 '</div>'+
                             '</div>'+         
-                            '<div class="block page-content"><br>'+
+                            '<div class="block page-content" style="overflow: scroll;"><br>'+
                                 ' <div id="search">'+
                                     '<div class="searchbar-backdrop"></div><br><br>'+
                                     '<div class="list searchbar-found" id="lista-clientes"></div>'+
@@ -276,7 +276,7 @@ function restagrupofidelidad(id, grupo){
                                     '</div>'+
                                 '</div>'+
                             '</div>'+         
-                            '<div class="block page-content"><br>'+
+                             '<div class="block page-content" style="overflow: scroll;"><br>'+
                                 ' <div id="search">'+
                                     '<div class="searchbar-backdrop"></div><br><br>'+
                                     '<div class="list searchbar-found" id="lista-clientes"></div>'+
