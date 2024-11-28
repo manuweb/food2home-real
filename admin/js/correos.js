@@ -583,6 +583,171 @@ function correoGiftCard() {
     
 }
 
+function correoPedido() {
+    var txt_old=$('#emails-page').html();
+    localStorage.setItem("contenidopagina correo", txt_old);
+    var txt='<div class="block-title block-title-medium"><a href="" onclick="restaurapaginacorreos();">Emails</a> -> Correo Pedidos</div>';
+    $('#emails-page').html(txt);
+    
+    var server=servidor+'admin/includes/tiposcorreos.php';
+    $.ajax({
+        type: "POST",
+        url: server,
+        data: {nombre:'Pedido',accion:'leer'},
+        dataType:"json",
+        success: function(data){
+            var obj=Object(data);
+            if (obj.valid==true){
+                var textomail=obj.textomail;
+                
+                txt+='<p>Texto correo:</p>'+
+                    '<div class="text-editor text-editor-init" style="width: 100%;">'+
+                        '<div class="text-editor-content" contenteditable style="border: solid 1px lightgrey;padding-left: 10px;padding-right: 10px;">'+textomail+'</div>'+
+                    '</div>'+
+                '<div class="block block-strong grid grid-cols-2 grid-gap">'+
+                    '<div class=""><a class="button button-fill popup-close button-cancelar" href="#" onclick="restaurapaginacorreos();">Cancelar</a></div>'+
+                    '<div class=""><a class="button button-fill save-data" href="#" onclick="guardatextocorreo(\'Pedido\',\'correoPedido\');">Guardar</a</div>'+
+                '</div>';
+                      
+
+                $('#emails-page').html(txt);
+                var textEditor = app.textEditor.create({
+                  el: '.text-editor',
+                  customButtons: {
+                      hr: {
+                        content: '<i class="material-icons">more_horiz</i>',
+                        onClick(editor, buttonEl) {
+                          document.execCommand('insertHorizontalRule', false);
+                        },
+                      },
+                    // property key is the button id
+                    logo: {
+                      // button html content
+                      content: '<i class="icon f7-icons logo-boton-icon"></i>',
+                      // button click handler
+                      onClick(event, buttonEl) {
+                        document.execCommand('insertText', false,'[logo]');
+                      }
+                    },
+                      cart: {
+                      // button html content
+                      content: '<i class="icon f7-icons if-not-md">cart</i>',
+                      // button click handler
+                      onClick(event, buttonEl) {
+                          app.dialog.create({
+                              title: 'Datos del pedido',
+                              text: 'Seleccione dato del pedido',
+                              buttons: [
+                                  {
+                                  text: 'Nº pedido',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoNumero]');
+                                    }
+                                },
+                                {
+                                  text: 'Nombre',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoNombre]');
+                                    }
+                                },
+                                  {
+                                  text: 'Apellidos',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoApellidos]');
+                                    }
+                                },
+                                  {
+                                  text: 'Teléfono',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoTelefono]');
+                                    }
+                                },
+                                  {
+                                  text: 'Fecha',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoFecha]');
+                                    }
+                                },
+                                  {
+                                  text: 'Fecha Realización',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoFechaPedido]');
+                                    }
+                                },
+                                  {
+                                  text: 'Hora',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoHora]');
+                                    }
+                                },
+                                  {
+                                  text: 'Hora pedido',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoHoraPedido]');
+                                    }
+                                },
+                                  {
+                                  text: 'Método Pago',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoMetodoPago]');
+                                    }
+                                },
+                                  {
+                                  text: 'Método Envío',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoMetodoEnvio]');
+                                    }
+                                },
+                                  {
+                                  text: 'Comentario',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoComentario]');
+                                    }
+                                },
+                                  {
+                                  text: 'El Pedido',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoElPedido]');
+                                    }
+                                },
+                                  {
+                                  text: 'Fidelizacion',
+                                  onClick: function () {
+                                        document.execCommand('insertText', false,'[pedidoFidelizacion]');
+                                    }
+                                },
+                                  
+                              ],
+                              verticalButtons: true,
+                            }).open();
+                        
+                      }
+                    }
+                    
+                      
+                    
+                  },
+                  // now we use custom button id "hr" to add it to buttons
+                  buttons: [
+                      ['bold', 'italic', 'underline', 'strikeThrough'],
+                      ['orderedList', 'unorderedList'],
+                      ['link', 'image'],
+                      ['paragraph', 'h1', 'h2', 'h3'],
+                      ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+                      ['subscript', 'superscript'],
+                      ['indent', 'outdent'],['hr','logo','cart']
+                    ]
+                });
+
+            }
+            else{
+                app.dialog.alert('No se pudo recuperar los datos de correo');
+            }
+        }
+    });
+    
+}
+
 function guardatextocorreo(nombre,funcion){
     var textEditor = app.textEditor.get('.text-editor');
     var textomail=textEditor.value; 
