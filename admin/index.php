@@ -786,42 +786,42 @@ include "../webapp/MySQL/DataBase.class.php";
                                             <div class="item-inner"><div class="item-title">Envios</div></div>
                                         </a>
                                         <div class="accordion-item-content">
-                                            <div class="list">
-                                                <ul>  
-                                                    <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');ajustesrepartos();" class="item-link item-content"> 
+            <div class="list">
+                <ul>  
+                    <li>
+                        <a href="javascript:navegar('#view-setting-repartos');ajustesrepartos();" class="item-link item-content"> 
 
-                                                          <div class="item-media"><i class="icon f7-icons ">gear</i></div>  
-                                                          <div class="item-inner">
-                                                            <div class="item-title">Ajustes reparto</div>
-                                                          </div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');muestrazonasrepartos();" class="item-link item-content"> 
+                          <div class="item-media"><i class="icon f7-icons ">gear</i></div>  
+                          <div class="item-inner">
+                            <div class="item-title">Ajustes reparto</div>
+                          </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:navegar('#view-setting-repartos');muestrazonasrepartos();" class="item-link item-content"> 
 
-                                                          <div class="item-media"><i class="icon f7-icons zona-reparto-icon"></i></div>  
-                                                          <div class="item-inner">
-                                                            <div class="item-title">Zonas reparto</div>
-                                                          </div>
-                                                        </a>
-                                                    </li> 
-                                                    <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorasrepartos();" class="item-link item-content">   <div class="item-media"><img src="img/delivery.svg" style="width: 28px;"></div>
-                                                          <div class="item-inner">
-                                                            <div class="item-title">Horarios reparto</div>
-                                                          </div>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:navegar('#view-setting-repartos');muestrahorascocina();" class="item-link item-content">   <div class="item-media"><img src="img/commerce.svg" style="width: 28px;"></div>
-                                                          <div class="item-inner">
-                                                            <div class="item-title">Horarios recoger</div>
-                                                          </div>
-                                                        </a>
-                                                    </li>
-                                                 </ul>
-                                            </div>
+                          <div class="item-media"><i class="icon f7-icons zona-reparto-icon"></i></div>  
+                          <div class="item-inner">
+                            <div class="item-title">Zonas reparto</div>
+                          </div>
+                        </a>
+                    </li> 
+                    <li>
+                        <a href="javascript:navegar('#view-setting-repartos');muestrahorasrepartos();" class="item-link item-content">   <div class="item-media"><img src="img/delivery.svg" style="width: 28px;"></div>
+                          <div class="item-inner">
+                            <div class="item-title">Horarios reparto</div>
+                          </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:navegar('#view-setting-repartos');muestrahorascocina();" class="item-link item-content">   <div class="item-media"><img src="img/commerce.svg" style="width: 28px;"></div>
+                          <div class="item-inner">
+                            <div class="item-title">Horarios recoger</div>
+                          </div>
+                        </a>
+                    </li>
+                 </ul>
+            </div>
                                         </div>
                                     </li> 
                                  </ul>
@@ -1164,7 +1164,7 @@ include "../webapp/MySQL/DataBase.class.php";
                             <div  id="tabla-promos-especiales"></div>   
                             <div class="grid grid-gap"></div>
                         </div>
-                    </div>                   
+                    </div>                    
 
                 </div>          
             </div>
@@ -1671,6 +1671,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                           <div class="item-media"><i class="icon f7-icons">giftcard</i></div>
                                           <div class="item-inner">
                                             <div class="item-title">Correo Tarjeta Regalos</div>
+                                          </div>
+                                      </a>
+                                  </li>
+                                    <li id="in_mail_pedido">
+                                      <a href="javascript:correoPedido();" class="item-link item-content">  
+                                          <div class="item-media"><i class="icon f7-icons">cart</i></div>
+                                          <div class="item-inner">
+                                            <div class="item-title">Correo Pedidos</div>
                                           </div>
                                       </a>
                                   </li>
