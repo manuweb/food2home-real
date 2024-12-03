@@ -948,7 +948,7 @@ $('#boton-add-grupo').attr('onclick','editaProducto(0,'+grupo+',\''+nombregrupo+
                         textoesMenu='<i class="icon f7-icons size-14">layers_alt_fil</i> '+nombre[x];
                     }
                      if (esMenu[x]=='5'){
-                        textoesMenu='<i class="icon f7-icons size-14">gigtcard</i> '+nombre[x];
+                        textoesMenu='<i class="icon f7-icons size-14">giftcard</i> '+nombre[x];
                     }
 
                     if(imagen[x]==''){
