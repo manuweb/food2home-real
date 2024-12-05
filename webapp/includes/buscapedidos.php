@@ -30,7 +30,7 @@ $tamPagina=10;
 
 $urlservidor=(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/";
 
-$sql="SELECT pedidos.id FROM pedidos  WHERE pedidos.cliente=".$cliente." AND estadoPago>=0 ORDER BY pedidos.fecha DESC;";
+$sql="SELECT pedidos.id FROM pedidos  WHERE pedidos.cliente=".$cliente." AND estadoPago>0 ORDER BY pedidos.fecha DESC;";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
@@ -40,7 +40,7 @@ if ($result && $result->num_rows != 0) {
     $numReg=$result->num_rows;
     $limitInf=($pagina-1)*$tamPagina;
 
-    $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha, pedidos.dia as dia, pedidos.cliente as cliente, usuarios_app.id AS idusu, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.cliente=".$cliente." AND estadoPago>=0 AND anulado=0 ORDER BY pedidos.dia DESC LIMIT ".$limitInf.",".$tamPagina.";";
+    $sql="SELECT pedidos.id as id, pedidos.numero as numero, pedidos.estadoPago as estadoPago, pedidos.fecha as fecha, pedidos.dia as dia, pedidos.cliente as cliente, usuarios_app.id AS idusu, usuarios_app.apellidos as apellidos, usuarios_app.nombre as nombre, pedidos.subtotal as subtotal, pedidos.impuestos as impuestos, (pedidos.descuento+pedidos.monedero) as descuentos, pedidos.total as total, pedidos.metodoEnvio as envio, pedidos.metodoPago as metodo, pedidos_clientes.apellidos AS ape_otro, pedidos_clientes.nombre as nom_otro FROM pedidos LEFT JOIN usuarios_app ON usuarios_app.id=pedidos.cliente LEFT JOIN pedidos_clientes ON pedidos_clientes.idPedido = pedidos.id  WHERE pedidos.cliente=".$cliente." AND estadoPago>0 AND anulado=0 ORDER BY pedidos.dia DESC LIMIT ".$limitInf.",".$tamPagina.";";
 
     $database = DataBase::getInstance();
     $database->setQuery($sql);
