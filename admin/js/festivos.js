@@ -10,7 +10,7 @@
 
 function ajustesFestivos(){
     $('#festivos-tittle').html('<a href="javascript:navegar(\'#view-setting\');" class="link">Ajustes</a> -> Festivos<span id="boton-add-fedstivo" class="button button-fill float-right" onclick="nuevoFestivo();">Nuevo</span>');
-    server=servidor+'admin/includes/leefestivos.php';
+   $('#tabla-festivos').html(''); server=servidor+'admin/includes/leefestivos.php';
     
     $.ajax({
         type: "POST",
