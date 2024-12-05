@@ -765,6 +765,14 @@ include "../webapp/MySQL/DataBase.class.php";
                                           </div>
                                       </a>
                                   </li>
+                                <li>
+                                      <a href="javascript:navegar('#view-setting-festivos');ajustesFestivos();" class="item-link item-content">  
+                                          <div class="item-media"><i class="icon f7-icons">calendar</i></div>
+                                          <div class="item-inner">
+                                            <div class="item-title">Dias Festivos</div>
+                                          </div>
+                                      </a>
+                                  </li>
 
                                   <li>
                                       <a href="javascript:navegar('#view-setting-alergenos');" class="item-link item-content">  
@@ -1201,6 +1209,39 @@ include "../webapp/MySQL/DataBase.class.php";
                 </div>          
             </div>  
             <!-- Fin Alergenos View --> 
+            
+            <!-- Setting festivos View -->
+            <div id="view-setting-festivos" class="view view-init tab" data-name="festivos" >
+                <div class="page" data-name="alergenos">  
+                                     
+                    <!-- Top Navbar -->
+                    <div class="navbar no-outline">
+                        <div class="navbar-bg"></div>
+                        <div class="navbar-inner">
+                            <div class="left"><a href="#" onclick="abrepanel();" class="link icon-only "><i class="icon f7-icons menu-left">menu</i></a></div>
+                            <div class="title title-principal"></div>
+                            <div class="right select-tienda list">Master</div>
+                        </div>
+                    </div>   
+                    <!-- FIN navbar -->   
+                    
+                    <div class="page-content">      
+                        <div class="block-title block-title-medium" id="festivos-tittle"><a href="javascript:navegar('#view-setting');" class="link" >Ajustes</a> -> Festivos</div>                         
+                         <div id="festivos-page" class="block block-strong inset">
+                            <div class="grid grid-cols-3 grid-gap">
+                              <div class=""><b>Año</b></div>
+                                <div class=""><b>Fecha</b></div>
+                              <div class="text-align-right"></div>
+                              
+                            </div>
+                            <hr>
+                            <div id="tabla-festivos">
+                            </div>                           
+                        </div>   
+                    </div>                    
+                </div>          
+            </div>  
+            <!-- Fin Festivos View --> 
             
             <!-- Setting Sync View -->
             <div id="view-setting-sync" class="view view-init tab" data-name="seting" >
@@ -1976,6 +2017,7 @@ include "../webapp/MySQL/DataBase.class.php";
             "js/correos.js?" + mathrandom,
             "js/config.js?" + mathrandom,
             "js/clientes.js?" + mathrandom,
+            "js/festivos.js?" + mathrandom,
             "js/canvasjs.min.js?" + mathrandom
             
             
