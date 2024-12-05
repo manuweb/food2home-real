@@ -18,6 +18,21 @@ include "../../webapp/conexion.php";
 include "../../webapp/MySQL-2/DataBase.class.php";
 
 $checking=false;
+$hoy=date("Y-m-d");  
+$sql="SELECT fecha FROM festivos WHERE fecha>='".$hoy."' ORDER BY fecha;";
+$db = DataBase::getInstance();  
+$db->setQuery($sql);  
+$dias = $db->loadObjectList();  
+$db->freeResults();
+$fecha=[];
+
+if (count($dias)>0) { 
+    for ($x=0;$x<count($dias);$x++){
+        $eldia=$dias[$x]->fecha;
+        // 0123-56-89
+        $fecha[]=substr($eldia,8,2)."/".substr($eldia,5,2)."/".substr($eldia,0,4);
+    }
+}
 
 
 $sql="select intervalo, ld1, lh1, ld2, lh2, md1, mh1, md2, mh2, xd1, xh1, xd2, xh2, jd1, jh1, jd2, jh2, vd1, vh1, vd2, vh2, sd1, sh1, sd2, sh2, dd1, dh1, dd2, dh2, lunes, martes, miercoles, jueves, viernes, sabado, domingo, lp, mp, xp, jp, vp, sp, dp FROM horas_repartos Where id=1";
@@ -81,7 +96,7 @@ if (count($grupo)>0) {
 }
 
 
-$json=array("valid"=>$checking, 
+$json=array("valid"=>$checking, "festivos"=>$fecha,
             "ld1"=>$ld1, "lh1"=>$lh1, "ld2"=>$ld2, "lh2"=>$lh2, 
             "md1"=>$md1, "mh1"=>$mh1, "md2"=>$md2, "mh2"=>$mh2, 
             "xd1"=>$xd1, "xh1"=>$xh1, "xd2"=>$xd2, "xh2"=>$xh2, 
