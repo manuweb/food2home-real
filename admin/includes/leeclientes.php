@@ -43,7 +43,7 @@ FROM usuarios_app  left join  pedidos on pedidos.cliente=usuarios_app.id WHERE "
 
 UNION 
 
-(SELECT 'S' AS tipo, usuarios_app.tratamiento AS tratamiento, usuarios_app.apellidos as apellidos  , usuarios_app.nombre as nombre, usuarios_app.username as email, usuarios_app.publicidad as publicidad, usuarios_app.telefono as telefono,usuarios_app.monedero as monedero, usuarios_app.id AS idCliente, CAST(SUM(pedidos.total) AS INTEGER) as totalcompras 
+(SELECT 'S' AS tipo, usuarios_app.tratamiento AS tratamiento, usuarios_app.apellidos as apellidos  , usuarios_app.nombre as nombre, usuarios_app.username as email, usuarios_app.publicidad as publicidad, usuarios_app.telefono as telefono,usuarios_app.monedero as monedero, usuarios_app.id AS idCliente, (SUM(pedidos.total)) as totalcompras  
 FROM usuarios_app  left join  pedidos on pedidos.cliente=usuarios_app.id WHERE ".$filtro." AND pedidos.estadoPago=1 GROUP BY usuarios_app.username
 )
 
@@ -91,7 +91,7 @@ FROM usuarios_app  left join  pedidos on pedidos.cliente=usuarios_app.id WHERE "
 
 UNION 
 
-(SELECT 'S' AS tipo, usuarios_app.tratamiento AS tratamiento, usuarios_app.apellidos as apellidos  , usuarios_app.nombre as nombre, usuarios_app.username as email, usuarios_app.publicidad as publicidad, usuarios_app.telefono as telefono,usuarios_app.monedero as monedero, usuarios_app.id AS idCliente, CAST(SUM(pedidos.total) AS INTEGER) as totalcompras 
+(SELECT 'S' AS tipo, usuarios_app.tratamiento AS tratamiento, usuarios_app.apellidos as apellidos  , usuarios_app.nombre as nombre, usuarios_app.username as email, usuarios_app.publicidad as publicidad, usuarios_app.telefono as telefono,usuarios_app.monedero as monedero, usuarios_app.id AS idCliente, (SUM(pedidos.total)) as totalcompras 
 FROM usuarios_app  left join  pedidos on pedidos.cliente=usuarios_app.id WHERE ".$filtro." AND pedidos.estadoPago=1 GROUP BY usuarios_app.username
 )
 
