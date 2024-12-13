@@ -316,7 +316,7 @@ if (count($grupo)>0) {
         <li class="item-content" style="background-color: transparent;border: gray solid 1px;border-radius: 5px;  ">
           <div class="item-inner">
             <div class="item-input-wrap">
-              <input type="text" placeholder="Nombre para tarjeta" name="nombre-para-tarjeta" id="nombre-para-tarjeta">
+              <input type="text" placeholder="Nombre a quien regalas la tarjeta" name="nombre-para-tarjeta" id="nombre-para-tarjeta">
               <span class="input-clear-button"></span>
             </div>
           </div>
