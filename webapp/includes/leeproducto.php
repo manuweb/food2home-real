@@ -324,7 +324,7 @@ if (count($grupo)>0) {
         <li class="item-content" style="background-color: transparent;border: gray solid 1px;border-radius: 5px;margin-top:10px; ">
           <div class="item-inner">
             <div class="item-input-wrap">
-              <input type="email" name="email-para-tarjeta" id="email-para-tarjeta" placeholder="Email para enviar">
+              <input type="email" name="email-para-tarjeta" id="email-para-tarjeta" placeholder="Email a quien enviar la tarjeta">
               <span class="input-clear-button"></span>
             </div>
           </div>
