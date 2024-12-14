@@ -453,21 +453,28 @@ $texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;fo
 
         $steep_no_visible='display:none;';
     }
+    $contadorS='onclick="SumaUno();"';
+    $contadorR='onclick="RestaUno();"';
+    if ($esMenu==5){
+        $contadorS='';
+        $contadorR='';
+    }
     $txt_cantidad='<div class="block" style="margin-top:5px;margin-bottom:-8px;'.$steep_no_visible.'" id="stepper-producto">
                 <div class="" style="display: flex;margin-top: 10px;">
                     <div class="" style="font-size:16px;font-weight: bold;width: 60%;">Número de unidades
                     </div>
                     <div class="" style="width: 40%;text-align: right;">
                         <div class="stepper stepper-fill stepper-round stepper-init">
-                            <div class="stepper-button-minus" onclick="RestaUno();"></div>
+                            <div class="stepper-button-minus" '.$contadorR.' ></div>
                             <div class="stepper-input-wrap">
                                 <input type="text" value="1" id="cantidadProducto" readonly />
                             </div>
-                            <div class="stepper-button-plus" onclick="SumaUno();"></div>
+                            <div class="stepper-button-plus" '.$contadorS.' ></div>
                         </div>
                     </div>
                 </div>
      </div>';
+
 
     
     
