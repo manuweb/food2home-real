@@ -224,7 +224,22 @@ class RecomponePedido
         $this->urlImgRevo=$this->url.'/webapp/img/revo/';
         $this->urlImgProducto=$this->url.'/webapp/img/productos/';
     }
-    
+	
+    public function BuscaUUID($idPedido,$idPedido){
+        $sql="SELECT uuid FROM tarjetas_regalo WHERE idPedido=".$idPedido." AND idProducto=".$idPedido.";";
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $uuid='';
+        if ($result->num_rows > 0) {
+            $id = $result->fetch_object();
+            $uuid=$id->uuid;
+        }
+        $database->freeResults();  
+        return $uuid;           
+        
+    }
+	
     public function BuscaImg($id){
         $sql="SELECT imagen, imagen_app1 FROM productos WHERE id=".$id.";";
         $database = DataBase::getInstance();
