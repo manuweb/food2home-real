@@ -1323,6 +1323,10 @@ class MisMails
                 //$txt_mod=trim($txt_mod, ', ');
                 //$textomail .=$txt_mod;
             }
+		
+	    if ($carrito[$n]['uuid']!=''){
+	    	$textoPedido.='<br>Nº: <b>'.$carrito[$n]['uuid'].'</b>';
+	    }
             if ($carrito[$n]['comentario']!=''){
                 $textomail.='<br><i>'.$carrito[$n]['comentario'].'</i>';
             }
