@@ -475,7 +475,7 @@ class RecomponePedido
                    $campoMenu='0';
                 }
                 if ($lineas->menu==5){
-                    $uuid=$this->BuscaUUID($IdPedido,$lineas->idArticulo);
+                    //$uuid=$this->BuscaUUID($IdPedido,$lineas->idArticulo);
                 }
                 $modificadores=$this->BuscaLineasModificadores($lineas->id);
                 
