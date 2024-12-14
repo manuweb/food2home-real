@@ -455,13 +455,14 @@ class RecomponePedido
     {
         $devuelve=[];
         $sql="SELECT id, idArticulo,  descripcion, canidad, precio, impuesto, menu, comentario FROM pedidos_lineas WHERE idPedido=".$IdPedido.";";
-
+        
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $resultado = $database->execute();
         if ($resultado->num_rows > 0) {
             
             while ($lineas = $resultado->fetch_object()) {
+                $uuid='';
                 $textoMenu='';
                 $campoMenu=[];
                 if ($lineas->menu==1){
@@ -472,6 +473,9 @@ class RecomponePedido
                 else {
                     $textoMenu='elmentMenu';
                    $campoMenu='0';
+                }
+                if ($lineas->menu==5){
+                    $uuid=$this->BuscaUUID($IdPedido,$lineas->idArticulo);
                 }
                 $modificadores=$this->BuscaLineasModificadores($lineas->id);
                 
@@ -489,6 +493,7 @@ class RecomponePedido
                         "precio" =>$precio,
                         "iva"=>$lineas->impuesto,
                         "menu"=>$lineas->menu,
+                        "uuid"=>$uuid,
                         "precio_sin" =>$precio_sin,
                         "cantidad" =>$lineas->canidad,
                         "subtotal" =>($lineas->canidad*$precio),
@@ -511,6 +516,7 @@ class RecomponePedido
                         "img" =>$this->BuscaImg($lineas->idArticulo),
                         "iva"=>$lineas->impuesto,
                         "menu"=>$lineas->menu,
+                        "uuid"=>$uuid,
                         "precio" =>$precio,
                         "precio_sin" =>$precio_sin,
                         "comentario" =>$lineas->comentario,
@@ -530,6 +536,7 @@ class RecomponePedido
         $database->freeResults();  
         return $devuelve;
     }
+    
     
     
 }
