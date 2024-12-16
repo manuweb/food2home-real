@@ -357,9 +357,12 @@ if (count($grupo)>0) {
     $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
         <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons tip-alergenos color-primary">info_circle_fill</i></p></div>';
         */
-    $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
-        <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons color-primary">info_circle_fill</i></p></div>';
-    $texto.=$alergi.'<br style="clear:both;">';
+	
+    if ($esMenu!='5'){
+	    $texto.='<div class="block" style="margin-top:15    px;margin-bottom:5px;">
+	        <p style="font-size:16px;font-weight: bold;margin-bottom: 5px;color:'.$array['colorprimario'].';">Alergenos <i style="font-size: 20px" class="icon f7-icons color-primary">info_circle_fill</i></p></div>';
+	    $texto.=$alergi.'<br style="clear:both;">';
+    }
     /*
     if (is_array($modifierCategories)){
         if (is_array($modifierCategoriesGru)){
@@ -433,7 +436,8 @@ if (count($grupo)>0) {
     }
     
     
-$texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;font-weight: bold;margin-bottom: -5px;margin-top: 10px;color:'.$array['colorprimario'].';"><i>¿Algún comentario?</i><span id="caracteres" style="float: right; color: var(--f7-theme-color);font-size:.9em;">136</span></p><div class="list" style="margin-top: 15px;">
+ if ($esMenu!='5'){
+	$texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;font-weight: bold;margin-bottom: -5px;margin-top: 10px;color:'.$array['colorprimario'].';"><i>¿Algún comentario?</i><span id="caracteres" style="float: right; color: var(--f7-theme-color);font-size:.9em;">136</span></p><div class="list" style="margin-top: 15px;">
         <ul>
           <li class="item-content" style="background-color: transparent;border: white solid 1px;border-radius: 5px;  ">
             <div class="item-inner">
@@ -445,6 +449,10 @@ $texto.='<div style="margin: 15px;margin-top: -5px;"><p style="font-size:16px;fo
           </li>
           </ul>
           </div></div>';
+    }
+    else {
+	    $texto.='<input type="hidden"  id="comentario-prod" value=""/>';
+    }
     
     $posicion_coincidencia = strpos($texto, 'Obligatorio');
     
