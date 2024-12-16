@@ -112,11 +112,11 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $carrito=$order['carrito'];
                 for ($x=0;$x<count($carrito);$x++){
                     if($carrito[$x]['menu']==5){
-                        $sql="UPDATE tarjetas_regalo SET idRevo=".$revoid." WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id']." AND uuid=".$carrito[$x]['uuid'].";";
+                        $sql="UPDATE tarjetas_regalo SET idRevo=".$revoid." WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
 
                         $database->setQuery($sql);
                         $result = $database->execute();
-                        $sql="SELECT uuid,nombre,email,precio FROM tarjetas_regalo WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id']." AND uuid=".$carrito[$x]['uuid'].";";
+                        $sql="SELECT uuid,nombre,email,precio FROM tarjetas_regalo WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
                         $database->setQuery($sql);
                         $resultT = $database->execute();
                         while ($lintar = $resultT->fetch_object()) {
@@ -234,7 +234,11 @@ include_once('Sermepa/Tpv/Tpv.php');
                 }
             }
             if ($cco_pedidos) {
-                $phpmailer->addBCC($datos['cco']);    
+                 $losmails=explode(';',$datosM['cco']);
+                    for ($h=0;$h<count($losmails);$h++){
+                        $phpmailer->addBCC($losmails[$h]);
+                    }
+                //$phpmailer->addBCC($datos['cco']);    
             }
             
             $Pedido = new RecomponePedido;
