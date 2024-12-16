@@ -226,7 +226,7 @@ class RecomponePedido
     }
 
     public function BuscaUUID($idPedido,$idArticulo,$idLinea){
-        $sql="SELECT uuid FROM tarjetas_regalo WHERE idPedido=".$idPedido." AND idProducto=".idArticulo." AND idLinea=".$idLinea.";";
+        $sql="SELECT uuid FROM tarjetas_regalo WHERE idPedido=".$idPedido." AND idProducto=".$idArticulo." AND idLinea=".$idLinea.";";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
