@@ -112,11 +112,11 @@ include_once('Sermepa/Tpv/Tpv.php');
                 $carrito=$order['carrito'];
                 for ($x=0;$x<count($carrito);$x++){
                     if($carrito[$x]['menu']==5){
-                        $sql="UPDATE tarjetas_regalo SET idRevo=".$revoid." WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
+                        $sql="UPDATE tarjetas_regalo SET idRevo=".$revoid." WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id']." AND uuid=".$carrito[$x]['uuid'].";";
 
                         $database->setQuery($sql);
                         $result = $database->execute();
-                        $sql="SELECT uuid,nombre,email,precio FROM tarjetas_regalo WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id'].";";
+                        $sql="SELECT uuid,nombre,email,precio FROM tarjetas_regalo WHERE idPedido=".$idpedido." AND idProducto=".$carrito[$x]['id']." AND uuid=".$carrito[$x]['uuid'].";";
                         $database->setQuery($sql);
                         $resultT = $database->execute();
                         while ($lintar = $resultT->fetch_object()) {
