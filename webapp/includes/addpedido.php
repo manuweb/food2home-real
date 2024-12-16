@@ -110,7 +110,6 @@ if ($order['nombre']=='' || $order['telefono']=='' || $order['email']=='') {
     echo json_encode($json); 
 }
 else {
-
     // idRedsys
     $sql="SELECT idrevo FROM metodospago WHERE esRedsys=1;";
     $db = DataBase::getInstance();  
@@ -167,8 +166,9 @@ else {
         }
         //$carrito[$x]['precio']+=$suma_mod;
         
-        $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*($carrito[$x]['precio_sin']+$suma_mod);
+        $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*$carrito[$x]['precio_sin'];
         $subtotal+=$carrito[$x]['subtotal'];
+        
         if($carrito[$x]['menu']==5){
             $nombreT=$carrito[$x]['nombreT'];
             $emailT=$carrito[$x]['emailT'];
@@ -182,8 +182,10 @@ else {
             for ($h=0;$h<$carrito[$x]['cantidad'];$h++){
                 $tarjetasRegalo[]=[
                     'uuid'=> generate_string(6)."-".generate_string(6),
+                    'x_carrito'=>$x,
                     'idPedido'=>0,
                     'idRevo'=>0,
+                    'idLinea'=>0,
                     'idProducto'=>$carrito[$x]['id'],
                     'nombre'=>$nombreT,
                     'email'=>$emailT,
@@ -375,13 +377,12 @@ else {
     
     
     $order['fecha']=date('Y-m-d H:i:s');
-    
     $pagadoSiNO=0;
     if ($tarjeta==2){
         $pagadoSiNO=1;
     }
     $sql="INSERT INTO pedidos (numero,numeroRevo,fecha,dia,hora,cliente,subtotal,impuestos,portes,descuento,tipo_descuento,cupon,codigoCupon,monedero,importe_fidelizacion,total,metodoEnvio,metodoPago,estadoPago,canal,comentario,anulado) VALUES ('".$OrderId."', '0', '".$order['fecha']."', '".$dia."', '".$hora."', ".$cliente.", ".$subtotal.", ".$sumadeivas.", ".$portes.",".$descuento.", '".$tipo_descuento."', '".$cupon."', '".$order['codigocupon']."', ".$monedero.", ".$importe_fidelizacion.", ".$total.", ".$envio.", ".$tarjeta.", ".$pagadoSiNO.", ".$canal.", '".$comentario."', 0);";
-        
+    
     //$order['fecha']=date('Y-m-d H:i:s');
     
     $db = DataBase::getInstance();  
@@ -403,19 +404,7 @@ else {
         $idPedido=$pedido[0]->id;
     }
     //$db->freeResults();
-    for ($h=0;$h<count($tarjetasRegalo);$h++){
-        $tarjetasRegalo[$h]['idPedido']=$idPedido;
-        
-        $sql="INSERT INTO tarjetas_regalo (uuid,idPedido,idRevo,idProducto,nombre,precio,email) VALUES ('".$tarjetasRegalo[$h]['uuid']."','".$idPedido."','0','".$tarjetasRegalo[$h]['idProducto']."','".$tarjetasRegalo[$h]['nombre']."','".$tarjetasRegalo[$h]['precio']."','".$tarjetasRegalo[$h]['email']."');";
-    $file = fopen("zz-pedido-tr.txt", "w");
-    fwrite($file, "sql: ". $sql . PHP_EOL);
     
-    fclose($file);
-        $db = DataBase::getInstance();  
-        $db->setQuery($sql);   
-        if ($db->alter()){}
-        else {}
-    }
     
     //file_put_contents('zz-pedido-tr.txt', print_r($tarjetasRegalo, true));
     
@@ -428,7 +417,7 @@ else {
            
            //$esRedsys != $tarjeta
            //if ($esRedsys != $tarjeta){
-           if ($tarjeta=='2'){
+           if ($tarjeta==2){
                 $sql="UPDATE usuarios_app SET monedero=monedero+".($importe_fidelizacion-$monedero)." WHERE id=".$cliente.";";
            
            //fwrite($file, "sql: ".$sql. PHP_EOL);
@@ -491,12 +480,21 @@ else {
                 //fwrite($file, "sql: ".$sql. PHP_EOL);
                 
                 $idLineaPedido=$linea[0]->idLineaPedido;
+
+                if ($carrito[$x]['menu']==5){
+                    for ($a=0;$a<count($tarjetasRegalo);$a++) {
+                        if ($tarjetasRegalo[$a]['x_carrito']==$x){
+                            
+                            $tarjetasRegalo[$a]['idLinea']=$idLineaPedido;
+                        }
+                    }
+                }
+                
                 //fwrite($file, "linea: ".$idLineaPedido. PHP_EOL);
                 // elementos menu
                 if (isset($carrito[$x]['elmentosMenu'])) {
                     for($j=0;$j<count($carrito[$x]['elmentosMenu']);$j++){
-                        $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,idMenu,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", ".$carrito[$x]['elmentosMenu'][$j]['idMenu'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
-                        
+                        $sql="INSERT INTO pedidos_lineas_menu (idLinea,idArticulo,descripcion,cantidad,precio,impuesto) VALUES (".$idLineaPedido.", ".$carrito[$x]['elmentosMenu'][$j]['id'].", '".$carrito[$x]['elmentosMenu'][$j]['nombre']."', ".$carrito[$x]['elmentosMenu'][$j]['cantidad'].", '".$carrito[$x]['elmentosMenu'][$j]['precio']."', '".$carrito[$x]['elmentosMenu'][$j]['iva']."');";
                         $db = DataBase::getInstance();  
                         $db->setQuery($sql);  
                         //$linea = $db->loadObjectList();
@@ -617,6 +615,20 @@ else {
         }
         
     }
+    for ($h=0;$h<count($tarjetasRegalo);$h++){
+        $tarjetasRegalo[$h]['idPedido']=$idPedido;
+        
+        $sql="INSERT INTO tarjetas_regalo (uuid,idPedido,idLinea,idRevo,idProducto,nombre,precio,email) VALUES ('".$tarjetasRegalo[$h]['uuid']."','".$idPedido."','".$tarjetasRegalo[$h]['idLinea']."','0','".$tarjetasRegalo[$h]['idProducto']."','".$tarjetasRegalo[$h]['nombre']."','".$tarjetasRegalo[$h]['precio']."','".$tarjetasRegalo[$h]['email']."');";
+    $file = fopen("zz-pedido-tr.txt", "w");
+    fwrite($file, "sql: ". $sql . PHP_EOL);
+    
+    fclose($file);
+        $db = DataBase::getInstance();  
+        $db->setQuery($sql);   
+        if ($db->alter()){}
+        else {}
+    }
+
     if ($checking){
        $sql="INSERT INTO orders (idPedido,datos) VALUES (".$idPedido.",'".json_encode($order,JSON_UNESCAPED_UNICODE)."');"; 
         //fwrite($file, "sql: ".$sql. PHP_EOL);  
@@ -631,9 +643,6 @@ else {
             //fwrite($file, "sql: NO OK". PHP_EOL);
         }
     }
-
-
-
     $json=array("valid"=>$checking,"order"=>$OrderId,"idpedido"=>$idPedido);
     //fwrite($file, "json: ". json_encode($json) . PHP_EOL);
     
@@ -641,6 +650,11 @@ else {
     ob_end_clean();
     echo json_encode($json); 
 }
+
+
+
+
+
 
 
 
