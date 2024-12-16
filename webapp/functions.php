@@ -1212,8 +1212,184 @@ class MisMails
         ]; 
         return $devuelve;     
     }
-    
+
     public function CreaBodyTextoPedido($order){
+        $devuelve=[];
+        $textomail='';
+
+        $sql="SELECT estilo.primario, estilo.secundario, opcionescompra.cortesia, empresa.movil FROM estilo LEFT JOIN opcionescompra ON opcionescompra.id=estilo.id LEFT JOIN empresa ON empresa.id=estilo.id WHERE estilo.id=1";
+
+        $database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result_empresa = $database->execute();
+        $opciones= $result_empresa->fetch_object();
+        $colorprimario=$opciones->primario;
+        $colorsecundario=$opciones->secundario;
+        $cortesia=$opciones->cortesia;
+        $movil=$opciones->movil;
+        $numero=$order['pedido'];
+        if (TIPOINTEGRACION==1){
+            if (USARNUMEROREVO==1){
+                $numero=$order['numeroRevo'];
+            }
+        }
+        $sql="SELECT textomail FROM tiposcorreos WHERE nombre='Pedido';";
+        $database->setQuery($sql);
+        $result = $database->execute();
+        if ($result) {
+            $mail = $result->fetch_object();
+            $textomail.=$mail->textomail;
+            $subject='Su pedido '.$numero;
+            $fecha=$order['fecha'];
+            $dia=substr($order['dia'],8,2)."/".substr($order['dia'],5,2)."/".substr($order['dia'],0,4);
+            $hora=$order['hora'];
+
+            $txt_cortesia='';
+            if ($cortesia>0){
+                $hh=substr($hora,0,2);
+                $mm=substr($hora,3,2);
+                $mm+=$cortesia;
+                if ($mm>=60){
+                    //$mm-=$cortesia;
+                    $mm-=60;
+                    $hh+=1;
+                }
+                if ($hh>=24){
+                    $hh=0;
+                }
+                if ($mm<9){
+                    $mm='0'.$mm;
+                }
+                if ($hh<9){
+                    $hh='0'.$hh;
+                }
+                $txt_cortesia='-'.$hh.':'.$mm;
+            }   
+            $metodoPago='Tarjeta';
+            if ($order['tarjeta']!=2) {
+                $metodoPago="Tarjeta";
+            }
+            else {
+                $metodoPago="Pago al Repartidor";
+                
+            }
+            $datosDomicilio='';
+            $metodoEnvio='<h3>Recoger en local</h3>';
+            $datosDomicilio="";
+            if ($order['metodo']==1) {
+                $metodoEnvio='<h3>Entrega domicilio</h3>';
+                $datosDomicilio="<p>".$order['domicilio']['direccion']."<br>".$order['domicilio']['complementario']."<br>".$order['domicilio']['cod_postal']." - ".$order['domicilio']['poblacion']." (".$order['domicilio']['provincia'].")</p>";
+            }
+            // numero
+            $textomail=str_replace('[pedidoNumero]',$numero,$textomail);
+            
+            // telefono
+            $textomail=str_replace('[pedidoTelefono]',$order['telefono'],$textomail);
+            
+            // nombre y apellidos
+            $textomail=str_replace('[pedidoNombre]',$order['nombre'],$textomail);
+            $textomail=str_replace('[pedidoApellidos]',$order['apellidos'],$textomail);
+            // FechaPedido
+            $textomail=str_replace('[pedidoFechaPedido]',substr($fecha,8,2)."/".substr($fecha,5,2)."/".substr($fecha,0,4),$textomail);
+            // HoraPedido
+            $textomail=str_replace('[pedidoHoraPedido]',substr($fecha,11,5),$textomail);
+            // fecha
+            $textomail=str_replace('[pedidoFecha]',$dia,$textomail);
+            // Hora
+            $textomail=str_replace('[pedidoHora]',$hora.$txt_cortesia,$textomail);
+            // Pago
+            $textomail=str_replace('[pedidoMetodoPago]',$metodoPago,$textomail);
+            // Envío
+           if ($order['metodo']==1) {   
+               $textomail=str_replace('[pedidoMetodoEnvio]',$metodoEnvio.$datosDomicilio,$textomail);
+            }
+            else {
+                $textomail=str_replace('[pedidoMetodoEnvio]',$metodoEnvio,$textomail);
+            }
+            
+            //comentario
+            if ($order['comentario']!=''){
+                $textomail= str_replace('[pedidoComentario]',"Comentario:<br><i>".$order['comentario']."</i>",$textomail);
+            }
+            else {
+                $textomail= str_replace('[pedidoComentario]',"",$textomail);
+            }
+            //fidelizacion
+            $textomail= str_replace('[pedidoFidelizacion]',number_format($order['importe_fidelizacion'],2),$textomail);
+            
+            $carrito=$order['carrito'];
+
+            $textoPedido ='<div style="overflow-x:auto;"><table style="border-collapse: collapse;border-spacing: 0;width: 100%;font-size:.8em;" class=""><tr style="background:'.$colorprimario.';color:#fff;padding:5px;"><th colspan="2" style="padding: 4px;">Concepto</th><th align ="right" style="padding: 4px;">Cantidad</th><th align ="right" style="padding: 4px;">Precio</th><th align ="right" style="padding: 4px;">Subtotal</th></tr>';
+            for ($n=0;$n<count($carrito);$n++){
+                $textoPedido.='<tr><td align ="center" valign="top" style="padding: 4px;"><img src="'.$carrito[$n]['img'].'" width=40 height=auto></td><td  align ="left" valign="top" style="padding: 4px;">'.$carrito[$n]['nombre'];
+
+                if (isset($carrito[$n]['modificadores'])){
+                    $txt_mod="<br>";
+                    $txt_nom_menu='';    
+                    for ($j=0;$j<count($carrito[$n]['modificadores']);$j++){
+
+                if ($carrito[$n]['modificadores'][$j]['nom_cat']!=$txt_nom_menu){
+                    $txt_nom_menu=$carrito[$n]['modificadores'][$j]['nom_cat'];
+                    $textoPedido .="<br><b>".$txt_nom_menu."</b><br>";
+                    //$txt_mod="<br>";
+                }
+                            $txt_mod=$carrito[$n]['modificadores'][$j]['nombre'];
+                $textoPedido .=$txt_mod."<br>";
+                    }
+                    //$txt_mod=trim($txt_mod, ', ');
+                    //$textomail .=$txt_mod;
+                }
+                
+                if ($carrito[$n]['uuid']!=''){
+                    $textoPedido.='<br>Nº: <b>'.$carrito[$n]['uuid'].'</b>';
+                }
+                if ($carrito[$n]['comentario']!=''){
+                    $textoPedido.='<br><i>'.$carrito[$n]['comentario'].'</i>';
+                }
+                
+                $textoPedido .="</td><td align ='right' valign='top' style=padding: 4px;'>".$carrito[$n]['cantidad']."</td><td align ='right' valign='top' style=padding: 4px;'>".$carrito[$n]['precio']."</td><td align ='right' valign='top' style=padding: 4px;'>".number_format(($carrito[$n]['subtotal']),2)."</td></tr>";
+
+
+                if (isset($carrito[$n]['elmentosMenu'])){
+                    $txt_nom_menu='';
+                    for ($j=0;$j<count($carrito[$n]['elmentosMenu']);$j++){
+                if ($carrito[$n]['elmentosMenu'][$j]['nomMenu']!=$txt_nom_menu){
+                    $txt_nom_menu=$carrito[$n]['elmentosMenu'][$j]['nomMenu'];
+                    $textoPedido .='<tr><td></td><td  align ="left" valign="top"><b>'.$txt_nom_menu.'</b></td><td></td><td ></td><td></td></tr>';
+                }
+                        $textoPedido.='<tr><td align ="center" valign="top"><img src="'.$carrito[$n]['elmentosMenu'][$j]['img'].'" width=30 height=auto></td><td  align ="left" valign="top">'.$carrito[$n]['elmentosMenu'][$j]['nombre'];
+                        $textoPedido .="</td><td align ='right' valign='top'>".$carrito[$n]['elmentosMenu'][$j]['cantidad']."</td><td ></td><td></td></tr>";
+
+                    }
+                }            
+            }
+            $textoPedido.="</table></div>";
+
+            $textoPedido.="<p style='text-align:right;'>Subtotal: ".number_format($order['subtotal'],2)." &euro;</p>"; 
+            if ($order['portes']>0){
+                $textoPedido.="<p style='text-align:right;'>Envío: ".number_format($order['portes'],2)." &euro;</p>"; 
+            }
+            if ($order['descuento']>0){
+                $textoPedido.="<p style='text-align:right;'>Descuento: ".number_format($order['descuento'],2)." &euro;</p>"; 
+            }
+            if ($order['monedero']>0){
+                $textoPedido.="<p style='text-align:right;'>Monedero usado: ".number_format($order['monedero'],2)." &euro;</p>"; 
+            }
+            $textoPedido.="<p style='text-align:right;'>Total*: <b>".number_format($order['total'],2)." &euro;</b></p>";
+            //fidelizacion
+            $textomail= str_replace('[pedidoElPedido]',$textoPedido,$textomail);
+            $textomail.='</td></tr></table>';
+
+            $devuelve=[
+                'textomail'=>$textomail,
+                'subject'=>$subject
+            ]; 
+            return $devuelve;  
+        } 
+           
+    }
+	
+    public function CreaBodyTextoPedido_OLD($order){
         $devuelve=[];
         $textomail='';
 
