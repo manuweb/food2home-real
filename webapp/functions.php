@@ -225,8 +225,8 @@ class RecomponePedido
         $this->urlImgProducto=$this->url.'/webapp/img/productos/';
     }
 
-    public function BuscaUUID($idPedido,$idArticulo){
-        $sql="SELECT uuid FROM tarjetas_regalo WHERE idPedido=".$idPedido." AND idProducto=".$idArticulo.";";
+    public function BuscaUUID($idPedido,$idArticulo,$idLinea){
+        $sql="SELECT uuid FROM tarjetas_regalo WHERE idPedido=".$idPedido." AND idProducto=".idArticulo." AND idLinea=".$idLinea.";";
         $database = DataBase::getInstance();
         $database->setQuery($sql);
         $result = $database->execute();
@@ -475,7 +475,7 @@ class RecomponePedido
                    $campoMenu='0';
                 }
                 if ($lineas->menu==5){
-                    $uuid=$this->BuscaUUID($IdPedido,$lineas->idArticulo);
+                    $uuid=$this->BuscaUUID($IdPedido,$lineas->idArticulo,$lineas->id);
                 }
                 $modificadores=$this->BuscaLineasModificadores($lineas->id);
                 
