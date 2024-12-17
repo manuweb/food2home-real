@@ -142,7 +142,7 @@ else {
     $impuestosGenerales = $db->loadObjectList();  
     $db->freeResults();
     
-    $subtotal=0;
+    //$subtotal=0;
     for ($n=0;$n<count($impuestosGenerales);$n++){
         $porcentajeImpuesto[$n]=$impuestosGenerales[$n]->porcentaje;  
         $baseImpuesto[$n]=0;
@@ -167,7 +167,7 @@ else {
         //$carrito[$x]['precio']+=$suma_mod;
         
         $carrito[$x]['subtotal']=$carrito[$x]['cantidad']*$carrito[$x]['precio_sin'];
-        $subtotal+=$carrito[$x]['subtotal'];
+        //$subtotal+=$carrito[$x]['subtotal'];
         
         if($carrito[$x]['menu']==5){
             $nombreT=$carrito[$x]['nombreT'];
@@ -205,14 +205,14 @@ else {
         $carrito[$x]['precio']=$array['precioBolsa'];
         $carrito[$x]['precio_sin']=$array['precioBolsa'];
         $carrito[$x]['subtotal']=$array['precioBolsa'];
-        $subtotal+=$carrito[$x]['subtotal'];
+        //$subtotal+=$carrito[$x]['subtotal'];
         $carrito[$x]['cantidad']=1;
         $carrito[$x]['iva']=0;
         $carrito[$x]['menu']=0;
         $carrito[$x]['comentario']=''; 
     }
-    $order['subtotal']=$subtotal;
-    $order['total']=$subtotal;
+    //$order['subtotal']=$subtotal;
+    //$order['total']=$subtotal;
     
     //file_put_contents('carrito_detalle.txt', print_r($carrito, true));
     
