@@ -1096,7 +1096,9 @@ class MisMails
         
         $subject='Su tarjeta regalo';
         
-        $txtTarjeta="<br><img src='".$this->url."/webapp/includes/tarjetas/tr-".$latarjeta['uuid'].".png' style='max-width:90%;height:auto;'><br>";
+        $articulotarjeta=buscaNombreArticuloTarjeta($latarjeta['uuid']);
+	    
+        $txtTarjeta="<br><img src='".$this->url."/webapp/includes/tarjetas/tr-".$latarjeta['uuid'].".png' style='max-width:90%;height:auto;'><br><br>Artículo:<b>".$articulotarjeta."</b><br>";
         
         $texto=str_replace('[GiftCard]',$txtTarjeta,$texto);
         $textomail=$texto;
@@ -3140,6 +3142,20 @@ function hexToRgb($hex, $alpha = false) {
       $rgb['a'] = $alpha;
    }
    return $rgb;
+}
+
+function buscaNombreArticuloTarjeta($uuid){
+	$sql="SELECT tarjetas_regalo.uuid, productos.nombre FROM tarjetas_regalo LEFT JOIN productos ON productos.id=tarjetas_regalo.idProducto WHERE tarjetas_regalo.uuid='".$uuid."';";
+	$database = DataBase::getInstance();
+        $database->setQuery($sql);
+        $result = $database->execute();
+        $nombre='';
+        if ($result->num_rows > 0) {
+            $id = $result->fetch_object();
+            $nombre=$id->nombre;
+        }
+        $database->freeResults();  
+        return $nombre;           
 }
 
 ?>
