@@ -34,10 +34,26 @@ $array = json_decode(json_encode($_POST), true);
 
 $checking=false;
 
+$nomTablaCat='categorias';
+$nomCampoCat='categoria';
+$nomTablaPro='productos';
+$nomActivo='activo_web';
 
+$cat=0;
+if (isset($array['cat'])){
+    $cat=$array['cat'];
+}
+if ($cat==0){
 
+    $sql="SELECT ".$nomTablaPro.".id, ".$nomTablaPro.".nombre FROM ".$nomTablaPro." WHERE ".$nomTablaPro.".".$nomActivo."=1 ORDER BY ".$nomTablaPro.".nombre";
+}
+else {
+    $sql="SELECT ".$nomTablaPro.".id, ".$nomTablaPro.".nombre FROM ".$nomTablaPro." WHERE ".$nomTablaPro.".".$nomActivo."=1 AND ".$nomTablaPro.".".$nomCampoCat."=".$cat." ORDER BY ".$nomTablaPro.".nombre";
+}
 
-$sql="SELECT productos.id, productos.nombre FROM productos WHERE 1 ORDER BY productos.nombre";
+if ($array['catprod']=='C'){
+    $sql="SELECT ".$nomTablaCat.".id, ".$nomTablaCat.".nombre FROM ".$nomTablaCat." WHERE ".$nomTablaCat.".".$nomActivo."=1 ORDER BY ".$nomTablaCat.".nombre";
+}
 
 
 $database = DataBase::getInstance();
