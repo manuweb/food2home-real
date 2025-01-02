@@ -319,7 +319,7 @@ function sincronizar(){
                     
     $.ajax({
         url: server,
-        data:{tipo:'productos',datosRevo:datosRevo[n],syncimagen:imagenes,syncimagen_png:imagenes_png, estados:estados},
+        data:{tipo:'productos',datosRevo:datosRevo[n],syncimagen:imagenes,syncimagen_png:imagenes_png, estados:estados,precios:precios},
         method: "post",
         dataType:"json",
         success: function(data){    
