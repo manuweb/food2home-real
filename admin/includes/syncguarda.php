@@ -31,6 +31,7 @@ $datosRevo=$array['datosRevo'];
 
 $syncimagen=$array['syncimagen'];
 $syncimagen_png=$array['syncimagen_png'];
+$syncprecio=$array['precios'];
 $estados=$array['estados'];
 $destino = '../../webapp/img/revo/';
 
