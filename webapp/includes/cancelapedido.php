@@ -34,7 +34,7 @@ $checking=false;
 
 $idpedido=$array['idpedido'];
 
-$sql="UPDATE pedidos SET estadoPago='-1' WHERE id='".$idpedido."' AND numeroRevo='0';";
+$sql="UPDATE pedidos SET estadoPago='-1' WHERE id='".$idpedido."' AND numeroRevo='0' AND estadoPago!='1';";
 
 $database = DataBase::getInstance();
 $database->setQuery($sql);
