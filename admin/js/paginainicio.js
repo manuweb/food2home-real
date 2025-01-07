@@ -640,9 +640,9 @@ function guardainicio(e) {
                 tipo=$(this).attr('data-tipo');
                 id=$(this).attr('data-id');
                 imagen=$(this).attr('data-imagen');
-                nombre=$(this).attr('data-nombre');
+                var nombre2=$(this).attr('data-nombre');
                 if (tipo=='Nada'){
-                    nombre='';
+                    nombre2='';
                 }
                 if (tipo=='categoría'){
                     Catprod='C'
@@ -652,7 +652,7 @@ function guardainicio(e) {
                 }
                 texto+=imagen+'##';
                 if (Catprod!='N'){
-                    texto+=Catprod+'==='+id+'==='+nombre;
+                    texto+=Catprod+'==='+id+'==='+nombre2;
                 }
                 texto+='||';
             });
@@ -660,7 +660,7 @@ function guardainicio(e) {
                 //texto=texto.substr(0,-2);
                 
             }
-            //console.log(texto);
+            //console.log(nombre);
             //return;
             
             
@@ -711,9 +711,9 @@ function guardainicio(e) {
                 tipo=$(this).attr('data-tipo');
                 id=$(this).attr('data-id');
                 imagen=$(this).attr('data-imagen');
-                nombre=$(this).attr('data-nombre');
+                var nombre2=$(this).attr('data-nombre');
                 if (tipo=='Nada'){
-                    nombre='';
+                    nombre2='';
                 }
                 if (tipo=='categoría'){
                     Catprod='C'
@@ -723,7 +723,7 @@ function guardainicio(e) {
                 }
                 texto+=imagen+'##';
                 if (Catprod!='N'){
-                    texto+=Catprod+'==='+id+'==='+nombre;
+                    texto+=Catprod+'==='+id+'==='+nombre2;
                 }
                 texto+='||';
             });
