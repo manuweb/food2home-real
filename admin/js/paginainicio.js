@@ -660,8 +660,8 @@ function guardainicio(e) {
                 //texto=texto.substr(0,-2);
                 
             }
-            console.log(texto);
-            return;
+            //console.log(texto);
+            //return;
             
             
             
@@ -737,7 +737,7 @@ function guardainicio(e) {
             
         }
     }
-    console.log(texto);
+    //console.log(texto);
     var errores="";
     if (nombre==""){
         errores+=' Nombre,';
