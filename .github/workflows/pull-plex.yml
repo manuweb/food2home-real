@@ -1,1 +1,24 @@
+name: Actualizar Plex
 
+on:
+  push:
+    branches:
+      - main  # Cambia a la rama que desees monitorear
+
+jobs:
+  pull-urls:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      - name: Llamar a las URLs de Plex
+        env:
+          PLEX_URLS: ${{ secrets.PLEX_URLS }}
+        run: |
+          for url in $(echo $PLEX_URLS | tr "," "\n")
+          do
+            echo "Haciendo pull a $url"
+            curl -X POST "$url"
+          done
